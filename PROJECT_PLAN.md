@@ -61,7 +61,7 @@
 |------|-------|-------|--------|---------------|---------|------|
 | **M2 — Preliminary Paper (due 2026-07-03)** | | | | | | |
 | T01 | Shared repo & structure | Bhalchandra | DONE | initial commit `5314fa7` | 2026-06-19 | 2026-06-23 |
-| T02 | Python env & dependencies | Bhalchandra | IN PROGRESS | requirements.txt + .env.example committed; clean-install / API-key test / Colab template still TODO | 2026-06-19 | |
+| T02 | Python env & dependencies | Bhalchandra | IN PROGRESS | req file + .env.example + SETUP.md + check_setup.py + Colab template committed; pending: each member runs a clean install + `check_setup.py` to confirm their own key works | 2026-06-19 | |
 | T03 | Load & explore FinanceBench | Bhalchandra | IN PROGRESS | download script written (`src/download_data.py`), NOT yet run — no data on disk; merge + schema note still TODO | 2026-06-19 | |
 | T04 | Exploratory Data Analysis | _____ | TODO | | | |
 | T05 | Preprocessing & chunking | _____ | TODO | | | |
