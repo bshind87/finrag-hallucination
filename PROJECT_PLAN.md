@@ -1,0 +1,487 @@
+# Project Plan & Task Board — RAG Hallucination in Financial QA
+
+**Course:** CS6120 NLP (Northeastern University) · **Group size:** 4
+**Project:** Analyzing Hallucination Patterns in RAG-Based Financial Question Answering
+**Plan owner doc:** keep this file updated as the single source of truth.
+
+> **How to use this document**
+> - This is a **task board**, not a role assignment. Tasks are written so any member can **pick up one task at a time**, top to bottom.
+> - Before starting a task, set its **Status → In Progress** and put your name in **Owner**. When done, set **Status → Done** and tick the acceptance criteria.
+> - **Respect dependencies.** A task is only "pickable" once everything in its *Dependencies* line is Done.
+> - Each task has: number, title, description, subtasks, dependencies, acceptance criteria, and an estimate.
+> - Status legend: `TODO` · `IN PROGRESS` · `BLOCKED` · `DONE`
+
+---
+
+## 1. Timeline & Milestones
+
+| Milestone | Deadline | Status | Gating tasks (must be DONE) |
+|-----------|----------|--------|-----------------------------|
+| M0 — Group registration | 2026-06-05 | ✅ Done | — |
+| M1 — Project proposal | 2026-06-16 | ✅ Done | — |
+| **M2 — Preliminary Paper (4 pages)** | **2026-07-03** | ⏳ ~2 weeks left | T01–T13 |
+| **M3 — Final Paper (8 pages)** | **2026-07-31** | ⏳ | T14–T28 |
+| **M4 — Presentation + Poster** | **2026-08-04** | ⏳ | T29–T33 |
+
+### Suggested internal cadence (buffer before each hard deadline)
+| Window | Focus | Target by end of window |
+|--------|-------|--------------------------|
+| 6/19 – 6/22 | Setup & data (Phase 1) | T01–T05 done |
+| 6/23 – 6/27 | Baseline pipeline + eval harness (Phase 2/3 subset) | T06–T10 done |
+| 6/28 – 7/01 | Lit review + draft prelim paper | T11–T13 in progress |
+| **7/02** | **Internal freeze for prelim paper** | T13 done, 1 day buffer |
+| 7/04 – 7/12 | Dense + Enhanced RAG, Mistral, full eval | T14–T19 |
+| 7/13 – 7/20 | Error analysis + taxonomy + (optional) classifier | T20–T24 |
+| 7/21 – 7/28 | Full results, figures, write final paper | T25–T28 |
+| **7/30** | **Internal freeze for final paper** | T28 done, 1 day buffer |
+| 8/01 – 8/03 | Poster + video | T29–T32 |
+| **8/04** | Submit / present | T33 |
+
+> **Reality check on dates:** Today is 6/19. The proposal timeline assumed setup happened in Week 2 (6/13–6/19). If setup hasn't started yet, prioritize T01–T06 immediately — the preliminary paper depends on a working baseline pipeline.
+
+---
+
+## 2. Definition of Done (applies to every task)
+- Code is committed to the shared GitHub repo on a branch and merged via PR (reviewed by ≥1 other member).
+- Any produced artifact (data file, notebook, table, figure) is saved to the agreed repo location, not only on a local machine.
+- The task's specific acceptance criteria are all checked.
+- This document is updated (Status + Owner).
+
+---
+
+# Phase 1 — Setup & Data Preparation  *(gates M2)*
+
+### T01 — Create shared GitHub repo & project structure
+- **Status:** TODO  · **Owner:** _____  · **Est:** 0.5 day
+- **Description:** Stand up the shared repository all four members will work in, with a sensible folder layout and collaboration rules.
+- **Subtasks:**
+  - Create one repo; add all 4 members as collaborators.
+  - Add folders: `/data` (raw + processed), `/src` (pipeline code), `/notebooks`, `/results`, `/paper`, `/annotations`.
+  - Add `.gitignore` (ignore `.env`, `__pycache__`, large data/PDFs, model checkpoints).
+  - Add a `README.md` with project summary + setup instructions, and link this `PROJECT_PLAN.md`.
+  - Agree on a branch + PR workflow (e.g. `feature/<name>` → PR → review → merge).
+- **Dependencies:** none (start here).
+- **Acceptance criteria:**
+  - [ ] All 4 members can clone and push.
+  - [ ] Folder structure + `.gitignore` + `README.md` committed.
+  - [ ] Branch/PR convention written in README.
+
+### T02 — Python environment & dependency setup
+- **Status:** TODO  · **Owner:** _____  · **Est:** 0.5 day
+- **Description:** Reproducible environment so every member runs the same stack.
+- **Subtasks:**
+  - Create a virtualenv/conda env; pin a `requirements.txt` with: `langchain`, `faiss-cpu`, `sentence-transformers`, `openai`, `ragas`, `transformers`, `pandas`, `datasets`, `rank_bm25`, `pymupdf` (or `pdfplumber`), `python-dotenv`.
+  - Provide a `.env.example` (keys named, no secrets) and document storing the **OpenAI API key** in `.env` (never committed).
+  - Verify `import` of all key libs runs clean.
+  - Set up a Google Colab notebook template linked to the repo for GPU runs (needed later for Mistral/RoBERTa).
+- **Dependencies:** T01.
+- **Acceptance criteria:**
+  - [ ] `pip install -r requirements.txt` succeeds on a clean env.
+  - [ ] `.env.example` committed; real `.env` gitignored.
+  - [ ] A "hello world" OpenAI API call works for at least one member (key valid, billing/credits confirmed).
+  - [ ] Colab template notebook committed.
+
+### T03 — Load & explore FinanceBench
+- **Status:** TODO  · **Owner:** _____  · **Est:** 1 day
+- **Description:** Load the 150-example open-source FinanceBench set and understand its structure.
+- **Subtasks:**
+  - Download dataset from HuggingFace `PatronusAI/financebench`.
+  - Load `financebench_open_source.jsonl` and `financebench_document_information.jsonl`; merge on `doc_name`.
+  - Inspect fields: question, gold answer, evidence string, doc type (10-K/10-Q/8-K), company.
+  - Download source PDFs from the GitHub `/pdfs/` folder.
+- **Dependencies:** T02.
+- **Acceptance criteria:**
+  - [ ] Merged dataframe of 150 examples loads in a notebook.
+  - [ ] PDFs downloaded and stored under `/data`.
+  - [ ] Short markdown note on dataset schema committed.
+
+### T04 — Exploratory Data Analysis (EDA)
+- **Status:** TODO  · **Owner:** _____  · **Est:** 1 day
+- **Description:** Produce the EDA that feeds the preliminary paper's data section and its first figure.
+- **Subtasks:**
+  - Distributions: question types, companies, doc types (10-K/10-Q/8-K), answer categories, answer lengths.
+  - Produce at least one publication-quality figure (e.g. question-type distribution).
+  - Write 1–2 paragraphs summarizing findings.
+- **Dependencies:** T03.
+- **Acceptance criteria:**
+  - [ ] EDA notebook committed under `/notebooks`.
+  - [ ] ≥1 saved figure under `/results` usable in the paper.
+  - [ ] Written EDA summary drafted for the paper's data section.
+
+### T05 — Document preprocessing & chunking
+- **Status:** TODO  · **Owner:** _____  · **Est:** 1.5 days
+- **Description:** Turn source PDFs into reusable, metadata-tagged chunks for retrieval.
+- **Subtasks:**
+  - Extract text from each PDF via `PyMuPDF` or `pdfplumber`.
+  - Implement two chunking strategies: fixed-size (512 tokens) and sentence-aware.
+  - Attach metadata to each chunk: company, doc type, page number, chunk ID.
+  - Serialize chunks to disk (e.g. parquet/JSONL) so runs don't re-process PDFs.
+- **Dependencies:** T03.
+- **Acceptance criteria:**
+  - [ ] Chunk files for both strategies saved under `/data/processed`.
+  - [ ] Each chunk carries full metadata.
+  - [ ] A loader function returns chunks without re-parsing PDFs.
+
+---
+
+# Phase 2 — Build RAG Pipelines  *(T06 gates M2; T14–T17 gate M3)*
+
+### T06 — Pipeline 1: Baseline RAG (BM25 + GPT-3.5-turbo)
+- **Status:** TODO  · **Owner:** _____  · **Est:** 2 days
+- **Description:** The minimal end-to-end RAG needed for preliminary results. This is the critical path for M2.
+- **Subtasks:**
+  - Index chunks with `rank_bm25`.
+  - For each question: retrieve top-3 chunks → GPT-3.5-turbo with the fixed prompt template ("Answer using only the provided context…").
+  - Set temperature 0.0 for deterministic eval.
+  - Save outputs in a standard schema: `question, retrieved_chunks, generated_answer, gold_answer, doc_name, question_type`.
+- **Dependencies:** T05.
+- **Acceptance criteria:**
+  - [ ] Runs over all 150 examples without crashing.
+  - [ ] Output file saved under `/results` in the standard schema.
+  - [ ] Standard output schema documented (reused by all later pipelines + eval).
+
+### T07 — Define & freeze the shared output schema + run config
+- **Status:** TODO  · **Owner:** _____  · **Est:** 0.5 day
+- **Description:** Lock the data contract so every pipeline and the evaluation code interoperate. (Do this alongside T06.)
+- **Subtasks:**
+  - Document the output JSON/CSV schema, including which fields RAGAS needs (question, answer, contexts, ground_truth).
+  - Document run config: chunk size, top-k, temperature, model name, retrieval type — recorded per run for the results table.
+- **Dependencies:** T06 (or in parallel).
+- **Acceptance criteria:**
+  - [ ] Schema + config doc committed under `/src` or `/results`.
+  - [ ] T06 output conforms to it.
+
+---
+
+# Phase 3 — Evaluation  *(baseline subset gates M2; full eval gates M3)*
+
+### T08 — RAGAS evaluation harness (baseline)
+- **Status:** TODO  · **Owner:** _____  · **Est:** 1.5 days
+- **Description:** Reusable evaluation that takes a pipeline output file and returns RAGAS metrics.
+- **Subtasks:**
+  - Configure RAGAS; compute faithfulness, answer relevancy, context precision.
+  - Output mean ± std across the 150 examples.
+  - Build a results DataFrame: `pipeline, model, faithfulness, answer_relevancy, context_precision`.
+  - Run it on the T06 baseline output.
+- **Dependencies:** T06, T07.
+- **Acceptance criteria:**
+  - [ ] One function/script evaluates any conformant output file.
+  - [ ] Baseline RAGAS scores (mean ± std) saved under `/results`.
+
+### T09 — Standard QA metrics (F1 + Exact Match)
+- **Status:** TODO  · **Owner:** _____  · **Est:** 1 day
+- **Description:** SQuAD-style token-level F1 and EM vs gold answers, complementing RAGAS.
+- **Subtasks:**
+  - Implement token-level F1 and EM with standard normalization.
+  - Add scores to the results DataFrame alongside RAGAS.
+  - Note the "grounded but wrong" case (high faithfulness, low F1) for the analysis section.
+- **Dependencies:** T06, T07.
+- **Acceptance criteria:**
+  - [ ] F1/EM computed for the baseline run.
+  - [ ] Combined results table (RAGAS + F1 + EM) saved under `/results`.
+
+### T10 — Preliminary results table (baseline only)
+- **Status:** TODO  · **Owner:** _____  · **Est:** 0.5 day
+- **Description:** First real results artifact for the preliminary paper.
+- **Subtasks:**
+  - Assemble baseline metrics into a clean, paper-ready table.
+  - Write 1 paragraph interpreting the numbers.
+- **Dependencies:** T08, T09.
+- **Acceptance criteria:**
+  - [ ] Formatted table exported (LaTeX/markdown) under `/results`.
+  - [ ] Interpretation paragraph drafted.
+
+---
+
+# Phase 5a — Literature Review & Preliminary Paper  *(gates M2)*
+
+### T11 — Expand related work to 20–24 papers
+- **Status:** TODO  · **Owner:** _____  · **Est:** 2 days (split reading across members)
+- **Description:** Grow the 8 proposal papers to 20–24, grouped by theme (RAG methods, hallucination detection, financial NLP).
+- **Subtasks:**
+  - Identify 12–16 additional relevant papers (cite recent RAG-hallucination + financial QA work).
+  - Each member writes 2–4 sentence summaries for their assigned papers.
+  - Maintain a shared BibTeX/`.bib` file.
+- **Dependencies:** none (can run in parallel with Phase 1–3).
+- **Acceptance criteria:**
+  - [ ] ≥20 papers in the `.bib` file with summaries.
+  - [ ] Papers grouped by the three themes.
+
+### T12 — Choose paper template & scaffold preliminary paper
+- **Status:** TODO  · **Owner:** _____  · **Est:** 0.5 day
+- **Description:** Set up the writing environment with the **instructor-provided template** (wrong template = zero).
+- **Subtasks:**
+  - Confirm required template (LaTeX vs Word) from course materials.
+  - Create the 4-page skeleton: intro, related work, data + EDA, preliminary results.
+  - Set up shared editing (Overleaf or repo `/paper`).
+- **Dependencies:** none.
+- **Acceptance criteria:**
+  - [ ] Correct template confirmed and in use.
+  - [ ] Section skeleton with headings committed/shared.
+
+### T13 — Write & submit the preliminary paper (4 pages)
+- **Status:** TODO  · **Owner:** _____  · **Est:** 3 days (parallel writing)
+- **Description:** The M2 deliverable, due **7/3**.
+- **Subtasks:**
+  - Introduction: motivate RAG hallucination in finance; state the 3 research questions.
+  - Related work: 20–24 papers (from T11).
+  - Data + EDA: dataset description and ≥1 figure (from T04).
+  - Preliminary results: baseline pipeline table + interpretation (from T10).
+  - Full-group proofread; verify page limit and template compliance.
+  - Submit per course instructions.
+- **Dependencies:** T04, T10, T11, T12.
+- **Acceptance criteria:**
+  - [ ] All four sections complete; ≥1 table + ≥1 figure included.
+  - [ ] Within page limit, correct template.
+  - [ ] **Submitted before 7/3.**
+
+---
+
+# Phase 2 (cont.) — Remaining RAG Pipelines  *(gates M3)*
+
+### T14 — Pipeline 2: Dense RAG (FAISS + MiniLM + GPT-3.5-turbo)
+- **Status:** TODO  · **Owner:** _____  · **Est:** 2 days
+- **Description:** Semantic retrieval variant.
+- **Subtasks:**
+  - Embed chunks with `sentence-transformers/all-MiniLM-L6-v2`.
+  - Build FAISS flat index (`IndexFlatL2`); retrieve top-3 by similarity.
+  - Reuse the T06 prompt template + generator; save outputs in the standard schema.
+  - Qualitatively compare retrieved chunks vs BM25.
+- **Dependencies:** T05, T07.
+- **Acceptance criteria:**
+  - [ ] Dense pipeline runs over all 150 examples; output conforms to schema.
+  - [ ] Short note comparing dense vs BM25 retrieval.
+
+### T15 — Pipeline 3: Enhanced RAG (query rewriting + dense)
+- **Status:** TODO  · **Owner:** _____  · **Est:** 2 days
+- **Description:** Add an LLM query-rewriting step before dense retrieval.
+- **Subtasks:**
+  - Prompt GPT-3.5-turbo to rewrite/expand each question.
+  - Retrieve from the same FAISS index using the rewritten query.
+  - Save outputs in standard schema; log original vs rewritten query.
+  - Compare retrieval quality vs Pipeline 2.
+- **Dependencies:** T14.
+- **Acceptance criteria:**
+  - [ ] Enhanced pipeline runs over all 150 examples; schema-conformant output.
+  - [ ] Rewrite examples logged; comparison note written.
+
+### T16 — Hyperparameter sweeps
+- **Status:** TODO  · **Owner:** _____  · **Est:** 1.5 days
+- **Description:** Tune the key knobs called out in the proposal.
+- **Subtasks:**
+  - Vary chunk size (256 vs 512), top-k (3 vs 5); keep temperature 0.0 for eval.
+  - Record each run's config + metrics.
+  - Pick the best-performing retrieval config to carry into the Mistral comparison.
+- **Dependencies:** T14, T15, T08, T09.
+- **Acceptance criteria:**
+  - [ ] Sweep results table saved.
+  - [ ] Best config chosen and documented.
+
+### T17 — Swap in Mistral-7B-Instruct as alternate generator
+- **Status:** TODO  · **Owner:** _____  · **Est:** 2 days
+- **Description:** Open-source generator comparison on the best retrieval config (Colab GPU).
+- **Subtasks:**
+  - Load `mistralai/Mistral-7B-Instruct-v0.2` with 4-bit quantization (`bitsandbytes`) on Colab.
+  - Apply the best retrieval config (from T16); identical prompt template for fairness.
+  - Save outputs in the standard schema.
+- **Dependencies:** T16.
+- **Acceptance criteria:**
+  - [ ] Mistral run completes over the eval set; schema-conformant output.
+  - [ ] Generation config documented (quantization, params).
+
+---
+
+# Phase 3 (cont.) — Full Evaluation  *(gates M3)*
+
+### T18 — Full evaluation across all pipeline × model combos
+- **Status:** TODO  · **Owner:** _____  · **Est:** 1.5 days
+- **Description:** Run the T08/T09 harness over every pipeline and model.
+- **Subtasks:**
+  - Evaluate Pipelines 1–3 (GPT-3.5) + best-config Mistral.
+  - Produce the consolidated main results DataFrame (RAGAS + F1 + EM).
+- **Dependencies:** T08, T09, T14, T15, T17.
+- **Acceptance criteria:**
+  - [ ] Single consolidated results table covering all combinations.
+  - [ ] Saved under `/results`.
+
+### T19 — Identify failure cases for error analysis
+- **Status:** TODO  · **Owner:** _____  · **Est:** 0.5 day
+- **Description:** Select the hallucination candidates to annotate.
+- **Subtasks:**
+  - Filter outputs where faithfulness < 0.5 OR F1 = 0.
+  - From the baseline pipeline, draw a **stratified sample of 50** across question types/companies.
+- **Dependencies:** T18.
+- **Acceptance criteria:**
+  - [ ] 50-case sample exported under `/annotations`.
+  - [ ] Sample documented as stratified (coverage shown).
+
+---
+
+# Phase 4 — Error Analysis & Hallucination Taxonomy  *(gates M3 — the novel contribution)*
+
+### T20 — Finalize annotation schema & taxonomy guidelines
+- **Status:** TODO  · **Owner:** _____  · **Est:** 0.5 day
+- **Description:** Lock the 4-category taxonomy and labeling rules before annotating.
+- **Subtasks:**
+  - Document categories: **numerical**, **entity**, **reasoning**, **unsupported extrapolation** — each with a definition + example.
+  - Define the annotation sheet columns and the 10 shared cases for agreement.
+- **Dependencies:** T19.
+- **Acceptance criteria:**
+  - [ ] Taxonomy + guidelines doc committed.
+  - [ ] Annotation template (sheet) ready.
+
+### T21 — Manual annotation of 50 failure cases
+- **Status:** TODO  · **Owner:** _____  · **Est:** 1.5 days (split: ~12–13 cases/member)
+- **Description:** Each member labels their share; 10 cases double-annotated for agreement.
+- **Subtasks:**
+  - For each case: read question, retrieved chunks, generated answer, gold answer; assign one label.
+  - Compute inter-annotator agreement (Cohen's kappa) on the 10 shared cases.
+- **Dependencies:** T20.
+- **Acceptance criteria:**
+  - [ ] All 50 cases labeled.
+  - [ ] Cohen's kappa reported.
+  - [ ] Disagreements resolved/adjudicated.
+
+### T22 — Hallucination-type frequency analysis + figure
+- **Status:** TODO  · **Owner:** _____  · **Est:** 0.5 day
+- **Description:** Quantify and visualize the taxonomy distribution.
+- **Subtasks:**
+  - Compute frequency of each hallucination type.
+  - Produce the bar chart (Figure 1 in the paper).
+- **Dependencies:** T21.
+- **Acceptance criteria:**
+  - [ ] Frequency table + bar chart saved under `/results`.
+
+### T23 — Curate qualitative case-study examples
+- **Status:** TODO  · **Owner:** _____  · **Est:** 0.5 day
+- **Description:** Pick 2–3 illustrative examples per hallucination type for the paper.
+- **Subtasks:**
+  - Select clear examples (question, generated answer, gold, label).
+  - Format as a case-study table (Table 2).
+- **Dependencies:** T21.
+- **Acceptance criteria:**
+  - [ ] Case-study table with 2–3 examples per category.
+
+### T24 — (Optional) RoBERTa hallucination classifier
+- **Status:** TODO  · **Owner:** _____  · **Est:** 2 days
+- **Description:** Train an automatic hallucinated-vs-grounded classifier; evaluate against human labels.
+- **Subtasks:**
+  - Use RAGTruth (`wandb/RAGTruth`) as training supervision.
+  - Fine-tune `roberta-base` (input: retrieved context + generated answer).
+  - Evaluate on the 50 annotated FinanceBench cases; report precision/recall/F1.
+  - Produce confusion matrix (Figure 2, optional).
+- **Dependencies:** T21.
+- **Acceptance criteria:**
+  - [ ] Trained classifier + eval metrics saved.
+  - [ ] Confusion matrix figure produced.
+  - [ ] *(Skip if time-constrained — clearly mark as not done so the paper doesn't claim it.)*
+
+---
+
+# Phase 5b — Final Paper  *(gates M3, due 7/31)*
+
+### T25 — Assemble all final tables & figures
+- **Status:** TODO  · **Owner:** _____  · **Est:** 1 day
+- **Description:** Gather every results artifact into final, paper-ready form.
+- **Subtasks:**
+  - Table 1: main results (all pipeline × model, RAGAS + F1/EM).
+  - Figure 1: hallucination-type frequencies.
+  - Table 2: qualitative examples.
+  - Figure 2 (optional): classifier confusion matrix.
+- **Dependencies:** T18, T22, T23, (T24 optional).
+- **Acceptance criteria:**
+  - [ ] All tables/figures finalized and captioned.
+
+### T26 — Expand related work for final paper
+- **Status:** TODO  · **Owner:** _____  · **Est:** 1 day
+- **Description:** Ensure 20–24 papers are well-synthesized (not just listed), grouped by theme.
+- **Dependencies:** T11.
+- **Acceptance criteria:**
+  - [ ] Related-work section reads as synthesis, grouped by theme.
+
+### T27 — Write the final paper (8 pages)
+- **Status:** TODO  · **Owner:** _____  · **Est:** 4 days (parallel)
+- **Description:** Full paper: abstract, intro, related work, methodology, results, analysis, conclusions + future work.
+- **Subtasks:**
+  - Abstract (problem, approach, key findings).
+  - Methodology: all 3 pipelines, eval setup, annotation process.
+  - Results + Analysis: tables/figures from T25 + qualitative discussion.
+  - Conclusions + future work (e.g. full 10K-example dataset).
+- **Dependencies:** T25, T26.
+- **Acceptance criteria:**
+  - [ ] All sections drafted; figures/tables embedded.
+  - [ ] Within 8 pages, correct template.
+
+### T28 — Final paper review & submission
+- **Status:** TODO  · **Owner:** _____  · **Est:** 1 day
+- **Description:** Polish and submit the M3 deliverable.
+- **Subtasks:**
+  - Full-group proofread; check citations, page limit, template.
+  - Submit per course instructions.
+- **Dependencies:** T27.
+- **Acceptance criteria:**
+  - [ ] Proofread complete; references consistent.
+  - [ ] **Submitted before 7/31.**
+
+---
+
+# Phase 6 — Presentation & Poster  *(gates M4, due 8/4)*
+
+### T29 — Design the poster
+- **Status:** TODO  · **Owner:** _____  · **Est:** 1.5 days
+- **Description:** Visual poster following the standard flow.
+- **Subtasks:**
+  - Sections: motivation → research questions → pipeline diagram → results → taxonomy → conclusions.
+  - Add QR code linking to the video + GitHub repo.
+  - Keep text minimal (bullets over paragraphs).
+- **Dependencies:** T28 (content finalized).
+- **Acceptance criteria:**
+  - [ ] Print-ready poster file.
+  - [ ] QR code links verified.
+
+### T30 — Build presentation slides
+- **Status:** TODO  · **Owner:** _____  · **Est:** 1 day
+- **Description:** Slide deck (reuse poster sections) for the video.
+- **Dependencies:** T28.
+- **Acceptance criteria:**
+  - [ ] Deck covers intro → pipelines → results → analysis/conclusions.
+
+### T31 — Record the video (max 8 minutes)
+- **Status:** TODO  · **Owner:** _____  · **Est:** 1 day
+- **Description:** Each member presents ~2 minutes on their section.
+- **Subtasks:**
+  - Record slides + talking head; practice timing.
+  - Enforce hard 8-minute cutoff.
+- **Dependencies:** T30.
+- **Acceptance criteria:**
+  - [ ] Final video ≤ 8:00.
+  - [ ] All four members present.
+
+### T32 — Final submission of poster + video
+- **Status:** TODO  · **Owner:** _____  · **Est:** 0.5 day
+- **Dependencies:** T29, T31.
+- **Acceptance criteria:**
+  - [ ] Poster + video submitted before **8/4**.
+
+### T33 — (Bonus) ACL 2026 workshop submission
+- **Status:** TODO  · **Owner:** _____  · **Est:** 1 day
+- **Description:** Optional submission to "Towards Knowledgeable Foundation Models" for resume value.
+- **Subtasks:**
+  - Check workshop deadline; reformat to official ACL LaTeX style.
+  - Submit via OpenReview.
+- **Dependencies:** T28.
+- **Acceptance criteria:**
+  - [ ] Deadline checked; if viable, paper reformatted and submitted.
+
+---
+
+## 3. Critical Path (don't let these slip)
+**For 7/3 (preliminary):** T01 → T02 → T03 → T05 → T06 → T08/T09 → T10 → T13 (with T04 + T11 + T12 in parallel).
+**For 7/31 (final):** T14/T15 → T16 → T17 → T18 → T19 → T20 → T21 → T22/T23 → T25 → T27 → T28.
+**For 8/4 (poster/video):** T28 → T29/T30 → T31 → T32.
+
+## 4. Open Decisions / Risks
+- [ ] **Template:** Confirm the instructor's exact paper template ASAP (T12) — wrong template = zero.
+- [ ] **API budget:** $50 GCP credit + OpenAI cost — track spend; run full experiments at temperature 0.0 once, avoid re-runs.
+- [ ] **Colab GPU:** Mistral (T17) and RoBERTa (T24) need GPU — confirm Colab access early.
+- [ ] **RoBERTa classifier (T24) is optional** — drop first if the final-paper timeline is tight.
