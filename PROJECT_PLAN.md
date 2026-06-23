@@ -41,6 +41,69 @@
 
 ---
 
+## 1.5 Progress Tracker (single source of truth for reviews)
+
+**Repo:** https://github.com/bshind87/finrag-hallucination (private)
+
+> 🔎 **The professor reviews progress every alternate week.** This table is the at-a-glance
+> view for those reviews. **Keep it current** — update your task's row the moment you start,
+> finish, or get blocked. The detailed task blocks below hold the full description + acceptance
+> criteria; this table holds who/what/when.
+
+**Rules that make attribution clean:**
+1. **Commit under your own GitHub account** — `git`/PR history is the audit trail of who did what. Don't push someone else's work under your name.
+2. **One task → one branch → one PR**, named `feature/<task-id>-short-name` (e.g. `feature/T06-baseline-rag`). The merged PR link is the proof a task is done.
+3. When you **start**: set Status → `IN PROGRESS`, put your name in Owner, fill **Started**.
+4. When you **finish**: set Status → `DONE`, fill **PR #** and **Done date**, tick the task's acceptance criteria below.
+5. If **blocked**, set Status → `BLOCKED` and note what's blocking in the row.
+
+| Task | Title | Owner | Status | Branch / PR # | Started | Done |
+|------|-------|-------|--------|---------------|---------|------|
+| **M2 — Preliminary Paper (due 2026-07-03)** | | | | | | |
+| T01 | Shared repo & structure | Bhalchandra | DONE | initial commit `5314fa7` | 2026-06-19 | 2026-06-23 |
+| T02 | Python env & dependencies | _____ | TODO | | | |
+| T03 | Load & explore FinanceBench | _____ | TODO | | | |
+| T04 | Exploratory Data Analysis | _____ | TODO | | | |
+| T05 | Preprocessing & chunking | _____ | TODO | | | |
+| T06 | Pipeline 1: Baseline RAG (BM25) | _____ | TODO | | | |
+| T07 | Freeze output schema + run config | _____ | TODO | | | |
+| T08 | RAGAS eval harness (baseline) | _____ | TODO | | | |
+| T09 | QA metrics (F1 + EM) | _____ | TODO | | | |
+| T10 | Preliminary results table | _____ | TODO | | | |
+| T11 | Expand related work (20–24 papers) | _____ | TODO | | | |
+| T12 | Paper template & scaffold | _____ | TODO | | | |
+| T13 | Write & submit prelim paper | _____ | TODO | | | |
+| **M3 — Final Paper (due 2026-07-31)** | | | | | | |
+| T14 | Pipeline 2: Dense RAG (FAISS) | _____ | TODO | | | |
+| T15 | Pipeline 3: Enhanced RAG (rewrite) | _____ | TODO | | | |
+| T16 | Hyperparameter sweeps | _____ | TODO | | | |
+| T17 | Mistral-7B alternate generator | _____ | TODO | | | |
+| T18 | Full evaluation (all combos) | _____ | TODO | | | |
+| T19 | Identify failure cases | _____ | TODO | | | |
+| T20 | Annotation schema & taxonomy | _____ | TODO | | | |
+| T21 | Annotate 50 failure cases | _____ | TODO | | | |
+| T22 | Hallucination-type frequency + figure | _____ | TODO | | | |
+| T23 | Curate qualitative case studies | _____ | TODO | | | |
+| T24 | (Optional) RoBERTa classifier | _____ | TODO | | | |
+| T25 | Assemble final tables & figures | _____ | TODO | | | |
+| T26 | Expand related work (final) | _____ | TODO | | | |
+| T27 | Write final paper (8 pages) | _____ | TODO | | | |
+| T28 | Final review & submission | _____ | TODO | | | |
+| **M4 — Presentation + Poster (due 2026-08-04)** | | | | | | |
+| T29 | Design poster | _____ | TODO | | | |
+| T30 | Build presentation slides | _____ | TODO | | | |
+| T31 | Record video (≤8 min) | _____ | TODO | | | |
+| T32 | Submit poster + video | _____ | TODO | | | |
+| T33 | (Bonus) ACL workshop submission | _____ | TODO | | | |
+
+### Bi-weekly checkpoint log (fill before each professor review)
+| Review date | Milestone window | Completed since last review | Owners | Blockers / risks |
+|-------------|------------------|-----------------------------|--------|------------------|
+| _e.g. 2026-06-27_ | M2 setup → baseline | T01; (target T02–T06) | | |
+| | | | | |
+
+---
+
 ## 2. Definition of Done (applies to every task)
 - Code is committed to the shared GitHub repo on a branch and merged via PR (reviewed by ≥1 other member).
 - Any produced artifact (data file, notebook, table, figure) is saved to the agreed repo location, not only on a local machine.
