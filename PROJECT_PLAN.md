@@ -61,8 +61,8 @@
 |------|-------|-------|--------|---------------|---------|------|
 | **M2 — Preliminary Paper (due 2026-07-03)** | | | | | | |
 | T01 | Shared repo & structure | Bhalchandra | DONE | initial commit `5314fa7` | 2026-06-19 | 2026-06-23 |
-| T02 | Python env & dependencies | _____ | TODO | | | |
-| T03 | Load & explore FinanceBench | _____ | TODO | | | |
+| T02 | Python env & dependencies | Bhalchandra | IN PROGRESS | requirements.txt + .env.example committed; clean-install / API-key test / Colab template still TODO | 2026-06-19 | |
+| T03 | Load & explore FinanceBench | Bhalchandra | IN PROGRESS | download script written (`src/download_data.py`), NOT yet run — no data on disk; merge + schema note still TODO | 2026-06-19 | |
 | T04 | Exploratory Data Analysis | _____ | TODO | | | |
 | T05 | Preprocessing & chunking | _____ | TODO | | | |
 | T06 | Pipeline 1: Baseline RAG (BM25) | _____ | TODO | | | |
@@ -99,8 +99,8 @@
 ### Bi-weekly checkpoint log (fill before each professor review)
 | Review date | Milestone window | Completed since last review | Owners | Blockers / risks |
 |-------------|------------------|-----------------------------|--------|------------------|
-| _e.g. 2026-06-27_ | M2 setup → baseline | T01; (target T02–T06) | | |
-| | | | | |
+| 2026-06-23 | M1 done → M2 setup | M1 proposal submitted (6/16); T01 repo+structure DONE; T02/T03 scaffolded (env files + download script committed, data not yet downloaded) | Bhalchandra | Need 3 teammates' GitHub usernames to add as collaborators; data download (T03) must run to unblock T04–T06 |
+| | M2 setup → baseline | _(next review — target T02–T06 done)_ | | |
 
 ---
 
