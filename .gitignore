@@ -1,0 +1,35 @@
+# --- Secrets ---
+.env
+*.key
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+.python-version
+
+# --- Virtual environments ---
+.venv/
+venv/
+env/
+.conda/
+
+# --- Large / generated data (do NOT commit raw PDFs, indices, model checkpoints) ---
+data/raw/
+data/pdfs/
+data/processed/
+*.faiss
+*.index
+*.bin
+*.pt
+*.safetensors
+checkpoints/
+
+# --- OS / editor ---
+.DS_Store
+.vscode/
+.idea/
+
+# --- Results scratch (keep curated tables/figures, ignore bulky raw dumps) ---
+results/raw_outputs/
