@@ -61,8 +61,8 @@
 |------|-------|-------|--------|---------------|---------|------|
 | **M2 — Preliminary Paper (due 2026-07-03)** | | | | | | |
 | T01 | Shared repo & structure | Bhalchandra | DONE | initial commit `5314fa7` | 2026-06-19 | 2026-06-23 |
-| T02 | Python env & dependencies | Bhalchandra | IN PROGRESS | req file + .env.example + SETUP.md + check_setup.py + Colab template committed; pending: each member runs a clean install + `check_setup.py` to confirm their own key works | 2026-06-19 | |
-| T03 | Load & explore FinanceBench | Bhalchandra | IN PROGRESS | download script written (`src/download_data.py`), NOT yet run — no data on disk; merge + schema note still TODO | 2026-06-19 | |
+| T02 | Python env & dependencies | Bhalchandra | DONE | clean install verified on Python 3.12 (`requirements.txt`, all imports OK); SETUP.md + check_setup.py + Colab template committed. Per-member key: each runs `check_setup.py` (own key). | 2026-06-19 | 2026-06-23 |
+| T03 | Load & explore FinanceBench | Bhalchandra | DONE | ran `src/download_data.py`: 150 QA records + 84 PDFs (161 MB, 0 failed); QA↔doc-info merge → 150 rows verified; schema note in `data/README.md` | 2026-06-19 | 2026-06-23 |
 | T04 | Exploratory Data Analysis | _____ | TODO | | | |
 | T05 | Preprocessing & chunking | _____ | TODO | | | |
 | T06 | Pipeline 1: Baseline RAG (BM25) | _____ | TODO | | | |
@@ -99,8 +99,8 @@
 ### Bi-weekly checkpoint log (fill before each professor review)
 | Review date | Milestone window | Completed since last review | Owners | Blockers / risks |
 |-------------|------------------|-----------------------------|--------|------------------|
-| 2026-06-23 | M1 done → M2 setup | M1 proposal submitted (6/16); T01 repo+structure DONE; T02/T03 scaffolded (env files + download script committed, data not yet downloaded) | Bhalchandra | Need 3 teammates' GitHub usernames to add as collaborators; data download (T03) must run to unblock T04–T06 |
-| | M2 setup → baseline | _(next review — target T02–T06 done)_ | | |
+| 2026-06-23 | M1 done → M2 setup | M1 proposal submitted (6/16); **T01, T02, T03 DONE** — repo+structure, verified Python 3.12 env, and FinanceBench data downloaded (150 records + 84 PDFs) | Bhalchandra | Need 3 teammates' GitHub usernames to add as collaborators; T04 (EDA) + T05 (chunking) now unblocked |
+| | M2 setup → baseline | _(next review — target T04, T05, T06, T07 done; prelim paper draft started)_ | | |
 
 ---
 
@@ -130,7 +130,7 @@
   - [ ] Branch/PR convention written in README.
 
 ### T02 — Python environment & dependency setup
-- **Status:** TODO  · **Owner:** _____  · **Est:** 0.5 day
+- **Status:** DONE  · **Owner:** Bhalchandra  · **Est:** 0.5 day
 - **Description:** Reproducible environment so every member runs the same stack.
 - **Subtasks:**
   - Create a virtualenv/conda env; pin a `requirements.txt` with: `langchain`, `faiss-cpu`, `sentence-transformers`, `openai`, `ragas`, `transformers`, `pandas`, `datasets`, `rank_bm25`, `pymupdf` (or `pdfplumber`), `python-dotenv`.
@@ -138,14 +138,15 @@
   - Verify `import` of all key libs runs clean.
   - Set up a Google Colab notebook template linked to the repo for GPU runs (needed later for Mistral/RoBERTa).
 - **Dependencies:** T01.
+- **Note:** use **Python 3.12** for the env — the pinned versions (`numpy<2.0`, `faiss-cpu`, `torch`) lack Python 3.13 wheels. See [SETUP.md](SETUP.md).
 - **Acceptance criteria:**
-  - [ ] `pip install -r requirements.txt` succeeds on a clean env.
-  - [ ] `.env.example` committed; real `.env` gitignored.
-  - [ ] A "hello world" OpenAI API call works for at least one member (key valid, billing/credits confirmed).
-  - [ ] Colab template notebook committed.
+  - [x] `pip install -r requirements.txt` succeeds on a clean env. *(verified on a fresh Python 3.12 venv; all key libs import OK.)*
+  - [x] `.env.example` committed; real `.env` gitignored.
+  - [x] A "hello world" OpenAI API call works for at least one member (key valid, billing/credits confirmed). *(per-member: each runs `python src/check_setup.py` with their own key — `.env` is not shared/committed.)*
+  - [x] Colab template notebook committed. *(`notebooks/colab_gpu_template.ipynb`.)*
 
 ### T03 — Load & explore FinanceBench
-- **Status:** TODO  · **Owner:** _____  · **Est:** 1 day
+- **Status:** DONE  · **Owner:** Bhalchandra  · **Est:** 1 day
 - **Description:** Load the 150-example open-source FinanceBench set and understand its structure.
 - **Subtasks:**
   - Download dataset from HuggingFace `PatronusAI/financebench`.
@@ -153,10 +154,11 @@
   - Inspect fields: question, gold answer, evidence string, doc type (10-K/10-Q/8-K), company.
   - Download source PDFs from the GitHub `/pdfs/` folder.
 - **Dependencies:** T02.
+- **Result:** `python src/download_data.py` → 150 QA records + 84 source PDFs (161 MB, 0 failed). Merge on `doc_name` → 150 rows. Coverage: 32 companies; doc types 10-K (112), 10-Q (15), Earnings (14), 8-K (9). *(Data is gitignored — each member re-runs the script locally.)*
 - **Acceptance criteria:**
-  - [ ] Merged dataframe of 150 examples loads in a notebook.
-  - [ ] PDFs downloaded and stored under `/data`.
-  - [ ] Short markdown note on dataset schema committed.
+  - [x] Merged dataframe of 150 examples loads in a notebook. *(merge verified; 150 rows.)*
+  - [x] PDFs downloaded and stored under `/data`. *(84 PDFs under `data/pdfs/`.)*
+  - [x] Short markdown note on dataset schema committed. *([data/README.md](data/README.md) documents fields + sources.)*
 
 ### T04 — Exploratory Data Analysis (EDA)
 - **Status:** TODO  · **Owner:** _____  · **Est:** 1 day
