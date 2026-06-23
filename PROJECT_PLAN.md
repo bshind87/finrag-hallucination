@@ -63,7 +63,7 @@
 | T01 | Shared repo & structure | Bhalchandra | DONE | initial commit `5314fa7` | 2026-06-19 | 2026-06-23 |
 | T02 | Python env & dependencies | Bhalchandra | DONE | clean install verified on Python 3.12 (`requirements.txt`, all imports OK); SETUP.md + check_setup.py + Colab template committed. Per-member key: each runs `check_setup.py` (own key). | 2026-06-19 | 2026-06-23 |
 | T03 | Load & explore FinanceBench | Bhalchandra | DONE | ran `src/download_data.py`: 150 QA records + 84 PDFs (161 MB, 0 failed); QA↔doc-info merge → 150 rows verified; schema note in `data/README.md` | 2026-06-19 | 2026-06-23 |
-| T04 | Exploratory Data Analysis | _____ | TODO | | | |
+| T04 | Exploratory Data Analysis | Bhalchandra | DONE | `notebooks/01_eda.ipynb` + 6 figures + `results/eda_summary.md` | 2026-06-23 | 2026-06-23 |
 | T05 | Preprocessing & chunking | _____ | TODO | | | |
 | T06 | Pipeline 1: Baseline RAG (BM25) | _____ | TODO | | | |
 | T07 | Freeze output schema + run config | _____ | TODO | | | |
@@ -161,7 +161,7 @@
   - [x] Short markdown note on dataset schema committed. *([data/README.md](data/README.md) documents fields + sources.)*
 
 ### T04 — Exploratory Data Analysis (EDA)
-- **Status:** TODO  · **Owner:** _____  · **Est:** 1 day
+- **Status:** DONE  · **Owner:** Bhalchandra  · **Est:** 1 day
 - **Description:** Produce the EDA that feeds the preliminary paper's data section and its first figure.
 - **Subtasks:**
   - Distributions: question types, companies, doc types (10-K/10-Q/8-K), answer categories, answer lengths.
@@ -169,9 +169,9 @@
   - Write 1–2 paragraphs summarizing findings.
 - **Dependencies:** T03.
 - **Acceptance criteria:**
-  - [ ] EDA notebook committed under `/notebooks`.
-  - [ ] ≥1 saved figure under `/results` usable in the paper.
-  - [ ] Written EDA summary drafted for the paper's data section.
+  - [x] EDA notebook committed under `/notebooks`. *(`notebooks/01_eda.ipynb`, executed with outputs.)*
+  - [x] ≥1 saved figure under `/results` usable in the paper. *(6 figures incl. `results/fig_eda_overview.png` — the Figure 1 candidate.)*
+  - [x] Written EDA summary drafted for the paper's data section. *(`results/eda_summary.md`.)*
 
 ### T05 — Document preprocessing & chunking
 - **Status:** TODO  · **Owner:** _____  · **Est:** 1.5 days
