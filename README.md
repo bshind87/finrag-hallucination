@@ -41,6 +41,10 @@ finrag-hallucination/
 
 ## Setup
 
+> 📌 **New here? Follow [SETUP.md](SETUP.md)** for the full walkthrough — fresh venv,
+> your own OpenAI key (each member uses their own; never committed), and a one-command
+> `python src/check_setup.py` verifier. The steps below are the short version.
+
 ### 1. Clone and create an environment
 ```bash
 git clone <repo-url>
