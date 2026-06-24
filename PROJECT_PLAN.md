@@ -63,7 +63,7 @@
 | T01 | Shared repo & structure | Bhalchandra | DONE | initial commit `5314fa7` | 2026-06-19 | 2026-06-23 |
 | T02 | Python env & dependencies | Bhalchandra | DONE | clean install verified on Python 3.12 (`requirements.txt`, all imports OK); SETUP.md + check_setup.py + Colab template committed. Per-member key: each runs `check_setup.py` (own key). | 2026-06-19 | 2026-06-23 |
 | T03 | Load & explore FinanceBench | Bhalchandra | DONE | ran `src/download_data.py`: 150 QA records + 84 PDFs (161 MB, 0 failed); QA↔doc-info merge → 150 rows verified; schema note in `data/README.md` | 2026-06-19 | 2026-06-23 |
-| T04 | Exploratory Data Analysis | Bhalchandra | DONE | `notebooks/01_eda.ipynb` + 6 figures + `results/eda_summary.md` | 2026-06-23 | 2026-06-23 |
+| T04 | Exploratory Data Analysis | Bhalchandra | DONE | `notebooks/01_eda.ipynb` (10-part EDA) + 22 figures + `results/eda_summary.md` | 2026-06-23 | 2026-06-23 |
 | T05 | Preprocessing & chunking | _____ | TODO | | | |
 | T06 | Pipeline 1: Baseline RAG (BM25) | _____ | TODO | | | |
 | T07 | Freeze output schema + run config | _____ | TODO | | | |
@@ -169,9 +169,10 @@
   - Write 1–2 paragraphs summarizing findings.
 - **Dependencies:** T03.
 - **Acceptance criteria:**
-  - [x] EDA notebook committed under `/notebooks`. *(`notebooks/01_eda.ipynb`, executed with outputs.)*
-  - [x] ≥1 saved figure under `/results` usable in the paper. *(6 figures incl. `results/fig_eda_overview.png` — the Figure 1 candidate.)*
+  - [x] EDA notebook committed under `/notebooks`. *(`notebooks/01_eda.ipynb`, executed; 10-part analysis: dataset overview, question/answer/evidence/source-doc/company analysis, retrieval-difficulty + hallucination-risk proxies, linguistic complexity, data-quality checks.)*
+  - [x] ≥1 saved figure under `/results` usable in the paper. *(22 figures incl. `fig_eda_overview.png` — Figure 1 candidate — plus hallucination-risk, extractability CDF, company×year heatmap, evidence-depth scatter, wordcloud.)*
   - [x] Written EDA summary drafted for the paper's data section. *(`results/eda_summary.md`.)*
+- **Key finding:** answers are ~98% non-verbatim (abstractive/computed), evidence is 69% table-heavy over ~128-page filings, median Q↔evidence cosine 0.47 — i.e. high grounded-but-wrong hallucination risk. (Added EDA deps `wordcloud`, `textstat` to `requirements.txt`; rerun `pip install -r requirements.txt`.)
 
 ### T05 — Document preprocessing & chunking
 - **Status:** TODO  · **Owner:** _____  · **Est:** 1.5 days
