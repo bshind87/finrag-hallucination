@@ -60,10 +60,10 @@
 | Task | Title | Owner | Status | Branch / PR # | Started | Done |
 |------|-------|-------|--------|---------------|---------|------|
 | **M2 — Preliminary Paper (due 2026-07-03)** | | | | | | |
-| T01 | Shared repo & structure | Bhalchandra | DONE | initial commit `5314fa7` | 2026-06-19 | 2026-06-23 |
+| T01 | Shared repo & structure | Bhalchandra | IN PROGRESS | repo live (`bshind87/finrag-hallucination`, private), structure + .gitignore + README + branch/PR convention done (`5314fa7`); **pending: add 3 teammates as collaborators (need usernames)** | 2026-06-19 | |
 | T02 | Python env & dependencies | Bhalchandra | DONE | clean install verified on Python 3.12 (`requirements.txt`, all imports OK); SETUP.md + check_setup.py + Colab template committed. Per-member key: each runs `check_setup.py` (own key). | 2026-06-19 | 2026-06-23 |
 | T03 | Load & explore FinanceBench | Bhalchandra | DONE | ran `src/download_data.py`: 150 QA records + 84 PDFs (161 MB, 0 failed); QA↔doc-info merge → 150 rows verified; schema note in `data/README.md` | 2026-06-19 | 2026-06-23 |
-| T04 | Exploratory Data Analysis | Bhalchandra | DONE | `notebooks/01_eda.ipynb` (10-part EDA) + 22 figures + `results/eda_summary.md` | 2026-06-23 | 2026-06-23 |
+| T04 | Exploratory Data Analysis | Bhalchandra | DONE | `notebooks/01_eda.ipynb` (10-part EDA) + 22 figures + `results/eda_summary.md` | 2026-06-23 | 2026-06-24 |
 | T05 | Preprocessing & chunking | _____ | TODO | | | |
 | T06 | Pipeline 1: Baseline RAG (BM25) | _____ | TODO | | | |
 | T07 | Freeze output schema + run config | _____ | TODO | | | |
@@ -99,8 +99,8 @@
 ### Bi-weekly checkpoint log (fill before each professor review)
 | Review date | Milestone window | Completed since last review | Owners | Blockers / risks |
 |-------------|------------------|-----------------------------|--------|------------------|
-| 2026-06-23 | M1 done → M2 setup | M1 proposal submitted (6/16); **T01, T02, T03 DONE** — repo+structure, verified Python 3.12 env, and FinanceBench data downloaded (150 records + 84 PDFs) | Bhalchandra | Need 3 teammates' GitHub usernames to add as collaborators; T04 (EDA) + T05 (chunking) now unblocked |
-| | M2 setup → baseline | _(next review — target T04, T05, T06, T07 done; prelim paper draft started)_ | | |
+| 2026-06-24 | M1 done → M2 setup | M1 proposal submitted (6/16); **T02, T03, T04 DONE** — verified Python 3.12 env, FinanceBench data downloaded (150 records + 84 PDFs), and comprehensive EDA (notebook + 22 figures + summary). **T01 IN PROGRESS** — repo/structure/conventions done, collaborator invites pending. | Bhalchandra | Need 3 teammates' GitHub usernames to add as collaborators (closes T01); working OpenAI API key + credits to confirm (closes T02 fully for runs) |
+| | M2 setup → baseline | _(next review — target T05, T06, T07 done; prelim paper draft started)_ | | |
 
 ---
 
@@ -115,19 +115,21 @@
 # Phase 1 — Setup & Data Preparation  *(gates M2)*
 
 ### T01 — Create shared GitHub repo & project structure
-- **Status:** TODO  · **Owner:** _____  · **Est:** 0.5 day
+- **Status:** IN PROGRESS  · **Owner:** Bhalchandra  · **Est:** 0.5 day
 - **Description:** Stand up the shared repository all four members will work in, with a sensible folder layout and collaboration rules.
+- **Repo:** https://github.com/bshind87/finrag-hallucination (private, owner `bshind87`).
 - **Subtasks:**
-  - Create one repo; add all 4 members as collaborators.
-  - Add folders: `/data` (raw + processed), `/src` (pipeline code), `/notebooks`, `/results`, `/paper`, `/annotations`.
-  - Add `.gitignore` (ignore `.env`, `__pycache__`, large data/PDFs, model checkpoints).
-  - Add a `README.md` with project summary + setup instructions, and link this `PROJECT_PLAN.md`.
-  - Agree on a branch + PR workflow (e.g. `feature/<name>` → PR → review → merge).
+  - [x] Create one repo; ~~add all 4 members as collaborators~~ — repo created (private); **3 teammates still to be added as collaborators (awaiting their GitHub usernames).**
+  - [x] Add folders: `/data` (raw + processed), `/src` (pipeline code), `/notebooks`, `/results`, `/paper`, `/annotations`.
+  - [x] Add `.gitignore` (ignores `.env`, `__pycache__`, large data/PDFs, indices, model checkpoints, `results/raw_outputs/`).
+  - [x] Add a `README.md` with project summary + setup instructions, linking this `PROJECT_PLAN.md` (plus `SETUP.md` for env + per-member API keys).
+  - [x] Agree on a branch + PR workflow (`feature/<task-id>-name` → PR → review ≥1 member → merge) — documented in README "Contributing workflow".
 - **Dependencies:** none (start here).
 - **Acceptance criteria:**
-  - [ ] All 4 members can clone and push.
-  - [ ] Folder structure + `.gitignore` + `README.md` committed.
-  - [ ] Branch/PR convention written in README.
+  - [ ] All 4 members can clone and push. *(Owner can; pending: invite the 3 teammates via repo Settings → Collaborators once usernames are shared, and they accept.)*
+  - [x] Folder structure + `.gitignore` + `README.md` committed. *(initial commit `5314fa7`.)*
+  - [x] Branch/PR convention written in README. *(README "Contributing workflow" + Progress Tracker rules above.)*
+- **Remaining to close T01:** collect the 3 teammates' GitHub usernames → add as collaborators → they accept the invite → flip Status to DONE.
 
 ### T02 — Python environment & dependency setup
 - **Status:** DONE  · **Owner:** Bhalchandra  · **Est:** 0.5 day
