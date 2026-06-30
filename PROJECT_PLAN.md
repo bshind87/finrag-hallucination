@@ -60,7 +60,7 @@
 | Task | Title | Owner | Status | Branch / PR # | Started | Done |
 |------|-------|-------|--------|---------------|---------|------|
 | **M2 — Preliminary Paper (due 2026-07-03)** | | | | | | |
-| T01 | Shared repo & structure | Bhalchandra | IN PROGRESS | repo live (`bshind87/finrag-hallucination`, private), structure + .gitignore + README + branch/PR convention done (`5314fa7`); **pending: add 3 teammates as collaborators (need usernames)** | 2026-06-19 | |
+| T01 | Shared repo & structure | Bhalchandra | IN PROGRESS | repo live (`bshind87/finrag-hallucination`, private), structure + .gitignore + README + branch/PR convention done (`5314fa7`); collaborators: `anishkelkar1` added; **2 teammates pending** | 2026-06-19 | |
 | T02 | Python env & dependencies | Bhalchandra | DONE | clean install verified on Python 3.12 (`requirements.txt`, all imports OK); SETUP.md + check_setup.py + Colab template committed. Per-member key: each runs `check_setup.py` (own key). | 2026-06-19 | 2026-06-23 |
 | T03 | Load & explore FinanceBench | Bhalchandra | DONE | ran `src/download_data.py`: 150 QA records + 84 PDFs (161 MB, 0 failed); QA↔doc-info merge → 150 rows verified; schema note in `data/README.md` | 2026-06-19 | 2026-06-23 |
 | T04 | Exploratory Data Analysis | Bhalchandra | DONE | `notebooks/01_eda.ipynb` (10-part EDA) + 22 figures + `results/eda_summary.md` | 2026-06-23 | 2026-06-24 |
@@ -119,14 +119,14 @@
 - **Description:** Stand up the shared repository all four members will work in, with a sensible folder layout and collaboration rules.
 - **Repo:** https://github.com/bshind87/finrag-hallucination (private, owner `bshind87`).
 - **Subtasks:**
-  - [x] Create one repo; ~~add all 4 members as collaborators~~ — repo created (private); **3 teammates still to be added as collaborators (awaiting their GitHub usernames).**
+  - [x] Create one repo; ~~add all 4 members as collaborators~~ — repo created (private); collaborators: `anishkelkar1` added (2026-06-24); **2 teammates still pending (awaiting GitHub usernames + invite acceptance).**
   - [x] Add folders: `/data` (raw + processed), `/src` (pipeline code), `/notebooks`, `/results`, `/paper`, `/annotations`.
   - [x] Add `.gitignore` (ignores `.env`, `__pycache__`, large data/PDFs, indices, model checkpoints, `results/raw_outputs/`).
   - [x] Add a `README.md` with project summary + setup instructions, linking this `PROJECT_PLAN.md` (plus `SETUP.md` for env + per-member API keys).
   - [x] Agree on a branch + PR workflow (`feature/<task-id>-name` → PR → review ≥1 member → merge) — documented in README "Contributing workflow".
 - **Dependencies:** none (start here).
 - **Acceptance criteria:**
-  - [ ] All 4 members can clone and push. *(Owner can; pending: invite the 3 teammates via repo Settings → Collaborators once usernames are shared, and they accept.)*
+  - [ ] All 4 members can clone and push. *(Owner + `anishkelkar1` added; pending: invite the remaining 2 teammates via repo Settings → Collaborators once usernames are shared, and they accept.)*
   - [x] Folder structure + `.gitignore` + `README.md` committed. *(initial commit `5314fa7`.)*
   - [x] Branch/PR convention written in README. *(README "Contributing workflow" + Progress Tracker rules above.)*
 - **Remaining to close T01:** collect the 3 teammates' GitHub usernames → add as collaborators → they accept the invite → flip Status to DONE.
