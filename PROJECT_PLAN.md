@@ -144,7 +144,7 @@
 - **Acceptance criteria:**
   - [x] `pip install -r requirements.txt` succeeds on a clean env. *(verified on a fresh Python 3.12 venv; all key libs import OK.)*
   - [x] `.env.example` committed; real `.env` gitignored.
-  - [x] A "hello world" OpenAI API call works for at least one member (key valid, billing/credits confirmed). *(per-member: each runs `python src/check_setup.py` with their own key — `.env` is not shared/committed.)*
+  - [x] A "hello world" OpenAI API call works for at least one member (key valid, billing/credits confirmed). *(verified 2026-06-24 via `python src/check_setup.py` — live GPT-3.5-turbo call succeeded on Bhalchandra's key. Other members each run the same check with their own key; `.env` is not shared/committed.)*
   - [x] Colab template notebook committed. *(`notebooks/colab_gpu_template.ipynb`.)*
 
 ### T03 — Load & explore FinanceBench
