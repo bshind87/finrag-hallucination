@@ -52,7 +52,8 @@ def _to_ragas_dataset(rows: list[dict]):
 
 
 def evaluate_file(preds_path: Path, backend_name: str | None = None,
-                  judge_model: str | None = None, limit: int | None = None):
+                  judge_model: str | None = None, limit: int | None = None,
+                  max_workers: int = 2):
     import pandas as pd
     from ragas import evaluate
     from ragas.metrics import answer_relevancy, context_precision, faithfulness
@@ -73,7 +74,7 @@ def evaluate_file(preds_path: Path, backend_name: str | None = None,
     print(f"scoring {len(rows)} examples with RAGAS ...")
     # Local models are slower and flakier than OpenAI, so give RAGAS a generous
     # timeout and low concurrency instead of hammering the Ollama server.
-    ragas_cfg = RagasRunConfig(timeout=180, max_workers=2, max_retries=3)
+    ragas_cfg = RagasRunConfig(timeout=180, max_workers=max_workers, max_retries=3)
     result = evaluate(
         dataset,
         metrics=[faithfulness, answer_relevancy, context_precision],
@@ -136,11 +137,14 @@ def main() -> int:
                         help="judge model (default: backend's default)")
     parser.add_argument("--limit", type=int, default=None,
                         help="only score the first N examples (cheaper smoke test)")
+    parser.add_argument("--max-workers", type=int, default=2,
+                        help="RAGAS concurrency (raise to speed up on a local server)")
     args = parser.parse_args()
 
     if not args.predictions.exists():
         raise SystemExit(f"predictions file not found: {args.predictions}")
-    evaluate_file(args.predictions, args.backend, args.judge_model, args.limit)
+    evaluate_file(args.predictions, args.backend, args.judge_model, args.limit,
+                  max_workers=args.max_workers)
     return 0
 
 
