@@ -64,10 +64,10 @@
 | T02 | Python env & dependencies | Bhalchandra | DONE | clean install verified on Python 3.12 (`requirements.txt`, all imports OK); SETUP.md + check_setup.py + Colab template committed. Per-member key: each runs `check_setup.py` (own key). | 2026-06-19 | 2026-06-23 |
 | T03 | Load & explore FinanceBench | Bhalchandra | DONE | ran `src/download_data.py`: 150 QA records + 84 PDFs (161 MB, 0 failed); QA↔doc-info merge → 150 rows verified; schema note in `data/README.md` | 2026-06-19 | 2026-06-23 |
 | T04 | Exploratory Data Analysis | Bhalchandra | DONE | `notebooks/01_eda.ipynb` (10-part EDA) + 22 figures + `results/eda_summary.md` | 2026-06-23 | 2026-06-24 |
-| T05 | Preprocessing & chunking | _____ | TODO | | | |
-| T06 | Pipeline 1: Baseline RAG (BM25) | _____ | TODO | | | |
-| T07 | Freeze output schema + run config | _____ | TODO | | | |
-| T08 | RAGAS eval harness (baseline) | _____ | TODO | | | |
+| T05 | Preprocessing & chunking | Anish | DONE | `src/preprocess.py`: two strategies (fixed_512 + sentence), tiktoken token counts, per-chunk metadata (company/doc_type/page range/chunk_id) + `load_chunks()`. Built 21,767 fixed + 20,722 sentence chunks over 84 PDFs -> `data/processed/*.parquet` (gitignored) | 2026-07-03 | 2026-07-03 |
+| T06 | Pipeline 1: Baseline RAG (BM25) | Anish | IN PROGRESS | | 2026-07-03 | |
+| T07 | Freeze output schema + run config | Anish | DONE | `src/schema.py` (REQUIRED_FIELDS, RunConfig, validate_row, read/write helpers) + `src/SCHEMA.md`; RAGAS field map + per-run sidecar `.config.json` documented | 2026-07-03 | 2026-07-03 |
+| T08 | RAGAS eval harness (baseline) | Anish | IN PROGRESS | | 2026-07-03 | |
 | T09 | QA metrics (F1 + EM) | _____ | TODO | | | |
 | T10 | Preliminary results table | _____ | TODO | | | |
 | T11 | Expand related work (20–24 papers) | _____ | TODO | | | |
@@ -177,7 +177,7 @@
 - **Key finding:** answers are ~98% non-verbatim (abstractive/computed), evidence is 69% table-heavy over ~128-page filings, median Q↔evidence cosine 0.47 — i.e. high grounded-but-wrong hallucination risk. (Added EDA deps `wordcloud`, `textstat` to `requirements.txt`; rerun `pip install -r requirements.txt`.)
 
 ### T05 — Document preprocessing & chunking
-- **Status:** TODO  · **Owner:** _____  · **Est:** 1.5 days
+- **Status:** DONE  · **Owner:** Anish  · **Est:** 1.5 days
 - **Description:** Turn source PDFs into reusable, metadata-tagged chunks for retrieval.
 - **Subtasks:**
   - Extract text from each PDF via `PyMuPDF` or `pdfplumber`.
@@ -186,16 +186,16 @@
   - Serialize chunks to disk (e.g. parquet/JSONL) so runs don't re-process PDFs.
 - **Dependencies:** T03.
 - **Acceptance criteria:**
-  - [ ] Chunk files for both strategies saved under `/data/processed`.
-  - [ ] Each chunk carries full metadata.
-  - [ ] A loader function returns chunks without re-parsing PDFs.
+  - [x] Chunk files for both strategies saved under `/data/processed`.
+  - [x] Each chunk carries full metadata.
+  - [x] A loader function returns chunks without re-parsing PDFs.
 
 ---
 
 # Phase 2 — Build RAG Pipelines  *(T06 gates M2; T14–T17 gate M3)*
 
 ### T06 — Pipeline 1: Baseline RAG (BM25 + GPT-3.5-turbo)
-- **Status:** TODO  · **Owner:** _____  · **Est:** 2 days
+- **Status:** IN PROGRESS  · **Owner:** Anish  · **Est:** 2 days
 - **Description:** The minimal end-to-end RAG needed for preliminary results. This is the critical path for M2.
 - **Subtasks:**
   - Index chunks with `rank_bm25`.
@@ -209,14 +209,14 @@
   - [ ] Standard output schema documented (reused by all later pipelines + eval).
 
 ### T07 — Define & freeze the shared output schema + run config
-- **Status:** TODO  · **Owner:** _____  · **Est:** 0.5 day
+- **Status:** DONE  · **Owner:** Anish  · **Est:** 0.5 day
 - **Description:** Lock the data contract so every pipeline and the evaluation code interoperate. (Do this alongside T06.)
 - **Subtasks:**
   - Document the output JSON/CSV schema, including which fields RAGAS needs (question, answer, contexts, ground_truth).
   - Document run config: chunk size, top-k, temperature, model name, retrieval type — recorded per run for the results table.
 - **Dependencies:** T06 (or in parallel).
 - **Acceptance criteria:**
-  - [ ] Schema + config doc committed under `/src` or `/results`.
+  - [x] Schema + config doc committed under `/src` or `/results`.
   - [ ] T06 output conforms to it.
 
 ---
@@ -224,7 +224,7 @@
 # Phase 3 — Evaluation  *(baseline subset gates M2; full eval gates M3)*
 
 ### T08 — RAGAS evaluation harness (baseline)
-- **Status:** TODO  · **Owner:** _____  · **Est:** 1.5 days
+- **Status:** IN PROGRESS  · **Owner:** Anish  · **Est:** 1.5 days
 - **Description:** Reusable evaluation that takes a pipeline output file and returns RAGAS metrics.
 - **Subtasks:**
   - Configure RAGAS; compute faithfulness, answer relevancy, context precision.
