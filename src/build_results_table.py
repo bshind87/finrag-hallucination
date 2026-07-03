@@ -72,8 +72,9 @@ def to_latex(df: pd.DataFrame) -> str:
     headers = [h for _c, h in COLUMNS]
     col_spec = "ll" + "r" * (len(headers) - 2)
     out = [r"\begin{table}[t]", r"\centering",
-           r"\caption{Preliminary results on FinanceBench (150 questions). "
-           r"RAGAS metrics and token-level QA metrics for the baseline pipeline.}",
+           r"\caption{Preliminary baseline results on FinanceBench. Token-level QA "
+           r"metrics (EM, F1) cover all 150 questions; RAGAS metrics use a 50-question "
+           r"subset for the preliminary paper.}",
            r"\label{tab:prelim-results}",
            r"\begin{tabular}{" + col_spec + "}", r"\toprule",
            " & ".join(headers) + r" \\", r"\midrule"]
@@ -117,11 +118,19 @@ def main() -> int:
     md_table = to_markdown(df)
     tex_table = to_latex(df)
 
+    row0 = df.iloc[0]
+    n_ragas = row0.get("n_examples_ragas", row0.get("n_examples"))
+    n_qa = row0.get("n_examples_qa", row0.get("n_examples"))
+    n_ragas = "n/a" if pd.isna(n_ragas) else int(n_ragas)
+    n_qa = "n/a" if pd.isna(n_qa) else int(n_qa)
     md = ["# Preliminary results (T10)\n",
-          "Baseline pipeline on the 150 FinanceBench questions. RAGAS metrics come from "
-          "`src/evaluate.py` (T08); F1 and Exact Match come from `src/qa_metrics.py` (T09). "
-          "All runs use temperature 0.\n",
+          "Baseline pipeline on FinanceBench. F1 and Exact Match (from `src/qa_metrics.py`, "
+          f"T09) cover all {n_qa} questions. The RAGAS metrics (from `src/evaluate.py`, T08) "
+          f"were run on a balanced {n_ragas}-question subset for the preliminary paper, since "
+          "the local judge is slow; we will score the full set for the final paper. All runs "
+          "use temperature 0.\n",
           md_table, "",
+          f"*RAGAS n = {n_ragas}, F1/EM n = {n_qa}.*", "",
           "## Interpretation\n", interpretation(df), ""]
     MD_OUT.write_text("\n".join(md), encoding="utf-8")
     TEX_OUT.write_text(tex_table + "\n", encoding="utf-8")

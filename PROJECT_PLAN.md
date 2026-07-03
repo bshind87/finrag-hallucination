@@ -67,9 +67,9 @@
 | T05 | Preprocessing & chunking | Anish | DONE | `src/preprocess.py`: two strategies (fixed_512 + sentence), tiktoken token counts, per-chunk metadata (company/doc_type/page range/chunk_id) + `load_chunks()`. Built 21,767 fixed + 20,722 sentence chunks over 84 PDFs -> `data/processed/*.parquet` (gitignored) | 2026-07-03 | 2026-07-03 |
 | T06 | Pipeline 1: Baseline RAG (BM25) | Anish | DONE | `src/pipeline_baseline.py`: full-corpus BM25 top-3 + Ollama generator (llama3.2, temp 0), schema-conformant output + config sidecar. Ran all 150; 42% correct-filing retrieval, 81% abstention; summary in `results/baseline_run_summary.md` | 2026-07-03 | 2026-07-03 |
 | T07 | Freeze output schema + run config | Anish | DONE | `src/schema.py` (REQUIRED_FIELDS, RunConfig, validate_row, read/write helpers) + `src/SCHEMA.md`; RAGAS field map + per-run sidecar `.config.json` documented | 2026-07-03 | 2026-07-03 |
-| T08 | RAGAS eval harness (baseline) | Anish | IN PROGRESS | | 2026-07-03 | |
-| T09 | QA metrics (F1 + EM) | Anish | IN PROGRESS | `src/qa_metrics.py`: SQuAD-normalized token F1 + EM, abstention-aware. Baseline: EM 0.00, F1 0.11 (0.27 on answered). Combined RAGAS+F1+EM table lands in T10 | 2026-07-03 | |
-| T10 | Preliminary results table | _____ | TODO | | | |
+| T08 | RAGAS eval harness (baseline) | Anish | DONE | `src/evaluate.py`: pipeline-agnostic RAGAS (faithfulness/answer_relevancy/context_precision) via local llama3.2 judge + MiniLM embeddings, mean/std + per-row. Baseline (balanced 50-q subset): faith 0.36, ans-rel 0.20, ctx-prec 0.84 -> `results/eval_ragas.csv` | 2026-07-03 | 2026-07-03 |
+| T09 | QA metrics (F1 + EM) | Anish | DONE | `src/qa_metrics.py`: SQuAD-normalized token F1 + EM, abstention-aware. Baseline: EM 0.00, F1 0.11 (0.27 on answered). Combined table built in T10 | 2026-07-03 | 2026-07-03 |
+| T10 | Preliminary results table | Anish | DONE | `src/build_results_table.py` merges RAGAS + F1/EM -> `results/preliminary_results.md` + `results/results_table.tex` (Markdown + LaTeX) with an interpretation paragraph | 2026-07-03 | 2026-07-03 |
 | T11 | Expand related work (20–24 papers) | _____ | TODO | | | |
 | T12 | Paper template & scaffold | _____ | TODO | | | |
 | T13 | Write & submit prelim paper | _____ | TODO | | | |
@@ -100,7 +100,7 @@
 | Review date | Milestone window | Completed since last review | Owners | Blockers / risks |
 |-------------|------------------|-----------------------------|--------|------------------|
 | 2026-06-24 | M1 done → M2 setup | M1 proposal submitted (6/16); **T02, T03, T04 DONE** — verified Python 3.12 env, FinanceBench data downloaded (150 records + 84 PDFs), and comprehensive EDA (notebook + 22 figures + summary). **T01 IN PROGRESS** — repo/structure/conventions done, collaborator invites pending. | Bhalchandra | Need 3 teammates' GitHub usernames to add as collaborators (closes T01); working OpenAI API key + credits to confirm (closes T02 fully for runs) |
-| | M2 setup → baseline | _(next review — target T05, T06, T07 done; prelim paper draft started)_ | | |
+| 2026-07-03 | M2 setup → baseline + prelim results | **T05-T10 DONE**: chunking (two strategies, 42k chunks), shared schema, baseline BM25+llama3.2 pipeline over all 150 (42% correct-filing retrieval, 81% abstention), RAGAS harness (50-q subset: faith 0.36 / ans-rel 0.20 / ctx-prec 0.84), F1/EM (F1 0.11), and the merged results table. Local Ollama backend so no API cost. | Anish | Local RAGAS judge is slow, so RAGAS ran on a 50-q subset; full 150 planned for the final paper. Retrieval recall is the main bottleneck (dense/rewrite next). |
 
 ---
 
@@ -224,7 +224,7 @@
 # Phase 3 — Evaluation  *(baseline subset gates M2; full eval gates M3)*
 
 ### T08 — RAGAS evaluation harness (baseline)
-- **Status:** IN PROGRESS  · **Owner:** Anish  · **Est:** 1.5 days
+- **Status:** DONE  · **Owner:** Anish  · **Est:** 1.5 days
 - **Description:** Reusable evaluation that takes a pipeline output file and returns RAGAS metrics.
 - **Subtasks:**
   - Configure RAGAS; compute faithfulness, answer relevancy, context precision.
@@ -233,11 +233,11 @@
   - Run it on the T06 baseline output.
 - **Dependencies:** T06, T07.
 - **Acceptance criteria:**
-  - [ ] One function/script evaluates any conformant output file.
-  - [ ] Baseline RAGAS scores (mean ± std) saved under `/results`.
+  - [x] One function/script evaluates any conformant output file.
+  - [x] Baseline RAGAS scores (mean ± std) saved under `/results`.
 
 ### T09 — Standard QA metrics (F1 + Exact Match)
-- **Status:** IN PROGRESS  · **Owner:** Anish  · **Est:** 1 day
+- **Status:** DONE  · **Owner:** Anish  · **Est:** 1 day
 - **Description:** SQuAD-style token-level F1 and EM vs gold answers, complementing RAGAS.
 - **Subtasks:**
   - Implement token-level F1 and EM with standard normalization.
@@ -246,18 +246,18 @@
 - **Dependencies:** T06, T07.
 - **Acceptance criteria:**
   - [x] F1/EM computed for the baseline run.
-  - [ ] Combined results table (RAGAS + F1 + EM) saved under `/results`.
+  - [x] Combined results table (RAGAS + F1 + EM) saved under `/results`.
 
 ### T10 — Preliminary results table (baseline only)
-- **Status:** TODO  · **Owner:** _____  · **Est:** 0.5 day
+- **Status:** DONE  · **Owner:** Anish  · **Est:** 0.5 day
 - **Description:** First real results artifact for the preliminary paper.
 - **Subtasks:**
   - Assemble baseline metrics into a clean, paper-ready table.
   - Write 1 paragraph interpreting the numbers.
 - **Dependencies:** T08, T09.
 - **Acceptance criteria:**
-  - [ ] Formatted table exported (LaTeX/markdown) under `/results`.
-  - [ ] Interpretation paragraph drafted.
+  - [x] Formatted table exported (LaTeX/markdown) under `/results`.
+  - [x] Interpretation paragraph drafted.
 
 ---
 

@@ -1,0 +1,12 @@
+\begin{table}[t]
+\centering
+\caption{Preliminary baseline results on FinanceBench. Token-level QA metrics (EM, F1) cover all 150 questions; RAGAS metrics use a 50-question subset for the preliminary paper.}
+\label{tab:prelim-results}
+\begin{tabular}{llrrrrr}
+\toprule
+Pipeline & Model & Faithfulness & Answer Rel. & Context Prec. & EM & F1 \\
+\midrule
+baseline\_bm25 & ollama:llama3.2 & 0.361 & 0.197 & 0.842 & 0.000 & 0.111 \\
+\bottomrule
+\end{tabular}
+\end{table}
