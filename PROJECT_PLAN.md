@@ -65,7 +65,7 @@
 | T03 | Load & explore FinanceBench | Bhalchandra | DONE | ran `src/download_data.py`: 150 QA records + 84 PDFs (161 MB, 0 failed); QA↔doc-info merge → 150 rows verified; schema note in `data/README.md` | 2026-06-19 | 2026-06-23 |
 | T04 | Exploratory Data Analysis | Bhalchandra | DONE | `notebooks/01_eda.ipynb` (10-part EDA) + 22 figures + `results/eda_summary.md` | 2026-06-23 | 2026-06-24 |
 | T05 | Preprocessing & chunking | Anish | DONE | `src/preprocess.py`: two strategies (fixed_512 + sentence), tiktoken token counts, per-chunk metadata (company/doc_type/page range/chunk_id) + `load_chunks()`. Built 21,767 fixed + 20,722 sentence chunks over 84 PDFs -> `data/processed/*.parquet` (gitignored) | 2026-07-03 | 2026-07-03 |
-| T06 | Pipeline 1: Baseline RAG (BM25) | Anish | IN PROGRESS | | 2026-07-03 | |
+| T06 | Pipeline 1: Baseline RAG (BM25) | Anish | DONE | `src/pipeline_baseline.py`: full-corpus BM25 top-3 + Ollama generator (llama3.2, temp 0), schema-conformant output + config sidecar. Ran all 150; 42% correct-filing retrieval, 81% abstention; summary in `results/baseline_run_summary.md` | 2026-07-03 | 2026-07-03 |
 | T07 | Freeze output schema + run config | Anish | DONE | `src/schema.py` (REQUIRED_FIELDS, RunConfig, validate_row, read/write helpers) + `src/SCHEMA.md`; RAGAS field map + per-run sidecar `.config.json` documented | 2026-07-03 | 2026-07-03 |
 | T08 | RAGAS eval harness (baseline) | Anish | IN PROGRESS | | 2026-07-03 | |
 | T09 | QA metrics (F1 + EM) | _____ | TODO | | | |
@@ -195,7 +195,7 @@
 # Phase 2 — Build RAG Pipelines  *(T06 gates M2; T14–T17 gate M3)*
 
 ### T06 — Pipeline 1: Baseline RAG (BM25 + GPT-3.5-turbo)
-- **Status:** IN PROGRESS  · **Owner:** Anish  · **Est:** 2 days
+- **Status:** DONE  · **Owner:** Anish  · **Est:** 2 days
 - **Description:** The minimal end-to-end RAG needed for preliminary results. This is the critical path for M2.
 - **Subtasks:**
   - Index chunks with `rank_bm25`.
@@ -204,9 +204,9 @@
   - Save outputs in a standard schema: `question, retrieved_chunks, generated_answer, gold_answer, doc_name, question_type`.
 - **Dependencies:** T05.
 - **Acceptance criteria:**
-  - [ ] Runs over all 150 examples without crashing.
-  - [ ] Output file saved under `/results` in the standard schema.
-  - [ ] Standard output schema documented (reused by all later pipelines + eval).
+  - [x] Runs over all 150 examples without crashing.
+  - [x] Output file saved under `/results` in the standard schema.
+  - [x] Standard output schema documented (reused by all later pipelines + eval).
 
 ### T07 — Define & freeze the shared output schema + run config
 - **Status:** DONE  · **Owner:** Anish  · **Est:** 0.5 day
@@ -217,7 +217,7 @@
 - **Dependencies:** T06 (or in parallel).
 - **Acceptance criteria:**
   - [x] Schema + config doc committed under `/src` or `/results`.
-  - [ ] T06 output conforms to it.
+  - [x] T06 output conforms to it.
 
 ---
 
