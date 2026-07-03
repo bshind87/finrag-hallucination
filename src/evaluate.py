@@ -7,16 +7,18 @@ three RAGAS metrics we care about for hallucination:
   * answer_relevancy: does the answer actually address the question?
   * context_precision: did retrieval put the useful chunks near the top?
 
-RAGAS uses an LLM judge (gpt-3.5-turbo) plus OpenAI embeddings under the hood, so this
-needs OPENAI_API_KEY just like the pipeline does.
+RAGAS normally judges with OpenAI. Here it judges with a local Ollama model and uses
+local sentence-transformers embeddings, so evaluation runs with no API key or cost
+(see src/llm.py). Pass ``--backend openai`` to judge with GPT-3.5 instead.
 
-The harness is pipeline-agnostic: point it at baseline output now, and at the dense /
-enhanced / Mistral outputs later (T18) with no code change. It reports mean and standard
-deviation across the examples and appends a row to results/eval_ragas.csv.
+The harness is pipeline-agnostic: point it at the baseline output now, and at the
+dense / enhanced / Mistral outputs later (T18) with no code change. It reports mean and
+standard deviation across the examples and updates results/eval_ragas.csv.
 
 Run it:
-    python src/evaluate.py results/raw_outputs/baseline_bm25_gpt35.jsonl
-    python src/evaluate.py <preds.jsonl> --limit 20     # cheaper smoke test
+    python src/evaluate.py results/raw_outputs/baseline_bm25.jsonl
+    python src/evaluate.py <preds.jsonl> --limit 20              # cheaper smoke test
+    python src/evaluate.py <preds.jsonl> --judge-model qwen2.5:14b
 """
 from __future__ import annotations
 
@@ -28,6 +30,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from dotenv import load_dotenv
 
+from llm import get_backend, make_local_embeddings, make_ragas_llm
 from schema import RAGAS_FIELD_MAP, load_run_config, read_predictions
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -48,20 +51,37 @@ def _to_ragas_dataset(rows: list[dict]):
     return Dataset.from_dict(data)
 
 
-def evaluate_file(preds_path: Path, limit: int | None = None):
+def evaluate_file(preds_path: Path, backend_name: str | None = None,
+                  judge_model: str | None = None, limit: int | None = None):
     import pandas as pd
     from ragas import evaluate
     from ragas.metrics import answer_relevancy, context_precision, faithfulness
+    from ragas.run_config import RunConfig as RagasRunConfig
 
     load_dotenv(REPO_ROOT / ".env")
+    backend = get_backend(backend_name)
+    judge_model = judge_model or backend.default_model
+    llm = make_ragas_llm(backend, judge_model)
+    embeddings = make_local_embeddings()
+    print(f"judge: {backend.name} / {judge_model}; embeddings: local MiniLM")
 
     rows = read_predictions(preds_path)
     if limit:
         rows = rows[:limit]
     dataset = _to_ragas_dataset(rows)
 
-    print(f"scoring {len(rows)} examples with RAGAS (this calls the OpenAI judge) ...")
-    result = evaluate(dataset, metrics=[faithfulness, answer_relevancy, context_precision])
+    print(f"scoring {len(rows)} examples with RAGAS ...")
+    # Local models are slower and flakier than OpenAI, so give RAGAS a generous
+    # timeout and low concurrency instead of hammering the Ollama server.
+    ragas_cfg = RagasRunConfig(timeout=180, max_workers=2, max_retries=3)
+    result = evaluate(
+        dataset,
+        metrics=[faithfulness, answer_relevancy, context_precision],
+        llm=llm,
+        embeddings=embeddings,
+        run_config=ragas_cfg,
+        raise_exceptions=False,
+    )
     per_row = result.to_pandas()
 
     # Pull run metadata so the results row says which pipeline/model these numbers are.
@@ -71,24 +91,24 @@ def evaluate_file(preds_path: Path, limit: int | None = None):
         cfg = {"pipeline": preds_path.stem, "model": "unknown"}
 
     summary = {"pipeline": cfg.get("pipeline"), "model": cfg.get("model"),
-               "n_examples": len(rows)}
+               "judge": f"{backend.name}:{judge_model}", "n_examples": len(rows)}
     for metric in METRIC_NAMES:
         if metric in per_row.columns:
             col = per_row[metric].dropna()
-            summary[f"{metric}_mean"] = round(float(col.mean()), 4)
-            summary[f"{metric}_std"] = round(float(col.std()), 4)
+            summary[f"{metric}_mean"] = round(float(col.mean()), 4) if len(col) else None
+            summary[f"{metric}_std"] = round(float(col.std()), 4) if len(col) else None
+            summary[f"{metric}_n"] = int(len(col))
 
     # Save per-row scores next to the predictions for later error analysis.
     per_row_path = RESULTS_DIR / "raw_outputs" / f"{preds_path.stem}_ragas_perrow.csv"
     per_row_path.parent.mkdir(parents=True, exist_ok=True)
     per_row.to_csv(per_row_path, index=False)
 
-    # Append (or start) the shared results table.
+    # Update the shared results table: replace any existing row for this pipeline+model.
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     summary_df = pd.DataFrame([summary])
     if RAGAS_CSV.exists():
         prev = pd.read_csv(RAGAS_CSV)
-        # replace any existing row for the same pipeline+model, then append
         mask = ~((prev["pipeline"] == summary["pipeline"]) & (prev["model"] == summary["model"]))
         summary_df = pd.concat([prev[mask], summary_df], ignore_index=True)
     summary_df.to_csv(RAGAS_CSV, index=False)
@@ -96,8 +116,11 @@ def evaluate_file(preds_path: Path, limit: int | None = None):
     print("\n--- RAGAS summary ---")
     for metric in METRIC_NAMES:
         m, s = summary.get(f"{metric}_mean"), summary.get(f"{metric}_std")
+        n = summary.get(f"{metric}_n")
         if m is not None:
-            print(f"  {metric:18s}: {m:.4f} +/- {s:.4f}")
+            print(f"  {metric:18s}: {m:.4f} +/- {s:.4f}  (scored {n}/{len(rows)})")
+        else:
+            print(f"  {metric:18s}: no valid scores")
     print(f"\nsaved summary -> {RAGAS_CSV.relative_to(REPO_ROOT)}")
     print(f"saved per-row -> {per_row_path.relative_to(REPO_ROOT)}")
     return summary
@@ -107,13 +130,17 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="RAGAS evaluation harness (Task T08).")
     parser.add_argument("predictions", type=Path,
                         help="a predictions .jsonl written in the shared schema")
+    parser.add_argument("--backend", choices=("ollama", "openai"), default=None,
+                        help="judge backend (default: $LLM_BACKEND or ollama)")
+    parser.add_argument("--judge-model", default=None,
+                        help="judge model (default: backend's default)")
     parser.add_argument("--limit", type=int, default=None,
                         help="only score the first N examples (cheaper smoke test)")
     args = parser.parse_args()
 
     if not args.predictions.exists():
         raise SystemExit(f"predictions file not found: {args.predictions}")
-    evaluate_file(args.predictions, args.limit)
+    evaluate_file(args.predictions, args.backend, args.judge_model, args.limit)
     return 0
 
 
