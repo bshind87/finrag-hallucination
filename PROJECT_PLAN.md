@@ -68,7 +68,7 @@
 | T06 | Pipeline 1: Baseline RAG (BM25) | Anish | DONE | `src/pipeline_baseline.py`: full-corpus BM25 top-3 + Ollama generator (llama3.2, temp 0), schema-conformant output + config sidecar. Ran all 150; 42% correct-filing retrieval, 81% abstention; summary in `results/baseline_run_summary.md` | 2026-07-03 | 2026-07-03 |
 | T07 | Freeze output schema + run config | Anish | DONE | `src/schema.py` (REQUIRED_FIELDS, RunConfig, validate_row, read/write helpers) + `src/SCHEMA.md`; RAGAS field map + per-run sidecar `.config.json` documented | 2026-07-03 | 2026-07-03 |
 | T08 | RAGAS eval harness (baseline) | Anish | IN PROGRESS | | 2026-07-03 | |
-| T09 | QA metrics (F1 + EM) | _____ | TODO | | | |
+| T09 | QA metrics (F1 + EM) | Anish | IN PROGRESS | `src/qa_metrics.py`: SQuAD-normalized token F1 + EM, abstention-aware. Baseline: EM 0.00, F1 0.11 (0.27 on answered). Combined RAGAS+F1+EM table lands in T10 | 2026-07-03 | |
 | T10 | Preliminary results table | _____ | TODO | | | |
 | T11 | Expand related work (20–24 papers) | _____ | TODO | | | |
 | T12 | Paper template & scaffold | _____ | TODO | | | |
@@ -237,7 +237,7 @@
   - [ ] Baseline RAGAS scores (mean ± std) saved under `/results`.
 
 ### T09 — Standard QA metrics (F1 + Exact Match)
-- **Status:** TODO  · **Owner:** _____  · **Est:** 1 day
+- **Status:** IN PROGRESS  · **Owner:** Anish  · **Est:** 1 day
 - **Description:** SQuAD-style token-level F1 and EM vs gold answers, complementing RAGAS.
 - **Subtasks:**
   - Implement token-level F1 and EM with standard normalization.
@@ -245,7 +245,7 @@
   - Note the "grounded but wrong" case (high faithfulness, low F1) for the analysis section.
 - **Dependencies:** T06, T07.
 - **Acceptance criteria:**
-  - [ ] F1/EM computed for the baseline run.
+  - [x] F1/EM computed for the baseline run.
   - [ ] Combined results table (RAGAS + F1 + EM) saved under `/results`.
 
 ### T10 — Preliminary results table (baseline only)

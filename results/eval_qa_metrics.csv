@@ -1,0 +1,2 @@
+pipeline,model,n_examples,exact_match,f1,n_answered,f1_answered_only,em_answered_only
+baseline_bm25,ollama:llama3.2,150,0.0,0.1114,29,0.2691,0.0
