@@ -102,16 +102,20 @@ answers are verbatim in the evidence (\S\ref{sec:data}). Second, swapping the
 document index updates the model's world knowledge with no retraining,
 underscoring that retrieval quality---not generator memory---governs what a RAG
 system can ground, which is precisely the bottleneck our results expose.
-Sparse retrieval via BM25~\citep{robertson2009bm25} and dense retrieval via
-DPR~\citep{karpukhin2020dpr} define the two retrieval families we compare
-(our baseline uses BM25; the dense pipeline will use
-sentence embeddings~\citep{reimers2019sbert}).
-REALM~\citep{guu2020realm} and Fusion-in-Decoder~\citep{izacard2021fid} show how
-retrieved passages can be integrated during pre-training and decoding, framing
-the design space beyond our prompt-based setup.
-Self-RAG~\citep{asai2024selfrag} adds self-reflection to decide \emph{when} to
-retrieve and to critique generations---an idea directly relevant to reducing
-unsupported answers.
+The two retrieval families we compare are defined by
+BM25~\citep{robertson2009bm25}, a probabilistic term-matching function that is
+our baseline retriever, and DPR~\citep{karpukhin2020dpr}, which learns dense
+question/passage encoders and beats BM25 on most open-domain QA---motivating our
+planned dense pipeline. That dense pipeline embeds chunks with
+Sentence-BERT~\citep{reimers2019sbert}, a siamese-BERT model that produces
+semantically comparable sentence vectors, the encoder behind our MiniLM index.
+REALM~\citep{guu2020realm} pre-trains the retriever jointly with a masked LM, and
+Fusion-in-Decoder~\citep{izacard2021fid} instead fuses many retrieved passages in
+the decoder; both integrate retrieval more deeply than our prompt-based setup and
+mark upgrade paths we may explore.
+Self-RAG~\citep{asai2024selfrag} trains a model to decide \emph{when} to retrieve
+and to critique its own generations with reflection tokens---directly relevant to
+cutting the unsupported answers we aim to reduce.
 Query rewriting~\citep{ma2023queryrewriting} expands or reformulates the query
 before retrieval and is exactly the mechanism of our planned ``enhanced''
 pipeline. The recent survey of \citet{gao2023ragsurvey} organizes these advances
@@ -123,9 +127,11 @@ hallucination in NLG and LLMs respectively and provide the vocabulary
 (intrinsic vs.\ extrinsic, faithfulness vs.\ factuality) our taxonomy refines
 for finance. For measurement, RAGAS~\citep{es2024ragas} supplies reference-free
 metrics---faithfulness, answer relevancy, context precision---that we adopt as
-our primary hallucination signal. SelfCheckGPT~\citep{manakul2023selfcheckgpt}
-and FActScore~\citep{min2023factscore} offer complementary sampling- and
-atomic-fact--based detection methods we consider for the final analysis.
+our primary hallucination signal. SelfCheckGPT~\citep{manakul2023selfcheckgpt} detects hallucination without
+external resources by sampling several responses and measuring their mutual
+consistency, while FActScore~\citep{min2023factscore} decomposes a generation
+into atomic facts and scores each against a source---two complementary detection
+lenses we consider for the final error analysis.
 RAGTruth~\citep{niu2024ragtruth} contributes a word-level hallucination corpus
 and taxonomy that we will use as supervision for the (optional) automatic
 classifier, and the RGB benchmark~\citep{chen2024rgb} evaluates LLM robustness
@@ -150,14 +156,20 @@ quantify and taxonomize. (iii)~They report that stronger models tend to
 likewise abstains rather than fabricate (\S\ref{sec:results}), and they find
 placing context \emph{before} the question is critical---a design choice our
 prompt template adopts.
-Prior financial QA datasets---FinQA~\citep{chen2021finqa},
-ConvFinQA~\citep{chen2022convfinqa}, and TAT-QA~\citep{zhu2021tatqa}---establish
-that numerical reasoning over hybrid table/text is the core difficulty, which
-our EDA independently confirms. Domain LLMs such as
-BloombergGPT~\citep{wu2023bloomberggpt} and FinGPT~\citep{yang2023fingpt} show
-the appetite for finance-specialized models but do not isolate \emph{RAG}
-hallucination, which is our focus. Our open-source generator comparison will use
-Mistral-7B~\citep{jiang2023mistral}. Collectively, this line of work motivates a
+Prior financial QA datasets establish that numerical reasoning over hybrid
+table/text is the core difficulty our EDA also finds:
+FinQA~\citep{chen2021finqa} pairs expert-written questions with executable
+reasoning programs over earnings-report tables;
+ConvFinQA~\citep{chen2022convfinqa} extends this to multi-turn conversational
+chains; and TAT-QA~\citep{zhu2021tatqa} targets questions that jointly span a
+table and its surrounding text---exactly the table+prose evidence our chunker
+must preserve. On the model side, BloombergGPT~\citep{wu2023bloomberggpt}, a 50B
+model pre-trained on a large financial corpus, and FinGPT~\citep{yang2023fingpt},
+an open finance-LLM framework, show the appetite for finance-specialized models
+but evaluate generation quality rather than isolating \emph{RAG} hallucination,
+which is our focus. Our open-source generator comparison will use
+Mistral-7B-Instruct~\citep{jiang2023mistral}, a strong 7B open model, as the RQ3
+counterpart to GPT-3.5. Collectively, this line of work motivates a
 finance-specific, RAG-centric hallucination study---the gap our project targets.
 
 \section{Data and Exploratory Analysis}
