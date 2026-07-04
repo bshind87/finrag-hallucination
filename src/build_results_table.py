@@ -72,9 +72,9 @@ def to_latex(df: pd.DataFrame) -> str:
     headers = [h for _c, h in COLUMNS]
     col_spec = "ll" + "r" * (len(headers) - 2)
     out = [r"\begin{table}[t]", r"\centering",
-           r"\caption{Preliminary baseline results on FinanceBench. Token-level QA "
-           r"metrics (EM, F1) cover all 150 questions; RAGAS metrics use a 50-question "
-           r"subset for the preliminary paper.}",
+           r"\caption{Preliminary baseline results on FinanceBench (all 150 questions). "
+           r"Generator and RAGAS judge: GPT-3.5-turbo at temperature 0; RAGAS embeddings "
+           r"are local sentence-transformers.}",
            r"\label{tab:prelim-results}",
            r"\begin{tabular}{" + col_spec + "}", r"\toprule",
            " & ".join(headers) + r" \\", r"\midrule"]
@@ -95,21 +95,20 @@ def interpretation(df: pd.DataFrame) -> str:
     f1_ans = row.get("f1_answered_only")
     n_ans = row.get("n_answered")
     return (
-        "The baseline pairs a plain BM25 retriever with a small local generator, and the "
-        "numbers show why finance QA is hard for this setup. Token F1 sits at "
-        f"{_fmt(f1)} and exact match at zero: even when the model answers, it rarely "
-        "reproduces the gold figure exactly, partly because the same number gets written "
-        "many ways ($1,577 vs 1577.00). Context precision is the bright spot at "
-        f"{_fmt(ctxprec)}, meaning that when a relevant chunk is retrieved it tends to rank "
-        "near the top, but recall is the problem: BM25 only reaches the right filing 42% of "
-        "the time, so the model abstains on most questions. That abstention is why "
-        f"faithfulness ({_fmt(faith)}) and answer relevancy ({_fmt(ansrel)}) come out low, an "
-        "abstention has nothing to ground and does not address the question, so RAGAS scores "
-        "it near zero. Read together, the baseline is cautious rather than reckless: it "
-        f"answers only {_fmt(n_ans)} of 150, and on that answered subset F1 climbs to "
-        f"{_fmt(f1_ans)}. Closing the retrieval gap with dense and query-rewrite retrieval is "
-        "the obvious next step, and it should also surface more of the hallucinations we want "
-        "to study."
+        "The baseline pairs a plain BM25 retriever with GPT-3.5-turbo. BM25 surfaces the "
+        "correct filing for only 43\\% of questions, so the generator---instructed to answer "
+        f"only from context---abstains on roughly two-thirds, answering {_fmt(n_ans)} of 150. "
+        "This caution is deliberate and safer than fabrication, but it caps coverage: token "
+        f"F1 is {_fmt(f1)} over all questions and {_fmt(f1_ans)} on the answered subset, with "
+        "exact match at zero because short numeric answers are written many ways "
+        "($1,577 vs.\\ 1577.00) and rarely match after normalization. RAGAS reflects the same "
+        f"bottleneck: faithfulness ({_fmt(faith)}) and answer relevancy ({_fmt(ansrel)}) are "
+        "low---an abstention has nothing to ground and does not address the question---while "
+        f"context precision ({_fmt(ctxprec)}) shows retrieval places a useful chunk near the "
+        "top only about half the time. Read together, the picture is a retrieval-bound "
+        "baseline: the generator rarely fabricates, but weak sparse retrieval leaves most "
+        "questions unanswered. Closing that gap with dense and query-rewrite retrieval---and "
+        "surfacing the answered-but-unsupported cases---is the focus of the next phase."
     )
 
 
@@ -124,11 +123,11 @@ def main() -> int:
     n_ragas = "n/a" if pd.isna(n_ragas) else int(n_ragas)
     n_qa = "n/a" if pd.isna(n_qa) else int(n_qa)
     md = ["# Preliminary results (T10)\n",
-          "Baseline pipeline on FinanceBench. F1 and Exact Match (from `src/qa_metrics.py`, "
-          f"T09) cover all {n_qa} questions. The RAGAS metrics (from `src/evaluate.py`, T08) "
-          f"were run on a balanced {n_ragas}-question subset for the preliminary paper, since "
-          "the local judge is slow; we will score the full set for the final paper. All runs "
-          "use temperature 0.\n",
+          "Baseline pipeline (BM25 + GPT-3.5-turbo) on FinanceBench. Both the token-level "
+          f"metrics (F1/EM, `src/qa_metrics.py`, T09; n={n_qa}) and the RAGAS metrics "
+          f"(`src/evaluate.py`, T08; n={n_ragas}) cover all 150 questions. Generator and RAGAS "
+          "judge are GPT-3.5-turbo at temperature 0; RAGAS embeddings are local "
+          "sentence-transformers.\n",
           md_table, "",
           f"*RAGAS n = {n_ragas}, F1/EM n = {n_qa}.*", "",
           "## Interpretation\n", interpretation(df), ""]

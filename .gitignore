@@ -33,3 +33,15 @@ checkpoints/
 
 # --- Results scratch (keep curated tables/figures, ignore bulky raw dumps) ---
 results/raw_outputs/
+
+# --- LaTeX build artifacts ---
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.bbl
+paper/*.blg
+paper/*.synctex.gz
+paper/main.pdf
+paper/main_test.*
+paper/.DS_Store
+paper/templates/.DS_Store
