@@ -4,7 +4,10 @@
 CS6120 NLP preliminary report (M2, due 2026-07-03).
 
 ## Files
-- `main.tex` — the paper (ACL 2023 template, ~4-page body + refs + appendix).
+- `main.docx` — **Word version of the paper** (ACL 2023 Word template styles, citations
+  resolved, Figure 1 embedded). Generated from `main.md`. Open/edit/submit directly.
+- `main.md` — Markdown source for the Word build (edit this, then regenerate `main.docx`).
+- `main.tex` — the paper (ACL 2023 LaTeX template, ~4-page body + refs + appendix).
 - `references.bib` — 24 references, grouped by theme (RAG methods / hallucination
   detection / financial NLP). Verify author lists + pages before final submit.
 - `results_table.tex` — auto-generated baseline results table (from
@@ -15,7 +18,15 @@ CS6120 NLP preliminary report (M2, due 2026-07-03).
 - `litreview_notes/` — per-member study notes feeding the related-work section.
 - `templates/` — the instructor-provided ACL 2023 template (LaTeX + Word).
 
-## Build
+## Build (Word — recommended if LaTeX is giving trouble)
+Regenerate `main.docx` from `main.md` with the ACL Word template applied:
+```bash
+pandoc main.md --citeproc --bibliography=references.bib \
+  --reference-doc=templates/acl2023.docx -o main.docx
+```
+Then open `main.docx` in Word, adjust to two-column / final formatting as needed, and submit.
+
+## Build (LaTeX)
 Compiles cleanly with the provided template (verified locally, 5 pages total:
 ~4-page body + references + a short appendix, within the "4 pages excluding
 references/appendices" limit). On Overleaf, create a project from the ACL 2023
