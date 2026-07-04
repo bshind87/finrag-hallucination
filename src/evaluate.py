@@ -7,9 +7,9 @@ three RAGAS metrics we care about for hallucination:
   * answer_relevancy: does the answer actually address the question?
   * context_precision: did retrieval put the useful chunks near the top?
 
-RAGAS normally judges with OpenAI. Here it judges with a local Ollama model and uses
-local sentence-transformers embeddings, so evaluation runs with no API key or cost
-(see src/llm.py). Pass ``--backend openai`` to judge with GPT-3.5 instead.
+The judge is OpenAI GPT-3.5-turbo by default (needs a key in .env); embeddings are
+always local sentence-transformers (no OpenAI embedding cost). Pass ``--backend ollama``
+to judge with a local model instead (see src/llm.py).
 
 The harness is pipeline-agnostic: point it at the baseline output now, and at the
 dense / enhanced / Mistral outputs later (T18) with no code change. It reports mean and
@@ -132,7 +132,7 @@ def main() -> int:
     parser.add_argument("predictions", type=Path,
                         help="a predictions .jsonl written in the shared schema")
     parser.add_argument("--backend", choices=("ollama", "openai"), default=None,
-                        help="judge backend (default: $LLM_BACKEND or ollama)")
+                        help="judge backend (default: $LLM_BACKEND or openai)")
     parser.add_argument("--judge-model", default=None,
                         help="judge model (default: backend's default)")
     parser.add_argument("--limit", type=int, default=None,

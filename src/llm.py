@@ -2,14 +2,17 @@
 
 We support two backends behind one interface:
 
-  * ``ollama``  (default): a local model served by Ollama. No API key, no cost,
-    everything runs on the machine. Ollama exposes an OpenAI-compatible endpoint at
-    ``/v1``, so the same OpenAI client code works against it unchanged.
-  * ``openai``: the hosted OpenAI API, for teammates who have a key.
+  * ``openai``  (default): the hosted OpenAI API (GPT-3.5-turbo) — the generator and
+    RAGAS judge agreed for this project and used in the committed results. Needs a key
+    in ``.env`` (per-member; never committed).
+  * ``ollama``: a local model served by Ollama. No API key, no cost, everything runs on
+    the machine. Ollama exposes an OpenAI-compatible endpoint at ``/v1``, so the same
+    OpenAI client code works against it unchanged — handy for a local run or a possible
+    extra open-model comparison.
 
 Pick one with ``--backend`` on the scripts, or set ``LLM_BACKEND`` in the environment.
 For RAGAS we deliberately use a local sentence-transformers embedding model instead of
-an OpenAI embedding, so evaluation also needs no API key when running on Ollama.
+an OpenAI embedding, so only the judge LLM (not embeddings) depends on the backend.
 """
 from __future__ import annotations
 
@@ -29,8 +32,14 @@ class Backend:
 
 
 def get_backend(name: str | None = None) -> Backend:
-    """Resolve a backend by name, falling back to $LLM_BACKEND then ollama."""
-    name = name or os.environ.get("LLM_BACKEND", "ollama")
+    """Resolve a backend by name, falling back to $LLM_BACKEND then openai.
+
+    Default is ``openai`` (GPT-3.5-turbo) — the generator/judge agreed for this
+    project and used in the committed results. ``ollama`` remains available via
+    ``--backend ollama`` / ``LLM_BACKEND=ollama`` for a local, no-cost run or a
+    possible extra open-model comparison.
+    """
+    name = name or os.environ.get("LLM_BACKEND", "openai")
     if name == "ollama":
         return Backend("ollama", OLLAMA_BASE_URL, "ollama", "llama3.2")
     if name == "openai":

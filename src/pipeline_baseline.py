@@ -10,18 +10,17 @@ critical path for M2. For each of the 150 FinanceBench questions it:
 We index the entire corpus on purpose. A retriever that can pull the wrong filing is
 exactly the setup where hallucination shows up, which is what the project is about.
 
-The generator runs on a local Ollama model by default (no API key, no cost); pass
-``--backend openai`` to use GPT-3.5 instead. See src/llm.py.
+The generator runs on OpenAI GPT-3.5-turbo by default (needs a key in .env); pass
+``--backend ollama`` for a local, no-cost run instead. See src/llm.py.
 
 Output rows follow the shared schema in schema.py, so the eval code (T08/T09) reads
 this file without any special-casing. Predictions land in results/raw_outputs/
 (gitignored); only the curated metrics get committed later.
 
 Run it:
-    python src/pipeline_baseline.py                       # all 150, top-3, ollama llama3.2
+    python src/pipeline_baseline.py                       # all 150, top-3, GPT-3.5
     python src/pipeline_baseline.py --limit 5             # quick smoke test
-    python src/pipeline_baseline.py --model qwen2.5:14b   # a stronger local model
-    python src/pipeline_baseline.py --backend openai      # hosted GPT-3.5 (needs a key)
+    python src/pipeline_baseline.py --backend ollama      # local llama3.2 (no key/cost)
 """
 from __future__ import annotations
 
@@ -168,7 +167,7 @@ def run(backend_name: str | None, chunk_strategy: str, top_k: int, model: str | 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Baseline BM25 RAG pipeline (Task T06).")
     parser.add_argument("--backend", choices=("ollama", "openai"), default=None,
-                        help="LLM backend (default: $LLM_BACKEND or ollama)")
+                        help="LLM backend (default: $LLM_BACKEND or openai)")
     parser.add_argument("--chunk-strategy", choices=("fixed_512", "sentence"),
                         default="fixed_512")
     parser.add_argument("--top-k", type=int, default=3)

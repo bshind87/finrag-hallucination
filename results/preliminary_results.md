@@ -1,5 +1,11 @@
 # Preliminary results (T10)
 
+> ⚠️ **Pending re-run (2026-07-03):** the numbers below were produced with a local
+> `ollama:llama3.2` generator **and** judge. The agreed baseline is **OpenAI GPT-3.5-turbo**
+> (per the proposal + RQ3). These will be regenerated with `--backend openai` (now the
+> default) over all 150 examples; treat the current values as provisional.
+
+
 Baseline pipeline on FinanceBench. F1 and Exact Match (from `src/qa_metrics.py`, T09) cover all 150 questions. The RAGAS metrics (from `src/evaluate.py`, T08) were run on a balanced 50-question subset for the preliminary paper, since the local judge is slow; we will score the full set for the final paper. All runs use temperature 0.
 
 | Pipeline | Model | Faithfulness | Answer Rel. | Context Prec. | EM | F1 |
