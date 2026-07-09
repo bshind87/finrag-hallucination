@@ -64,26 +64,44 @@ class DenseRetriever:
                                     convert_to_numpy=True, normalize_embeddings=True)
             np.save(cache, emb)
             print(f"cached chunk embeddings -> {cache.name}")
-        emb = emb.astype("float32")
+        self.emb = emb.astype("float32")
 
-        self.index = faiss.IndexFlatIP(emb.shape[1])
-        self.index.add(emb)
+        self.index = faiss.IndexFlatIP(self.emb.shape[1])
+        self.index.add(self.emb)
 
-    def top_k(self, query: str, k: int) -> list[tuple[str, str]]:
-        q = self.model.encode([query], convert_to_numpy=True,
-                              normalize_embeddings=True).astype("float32")
-        _scores, idx = self.index.search(q, k)
-        return [(self.ids[i], self.texts[i]) for i in idx[0]]
+        # doc_name -> row indices, for the single-document ("known filing") scope.
+        self.doc_to_idx: dict[str, list[int]] = {}
+        for i, cid in enumerate(self.ids):
+            self.doc_to_idx.setdefault(cid.split("::")[0], []).append(i)
+
+    def _embed_query(self, query: str):
+        return self.model.encode([query], convert_to_numpy=True,
+                                 normalize_embeddings=True).astype("float32")
+
+    def top_k(self, query: str, k: int, doc_name: str | None = None) -> list[tuple[str, str]]:
+        q = self._embed_query(query)
+        if doc_name is None:                      # full-corpus retrieval
+            _scores, idx = self.index.search(q, k)
+            idx = idx[0]
+        else:                                     # restrict to one filing's chunks
+            cand = self.doc_to_idx.get(doc_name, [])
+            if not cand:
+                return []
+            sims = (self.emb[cand] @ q[0])
+            order = np.argsort(sims)[::-1][:k]
+            idx = [cand[j] for j in order]
+        return [(self.ids[i], self.texts[i]) for i in idx]
 
 
 def run(backend_name, chunk_strategy, top_k, model, temperature, limit, out_path,
-        embedding_model=LOCAL_EMBEDDING_MODEL):
+        embedding_model=LOCAL_EMBEDDING_MODEL, scope="corpus"):
     out_path = Path(out_path).resolve()
     load_dotenv(REPO_ROOT / ".env")
     backend = get_backend(backend_name)
     model = model or backend.default_model
     client = make_client(backend)
-    print(f"generator: {backend.name} / {model} (temp {temperature})")
+    single_doc = scope == "single_doc"
+    print(f"generator: {backend.name} / {model} (temp {temperature}) | scope: {scope}")
 
     chunks_df = load_chunks(chunk_strategy)
     retriever = DenseRetriever(chunks_df, embedding_model, chunk_strategy)
@@ -91,7 +109,8 @@ def run(backend_name, chunk_strategy, top_k, model, temperature, limit, out_path
 
     rows = []
     for q in tqdm(questions, desc="dense RAG"):
-        retrieved = retriever.top_k(q["question"], top_k)
+        retrieved = retriever.top_k(q["question"], top_k,
+                                    doc_name=q["doc_name"] if single_doc else None)
         contexts = [t for _c, t in retrieved]
         chunk_ids = [c for c, _t in retrieved]
         prompt = PROMPT_TEMPLATE.format(context="\n\n---\n\n".join(contexts),
@@ -106,10 +125,14 @@ def run(backend_name, chunk_strategy, top_k, model, temperature, limit, out_path
         validate_row(row)
         rows.append(row)
 
-    cfg = RunConfig(pipeline="dense_faiss", model=f"{backend.name}:{model}",
-                    retrieval="dense", chunk_strategy=chunk_strategy, top_k=top_k,
-                    temperature=temperature, embedding_model=embedding_model,
-                    notes="FAISS cosine over MiniLM chunk embeddings; same prompt as baseline.")
+    pipeline = "dense_singledoc" if single_doc else "dense_faiss"
+    note = ("FAISS cosine over MiniLM; retrieval restricted to the question's own filing "
+            "(known-document upper bound)." if single_doc else
+            "FAISS cosine over MiniLM chunk embeddings; same prompt as baseline.")
+    cfg = RunConfig(pipeline=pipeline, model=f"{backend.name}:{model}",
+                    retrieval="dense_singledoc" if single_doc else "dense",
+                    chunk_strategy=chunk_strategy, top_k=top_k,
+                    temperature=temperature, embedding_model=embedding_model, notes=note)
     path = write_predictions(rows, cfg, out_path)
     print(f"wrote {len(rows)} predictions -> {path.relative_to(REPO_ROOT)}")
 
@@ -128,9 +151,15 @@ def main() -> int:
     p.add_argument("--model", default=None)
     p.add_argument("--temperature", type=float, default=0.0)
     p.add_argument("--limit", type=int, default=None)
-    p.add_argument("--out", type=Path, default=DEFAULT_OUT)
+    p.add_argument("--scope", choices=("corpus", "single_doc"), default="corpus",
+                   help="'corpus' = retrieve over all filings; 'single_doc' = restrict to "
+                        "the question's own filing (known-document upper bound)")
+    p.add_argument("--out", type=Path, default=None)
     a = p.parse_args()
-    run(a.backend, a.chunk_strategy, a.top_k, a.model, a.temperature, a.limit, a.out)
+    out = a.out or (DEFAULT_OUT.parent / ("dense_singledoc.jsonl" if a.scope == "single_doc"
+                                          else "dense_faiss.jsonl"))
+    run(a.backend, a.chunk_strategy, a.top_k, a.model, a.temperature, a.limit, out,
+        scope=a.scope)
     return 0
 
 

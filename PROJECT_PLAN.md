@@ -78,7 +78,7 @@
 | T15 | Pipeline 3: Enhanced RAG (rewrite) | Bhalchandra | DONE | `src/pipeline_enhanced.py`: GPT-3.5 query rewrite -> dense retrieve -> answer. All 150: Retr@3 **69%**, F1 0.121 (87 answered), RAGAS faith 0.18 / ans-rel 0.42 / ctx-prec 0.84; rewrite examples in `results/query_rewrite_examples.md` | 2026-07-09 | 2026-07-09 |
 | T16 | Hyperparameter sweeps | _____ | TODO | | | |
 | T17 | Mistral-7B alternate generator | _____ | TODO | | | |
-| T18 | Full evaluation (all combos) | Bhalchandra | IN PROGRESS | 3-way GPT-3.5 comparison done (Baseline/Dense/Enhanced) -> `results/pipeline_comparison.md` + `comparison_table.tex`; retrieval + all RAGAS/F1 metrics rise monotonically. Pending: Mistral (T17) + sweeps (T16) rows. | 2026-07-09 | |
+| T18 | Full evaluation (all combos) | Bhalchandra | IN PROGRESS | 4-config GPT-3.5 comparison done — Baseline/Dense/Enhanced **+ single-doc ceiling ablation** (`--scope single_doc`, Retr@3 100%, F1 0.139) -> `results/pipeline_comparison.md` + `comparison_table.tex`; all metrics rise monotonically. **Comparison table + stats written into the paper draft** (`paper/main.tex` §4.1, `main.md`, `main.docx`). Pending: Mistral (T17) + chunk/top-k sweeps (T16) rows. | 2026-07-09 | |
 | T19 | Identify failure cases | _____ | TODO | | | |
 | T20 | Annotation schema & taxonomy | _____ | TODO | | | |
 | T21 | Annotate 50 failure cases | _____ | TODO | | | |
