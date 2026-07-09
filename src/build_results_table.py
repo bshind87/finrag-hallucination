@@ -29,11 +29,12 @@ TEX_OUT = RESULTS_DIR / "comparison_table.tex"
 RAW_DIR = RESULTS_DIR / "raw_outputs"
 
 # Fixed display order + friendly names for the retrieval-strategy comparison.
-PIPELINE_ORDER = ["baseline_bm25", "dense_faiss", "enhanced_rewrite"]
+PIPELINE_ORDER = ["baseline_bm25", "dense_faiss", "enhanced_rewrite", "dense_singledoc"]
 PIPELINE_NAME = {
     "baseline_bm25": "Baseline (BM25)",
     "dense_faiss": "Dense (FAISS)",
     "enhanced_rewrite": "Enhanced (rewrite)",
+    "dense_singledoc": "Dense, single-doc",
 }
 
 # (source column, display header)
@@ -150,6 +151,16 @@ def interpretation(df: pd.DataFrame) -> str:
         "rewriting each add coverage, yet even the strongest configuration answers well under "
         "half the set, leaving a substantial gap---and a pool of answered-but-unsupported "
         "cases---for the error analysis to characterize."
+        + (
+            " As an upper bound, restricting retrieval to the question's own filing "
+            "(\\emph{Dense, single-doc}---the known-document setting) lifts Retr@3 to "
+            f"{pct(g('dense_singledoc','retrieval_hit'))}, coverage to "
+            f"{ans(g('dense_singledoc','n_answered'))}/150, and context precision to "
+            f"{_cell('f1', g('dense_singledoc','context_precision_mean'))}; "
+            "the full-corpus configurations must first find the right filing among 84, which "
+            "is where most of the remaining loss sits."
+            if "dense_singledoc" in by else ""
+        )
     )
 
 
