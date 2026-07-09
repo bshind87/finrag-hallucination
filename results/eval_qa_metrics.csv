@@ -1,2 +1,4 @@
 pipeline,model,n_examples,exact_match,f1,n_answered,f1_answered_only,em_answered_only
 baseline_bm25,openai:gpt-3.5-turbo,150,0.0,0.0826,47,0.2607,0.0
+dense_faiss,openai:gpt-3.5-turbo,150,0.0,0.1161,82,0.2099,0.0
+enhanced_rewrite,openai:gpt-3.5-turbo,150,0.0067,0.1215,87,0.2094,0.0115
