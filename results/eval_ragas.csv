@@ -1,2 +1,4 @@
 pipeline,model,judge,n_examples,faithfulness_mean,faithfulness_std,faithfulness_n,answer_relevancy_mean,answer_relevancy_std,answer_relevancy_n,context_precision_mean,context_precision_std,context_precision_n
 baseline_bm25,openai:gpt-3.5-turbo,openai:gpt-3.5-turbo,150,0.1019,0.2732,81,0.2114,0.3411,99,0.5341,0.4155,88
+dense_faiss,openai:gpt-3.5-turbo,openai:gpt-3.5-turbo,150,0.1791,0.3298,90,0.3925,0.4068,136,0.7702,0.3381,95
+enhanced_rewrite,openai:gpt-3.5-turbo,openai:gpt-3.5-turbo,150,0.1842,0.3373,76,0.4181,0.4008,115,0.8434,0.2685,66

@@ -74,11 +74,11 @@
 | T12 | Paper template & scaffold | Bhalchandra | DONE | Instructor template confirmed = **ACL 2023** (`paper/templates/`, LaTeX + Word). `paper/main.tex` scaffolded in it; compiles cleanly (~4-page body + refs + appendix, within limit). | 2026-07-03 | 2026-07-03 |
 | T13 | Write & submit prelim paper | team | IN PROGRESS | draft complete (intro, related work, data+EDA w/ Figure 1, method+results, roadblocks); pending GPT-3.5 results table + team proofread + submit | 2026-07-03 | |
 | **M3 — Final Paper (due 2026-07-31)** | | | | | | |
-| T14 | Pipeline 2: Dense RAG (FAISS) | _____ | TODO | | | |
-| T15 | Pipeline 3: Enhanced RAG (rewrite) | _____ | TODO | | | |
+| T14 | Pipeline 2: Dense RAG (FAISS) | Bhalchandra | DONE | `src/pipeline_dense.py`: FAISS cosine over cached MiniLM embeddings, top-3, GPT-3.5. All 150: Retr@3 **64%** (vs 43% BM25), F1 0.116 (82 answered), RAGAS faith 0.18 / ans-rel 0.39 / ctx-prec 0.77 | 2026-07-09 | 2026-07-09 |
+| T15 | Pipeline 3: Enhanced RAG (rewrite) | Bhalchandra | DONE | `src/pipeline_enhanced.py`: GPT-3.5 query rewrite -> dense retrieve -> answer. All 150: Retr@3 **69%**, F1 0.121 (87 answered), RAGAS faith 0.18 / ans-rel 0.42 / ctx-prec 0.84; rewrite examples in `results/query_rewrite_examples.md` | 2026-07-09 | 2026-07-09 |
 | T16 | Hyperparameter sweeps | _____ | TODO | | | |
 | T17 | Mistral-7B alternate generator | _____ | TODO | | | |
-| T18 | Full evaluation (all combos) | _____ | TODO | | | |
+| T18 | Full evaluation (all combos) | Bhalchandra | IN PROGRESS | 3-way GPT-3.5 comparison done (Baseline/Dense/Enhanced) -> `results/pipeline_comparison.md` + `comparison_table.tex`; retrieval + all RAGAS/F1 metrics rise monotonically. Pending: Mistral (T17) + sweeps (T16) rows. | 2026-07-09 | |
 | T19 | Identify failure cases | _____ | TODO | | | |
 | T20 | Annotation schema & taxonomy | _____ | TODO | | | |
 | T21 | Annotate 50 failure cases | _____ | TODO | | | |
