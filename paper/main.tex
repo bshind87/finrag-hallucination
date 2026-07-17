@@ -209,68 +209,50 @@ hallucination taxonomy.
 
 \section{Preliminary Method and Results}
 \label{sec:results}
-\textbf{Baseline pipeline.} For each question we build a BM25
-index~\citep{robertson2009bm25} over the \emph{entire} chunk corpus
-(all 84 filings, fixed 512-token chunks), retrieve the top-3 chunks, and prompt
-GPT-3.5-turbo (temperature 0) to answer using only that context, instructing it
-to say ``I don't know'' when the answer is absent. We index the full corpus on
-purpose: a retriever that can surface the \emph{wrong} filing is exactly the
-setting where hallucination appears, which is what we study. Outputs follow a
-fixed schema so the same evaluation harness scores every future pipeline.
+\textbf{Pipelines.} All configurations share the same GPT-3.5-turbo generator
+(temperature 0), prompt, 512-token chunks, and top-3 retrieval; only
+\emph{retrieval} changes, which isolates its effect. We compare \emph{Baseline}
+(BM25 sparse retrieval over the entire 84-filing corpus), \emph{Dense} (FAISS over
+MiniLM embeddings), and \emph{Enhanced} (an LLM rewrites the query before dense
+retrieval), plus a known-document upper bound (\emph{Single-doc}: retrieval
+restricted to the question's own filing). We index the full corpus on purpose---a
+retriever that can surface the \emph{wrong} filing among 84 is exactly where
+hallucination appears. The prompt instructs the model to answer only from context
+and to say ``I don't know'' when the answer is absent, so a wrong answer is a
+grounding failure rather than a memory guess. A fixed output schema lets one
+harness score every pipeline.
 
 \textbf{Evaluation.} We report RAGAS~\citep{es2024ragas} faithfulness, answer
-relevancy, and context precision (LLM judge: GPT-3.5-turbo; local
-sentence-transformer embeddings), plus SQuAD-style token
-F1 and Exact Match~\citep{rajpurkar2016squad} against gold answers. Because gold
-answers are short and formatted many ways (\$1{,}577 vs.\ 1577.00), EM is
-expected to be low; we therefore also report F1 on the answered subset.
-
-\input{results_table}
-
-\textbf{Interpretation.}
-The baseline pairs a plain BM25 retriever with GPT-3.5-turbo. BM25 surfaces the
-correct filing for only 43\% of questions, so the generator---instructed to
-answer only from context---abstains on roughly two-thirds, answering 47 of 150.
-This caution is deliberate and safer than fabrication, but it caps coverage:
-token F1 is 0.083 over all questions and 0.261 on the answered subset, with exact
-match at zero because short numeric answers are written many ways
-(\$1{,}577 vs.\ 1577.00) and rarely match after normalization. RAGAS reflects the
-same bottleneck: faithfulness (0.102) and answer relevancy (0.211) are low---an
-abstention has nothing to ground and does not address the question---while
-context precision (0.534) shows retrieval places a useful chunk near the top only
-about half the time. Read together, the picture is a retrieval-bound baseline:
-the generator rarely fabricates, but weak sparse retrieval leaves most questions
-unanswered. Closing that gap with dense and query-rewrite retrieval---and
-surfacing the answered-but-unsupported cases---is the focus of the next phase.
-
-\subsection{Retrieval-strategy comparison}
-\label{sec:comparison}
-To test whether better retrieval closes that gap, we add two stronger pipelines---
-\emph{Dense} (FAISS over MiniLM embeddings) and \emph{Enhanced} (an LLM rewrites the
-query before dense retrieval)---holding the generator, prompt, chunking, and top-$k$
-fixed so that only retrieval varies. Table~\ref{tab:pipeline-comparison} reports all
-three against a known-document upper bound (retrieval restricted to the question's own
-filing).
+relevancy, and context precision (LLM judge: GPT-4o-mini; local
+sentence-transformer embeddings), plus SQuAD-style token F1 and Exact
+Match~\citep{rajpurkar2016squad}. Because gold answers are short numbers formatted
+many ways (\$1{,}577 vs.\ 1577.00 vs.\ 1.577 billion), strict EM is near zero, so we
+also report a \emph{numeric-tolerant} EM (right value within 1\%, ignoring format)
+and faithfulness on the \emph{answered} subset. Retr@3 is the share of questions
+whose top-3 retrieval reached the correct filing.
 
 \input{comparison_table}
 
-Every metric improves monotonically as retrieval improves. The correct filing reaches
-the top-3 for \textbf{43\% $\rightarrow$ 64\% $\rightarrow$ 69\%} of questions
-(BM25 $\rightarrow$ dense $\rightarrow$ rewrite); because the generator answers only
-from context, coverage rises in lockstep (\textbf{47 $\rightarrow$ 82 $\rightarrow$ 87}
-of 150 answered), as do token F1 (0.083 $\rightarrow$ 0.116 $\rightarrow$ 0.121) and all
-three RAGAS metrics---context precision climbs $0.53 \rightarrow 0.77 \rightarrow 0.84$.
-Since only retrieval changed, this isolates \textbf{retrieval as the dominant lever
-(RQ1)}. Strict exact match is $\approx$0 because gold answers are short numbers formatted
-many ways (\$1{,}577 vs.\ 1577.00 vs.\ 1.577 billion); a \emph{numeric-tolerant} EM
-(right value within 1\%, ignoring format) recovers the real accuracy and rises the same
-way ($0.12 \rightarrow 0.18 \rightarrow 0.21$, and $0.27$ at the ceiling), showing the
-strict metric understated correctness rather than the model being wrong.
-The known-document upper bound makes the ceiling explicit: restricting retrieval
-to the correct filing lifts Retr@3 to 100\%, coverage to 96/150, and F1 to 0.139---yet
-faithfulness stays low ($0.20$) and a third of questions remain unanswered, so finding
-the right filing is necessary but not sufficient. The residual failures---answered
-without grounded support---are exactly the cases our error analysis will taxonomize.
+\textbf{Results.} Every metric improves as retrieval improves
+(Table~\ref{tab:pipeline-comparison}). The correct filing reaches the top-3 for
+\textbf{43\% $\rightarrow$ 64\% $\rightarrow$ 69\%} of questions
+(BM25 $\rightarrow$ dense $\rightarrow$ rewrite); because the model answers only from
+context, coverage rises in lockstep (\textbf{47 $\rightarrow$ 82 $\rightarrow$ 87} of
+150), and so do context precision ($0.24 \rightarrow 0.42 \rightarrow 0.46$),
+faithfulness ($0.10 \rightarrow 0.20 \rightarrow 0.21$), token F1
+($0.083 \rightarrow 0.116 \rightarrow 0.121$), and numeric-tolerant EM
+($0.12 \rightarrow 0.18 \rightarrow 0.21$). Since only retrieval changed, this isolates
+\textbf{retrieval as the dominant lever (RQ1)}. Strict EM $\approx$0 understates
+accuracy: the numeric-tolerant EM shows 33--42\% of \emph{answered} questions are
+actually correct---the model was penalized for formatting, not errors. Faithfulness is
+low overall, but that is dominated by abstentions (an ``I don't know'' has nothing to
+ground); on the answered subset it is moderate (0.35--0.57), i.e.\ when the model
+commits to an answer it is partly---not fully---grounded, which is precisely the
+hallucination we study. The known-document upper bound makes the ceiling explicit:
+restricting retrieval to the correct filing lifts Retr@3 to 100\%, coverage to 96/150,
+F1 to 0.139, and answered-faithfulness to 0.57---yet a third of questions still go
+unanswered, so finding the right filing is necessary but not sufficient. Those
+answered-but-unsupported cases are exactly what our error analysis will taxonomize.
 
 \section{Roadblocks and Next Steps}
 \label{sec:next}

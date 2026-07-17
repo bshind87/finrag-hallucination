@@ -1,5 +1,5 @@
 pipeline,model,judge,n_examples,faithfulness_mean,faithfulness_std,faithfulness_n,answer_relevancy_mean,answer_relevancy_std,answer_relevancy_n,context_precision_mean,context_precision_std,context_precision_n
-baseline_bm25,openai:gpt-3.5-turbo,openai:gpt-3.5-turbo,150,0.1019,0.2732,81,0.2114,0.3411,99,0.5341,0.4155,88
-dense_faiss,openai:gpt-3.5-turbo,openai:gpt-3.5-turbo,150,0.1791,0.3298,90,0.3925,0.4068,136,0.7702,0.3381,95
-enhanced_rewrite,openai:gpt-3.5-turbo,openai:gpt-3.5-turbo,150,0.1842,0.3373,76,0.4181,0.4008,115,0.8434,0.2685,66
-dense_singledoc,openai:gpt-3.5-turbo,openai:gpt-3.5-turbo,150,0.2026,0.3356,70,0.4075,0.3853,102,0.7775,0.3379,85
+baseline_bm25,openai:gpt-3.5-turbo,openai:gpt-4o-mini,150,0.1042,0.2783,88,0.2342,0.3642,113,0.2397,0.3936,121
+dense_faiss,openai:gpt-3.5-turbo,openai:gpt-4o-mini,150,0.197,0.3663,55,0.4136,0.4104,90,0.4167,0.4259,69
+enhanced_rewrite,openai:gpt-3.5-turbo,openai:gpt-4o-mini,150,0.2091,0.391,47,0.4319,0.4134,83,0.4624,0.4148,51
+dense_singledoc,openai:gpt-3.5-turbo,openai:gpt-4o-mini,150,0.2996,0.4391,42,0.4243,0.382,89,0.4352,0.4822,18
