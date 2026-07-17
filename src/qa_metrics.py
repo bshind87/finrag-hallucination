@@ -73,6 +73,65 @@ def is_abstention(answer: str) -> bool:
     return any(phrase in low for phrase in _ABSTAIN)
 
 
+# --- Numeric-tolerant matching -------------------------------------------------
+# Strict SQuAD EM treats "$1,577", "1577.00", and "1.577 billion" as different
+# strings (it even splits on the decimal point). Financial gold answers are numeric
+# and formatted many ways, so strict EM understates correctness. This measures
+# whether the model produced the right *value*, ignoring format. Reported alongside
+# (never replacing) strict EM/F1.
+
+_UNIT_SCALE = {"billion": 1e9, "bn": 1e9, "million": 1e6, "mn": 1e6,
+               "thousand": 1e3, "k": 1e3}
+_NUM_RE = re.compile(
+    r"\$?\s*(\d[\d,]*(?:\.\d+)?)\s*(%|percent|billion|million|thousand|bn|mn|k)?",
+    re.I,
+)
+
+
+def _to_floats(text: str) -> set[float]:
+    """Extract numeric values from text as floats, including unit-scaled variants
+    (so '1.577 billion' can match '1577' when the millions unit is implied)."""
+    vals: set[float] = set()
+    for m in _NUM_RE.finditer(str(text)):
+        try:
+            v = float(m.group(1).replace(",", ""))
+        except ValueError:
+            continue
+        vals.add(v)
+        scale = _UNIT_SCALE.get((m.group(2) or "").lower())
+        if scale:
+            vals.add(v * scale)
+    return vals
+
+
+def numeric_match(pred: str, gold: str, rel_tol: float = 0.01):
+    """True/False if the gold's numeric value appears in pred within rel_tol;
+    None if the gold answer has no number (caller falls back to strict EM)."""
+    g = _to_floats(gold)
+    if not g:
+        return None
+    p = _to_floats(pred)
+    if not p:
+        return False
+    for gv in g:
+        for pv in p:
+            if gv == 0:
+                if pv == 0:
+                    return True
+            elif abs(pv - gv) / abs(gv) <= rel_tol:
+                return True
+    return False
+
+
+def exact_match_numeric(pred: str, gold: str) -> int:
+    """Lenient EM: strict string match OR numeric value match (falls back to strict
+    EM when the gold answer is non-numeric)."""
+    if exact_match(pred, gold):
+        return 1
+    nm = numeric_match(pred, gold)
+    return 1 if nm is True else 0
+
+
 def score_file(preds_path: Path):
     import pandas as pd
 
@@ -85,6 +144,7 @@ def score_file(preds_path: Path):
             "question_type": r["question_type"],
             "abstained": is_abstention(pred),
             "exact_match": exact_match(pred, gold),
+            "em_numeric": exact_match_numeric(pred, gold),
             "f1": token_f1(pred, gold),
         })
     df = pd.DataFrame(per_row)
@@ -101,9 +161,11 @@ def score_file(preds_path: Path):
         "n_examples": len(df),
         "exact_match": round(df["exact_match"].mean(), 4),
         "f1": round(df["f1"].mean(), 4),
+        "em_numeric": round(df["em_numeric"].mean(), 4),
         "n_answered": int(len(answered)),
         "f1_answered_only": round(answered["f1"].mean(), 4) if len(answered) else 0.0,
         "em_answered_only": round(answered["exact_match"].mean(), 4) if len(answered) else 0.0,
+        "em_numeric_answered": round(answered["em_numeric"].mean(), 4) if len(answered) else 0.0,
     }
 
     # per-row scores for error analysis
@@ -121,10 +183,12 @@ def score_file(preds_path: Path):
     summary_df.to_csv(QA_CSV, index=False)
 
     print("--- QA metrics ---")
-    print(f"  exact match (all {summary['n_examples']}): {summary['exact_match']:.4f}")
+    print(f"  exact match (all {summary['n_examples']}): strict {summary['exact_match']:.4f}"
+          f"  |  numeric-tolerant {summary['em_numeric']:.4f}")
     print(f"  token F1    (all {summary['n_examples']}): {summary['f1']:.4f}")
     print(f"  answered {summary['n_answered']}/{summary['n_examples']}: "
-          f"F1 {summary['f1_answered_only']:.4f}, EM {summary['em_answered_only']:.4f}")
+          f"F1 {summary['f1_answered_only']:.4f}, strict-EM {summary['em_answered_only']:.4f}, "
+          f"numeric-EM {summary['em_numeric_answered']:.4f}")
     print(f"saved summary -> {QA_CSV.relative_to(REPO_ROOT)}")
     print(f"saved per-row -> {per_row_path.relative_to(REPO_ROOT)}")
     return summary

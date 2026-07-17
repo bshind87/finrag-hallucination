@@ -261,7 +261,12 @@ from context, coverage rises in lockstep (\textbf{47 $\rightarrow$ 82 $\rightarr
 of 150 answered), as do token F1 (0.083 $\rightarrow$ 0.116 $\rightarrow$ 0.121) and all
 three RAGAS metrics---context precision climbs $0.53 \rightarrow 0.77 \rightarrow 0.84$.
 Since only retrieval changed, this isolates \textbf{retrieval as the dominant lever
-(RQ1)}. The known-document upper bound makes the ceiling explicit: restricting retrieval
+(RQ1)}. Strict exact match is $\approx$0 because gold answers are short numbers formatted
+many ways (\$1{,}577 vs.\ 1577.00 vs.\ 1.577 billion); a \emph{numeric-tolerant} EM
+(right value within 1\%, ignoring format) recovers the real accuracy and rises the same
+way ($0.12 \rightarrow 0.18 \rightarrow 0.21$, and $0.27$ at the ceiling), showing the
+strict metric understated correctness rather than the model being wrong.
+The known-document upper bound makes the ceiling explicit: restricting retrieval
 to the correct filing lifts Retr@3 to 100\%, coverage to 96/150, and F1 to 0.139---yet
 faithfulness stays low ($0.20$) and a third of questions remain unanswered, so finding
 the right filing is necessary but not sufficient. The residual failures---answered
