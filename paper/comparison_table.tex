@@ -3,14 +3,14 @@
 \small
 \caption{Retrieval-strategy comparison on FinanceBench (all 150 questions). Retr@3 is the fraction of questions whose top-3 retrieval surfaced the correct filing. Generator, query-rewriter, and RAGAS judge are GPT-3.5-turbo at temperature 0; embeddings are MiniLM (\texttt{all-MiniLM-L6-v2}).}
 \label{tab:pipeline-comparison}
-\begin{tabular}{lrrrrrr}
+\begin{tabular}{lrrrrrrr}
 \toprule
-Pipeline & Retr@3 & Faithful. & Ans. Rel. & Ctx. Prec. & Answered & F1 \\
+Pipeline & Retr@3 & Faithful. & Ans. Rel. & Ctx. Prec. & Answered & F1 & EM (num) \\
 \midrule
-Baseline (BM25) & 43\% & 0.102 & 0.211 & 0.534 & 47/150 & 0.083 \\
-Dense (FAISS) & 64\% & 0.179 & 0.393 & 0.770 & 82/150 & 0.116 \\
-Enhanced (rewrite) & 69\% & 0.184 & 0.418 & 0.843 & 87/150 & 0.121 \\
-Dense, single-doc & 100\% & 0.203 & 0.407 & 0.777 & 96/150 & 0.139 \\
+Baseline (BM25) & 43\% & 0.102 & 0.211 & 0.534 & 47/150 & 0.083 & 0.120 \\
+Dense (FAISS) & 64\% & 0.179 & 0.393 & 0.770 & 82/150 & 0.116 & 0.180 \\
+Enhanced (rewrite) & 69\% & 0.184 & 0.418 & 0.843 & 87/150 & 0.121 & 0.207 \\
+Dense, single-doc & 100\% & 0.203 & 0.407 & 0.777 & 96/150 & 0.139 & 0.267 \\
 \bottomrule
 \end{tabular}
 \end{table}

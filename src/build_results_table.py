@@ -46,6 +46,7 @@ COLUMNS = [
     ("context_precision_mean", "Ctx. Prec."),
     ("n_answered", "Answered"),
     ("f1", "F1"),
+    ("em_numeric", "EM (num)"),
 ]
 
 
@@ -144,9 +145,14 @@ def interpretation(df: pd.DataFrame) -> str:
         f"F1 rises from {_cell('f1', g('baseline_bm25','f1'))} to "
         f"{_cell('f1', g('dense_faiss','f1'))} to {_cell('f1', g('enhanced_rewrite','f1'))}. "
         "RAGAS context precision moves the same way, confirming the gains come from putting "
-        "the right chunk in front of the model rather than from changes in generation. Exact "
-        "match stays near zero throughout because gold answers are short numeric values "
-        "formatted many ways ($1,577 vs.\\ 1577.00). The headline for RQ1 is that retrieval, "
+        "the right chunk in front of the model rather than from changes in generation. Strict "
+        "exact match stays near zero because gold answers are short numeric values formatted "
+        "many ways ($1,577 vs.\\ 1577.00 vs.\\ 1.577 billion); a numeric-tolerant EM (right "
+        "value within 1\\%, ignoring format) recovers the real accuracy and also rises with "
+        f"retrieval ({_cell('f1', g('baseline_bm25','em_numeric'))} $\\rightarrow$ "
+        f"{_cell('f1', g('dense_faiss','em_numeric'))} $\\rightarrow$ "
+        f"{_cell('f1', g('enhanced_rewrite','em_numeric'))}), showing the strict metric "
+        "understated correctness rather than the model being wrong. The headline for RQ1 is that retrieval, "
         "not the generator, is the dominant lever on this benchmark: dense retrieval and query "
         "rewriting each add coverage, yet even the strongest configuration answers well under "
         "half the set, leaving a substantial gap---and a pool of answered-but-unsupported "

@@ -60,14 +60,14 @@ Table: Preliminary baseline results on FinanceBench (all 150 questions). Generat
 
 To test whether better retrieval closes that gap, we add two stronger pipelines---**Dense** (FAISS over MiniLM embeddings) and **Enhanced** (an LLM rewrites the query before dense retrieval)---holding the generator, prompt, chunking, and top-*k* fixed so that only retrieval varies. The table reports all three against a known-document upper bound (retrieval restricted to the question's own filing). Retr@3 = share of questions whose top-3 retrieval reached the correct filing.
 
-| Pipeline | Retr@3 | Faithful. | Ans. Rel. | Ctx. Prec. | Answered | F1 |
-|---|---|---|---|---|---|---|
-| Baseline (BM25) | 43% | 0.102 | 0.211 | 0.534 | 47/150 | 0.083 |
-| Dense (FAISS) | 64% | 0.179 | 0.393 | 0.770 | 82/150 | 0.116 |
-| Enhanced (rewrite) | 69% | 0.184 | 0.418 | 0.843 | 87/150 | 0.121 |
-| Dense, single-doc | 100% | 0.203 | 0.407 | 0.777 | 96/150 | 0.139 |
+| Pipeline | Retr@3 | Faithful. | Ans. Rel. | Ctx. Prec. | Answered | F1 | EM (num) |
+|---|---|---|---|---|---|---|---|
+| Baseline (BM25) | 43% | 0.102 | 0.211 | 0.534 | 47/150 | 0.083 | 0.120 |
+| Dense (FAISS) | 64% | 0.179 | 0.393 | 0.770 | 82/150 | 0.116 | 0.180 |
+| Enhanced (rewrite) | 69% | 0.184 | 0.418 | 0.843 | 87/150 | 0.121 | 0.207 |
+| Dense, single-doc | 100% | 0.203 | 0.407 | 0.777 | 96/150 | 0.139 | 0.267 |
 
-Every metric improves monotonically as retrieval improves. The correct filing reaches the top-3 for **43% → 64% → 69%** of questions (BM25 → dense → rewrite); because the generator answers only from context, coverage rises in lockstep (**47 → 82 → 87** of 150 answered), as do token F1 (0.083 → 0.116 → 0.121) and all three RAGAS metrics---context precision climbs 0.53 → 0.77 → 0.84. Since only retrieval changed, this isolates **retrieval as the dominant lever (RQ1)**. The known-document upper bound makes the ceiling explicit: restricting retrieval to the correct filing lifts Retr@3 to 100%, coverage to 96/150, and F1 to 0.139---yet faithfulness stays low (0.20) and a third of questions remain unanswered, so finding the right filing is necessary but not sufficient. The residual failures---answered without grounded support---are exactly the cases our error analysis will taxonomize.
+Every metric improves monotonically as retrieval improves. The correct filing reaches the top-3 for **43% → 64% → 69%** of questions (BM25 → dense → rewrite); because the generator answers only from context, coverage rises in lockstep (**47 → 82 → 87** of 150 answered), as do token F1 (0.083 → 0.116 → 0.121) and all three RAGAS metrics---context precision climbs 0.53 → 0.77 → 0.84. Since only retrieval changed, this isolates **retrieval as the dominant lever (RQ1)**. Strict exact match is ~0 (short numeric answers formatted many ways: $1,577 vs. 1577.00 vs. 1.577 billion); a **numeric-tolerant EM** — right value within 1%, ignoring format — recovers the real accuracy and rises the same way (**0.12 → 0.18 → 0.21**, up to 0.27 for the ceiling), i.e. the strict metric understated correctness rather than the model being wrong. The known-document upper bound makes the ceiling explicit: restricting retrieval to the correct filing lifts Retr@3 to 100%, coverage to 96/150, and F1 to 0.139---yet faithfulness stays low (0.20) and a third of questions remain unanswered, so finding the right filing is necessary but not sufficient. The residual failures---answered without grounded support---are exactly the cases our error analysis will taxonomize.
 
 # Roadblocks and Next Steps
 
