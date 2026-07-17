@@ -42,6 +42,7 @@ COLUMNS = [
     ("display_name", "Pipeline"),
     ("retrieval_hit", "Retr@3"),
     ("faithfulness_mean", "Faithful."),
+    ("faith_answered", "Faith(ans)"),
     ("answer_relevancy_mean", "Ans. Rel."),
     ("context_precision_mean", "Ctx. Prec."),
     ("n_answered", "Answered"),
@@ -65,6 +66,23 @@ def _retrieval_hit(pipeline: str):
     return hit / len(rows)
 
 
+def _faith_answered(pipeline: str):
+    """Mean faithfulness over *answered* rows only (abstentions excluded), from the
+    per-row RAGAS file. Scoring an 'I don't know' for faithfulness is meaningless and
+    drags the reported mean down, so this is the fairer 'when it answers' number."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from qa_metrics import is_abstention
+    fp = RAW_DIR / f"{pipeline}_ragas_perrow.csv"
+    if not fp.exists():
+        return float("nan")
+    df = pd.read_csv(fp)
+    if "faithfulness" not in df.columns or "answer" not in df.columns:
+        return float("nan")
+    ans = df[~df["answer"].fillna("").map(is_abstention)]["faithfulness"].dropna()
+    return float(ans.mean()) if len(ans) else float("nan")
+
+
 def load_merged() -> pd.DataFrame:
     if not RAGAS_CSV.exists():
         raise SystemExit(f"missing {RAGAS_CSV}. Run src/evaluate.py first (T08).")
@@ -75,6 +93,7 @@ def load_merged() -> pd.DataFrame:
     merged = ragas.merge(qa, on=["pipeline", "model"], how="outer", suffixes=("_ragas", "_qa"))
     merged["display_name"] = merged["pipeline"].map(lambda p: PIPELINE_NAME.get(p, p))
     merged["retrieval_hit"] = merged["pipeline"].map(_retrieval_hit)
+    merged["faith_answered"] = merged["pipeline"].map(_faith_answered)
     order = {p: i for i, p in enumerate(PIPELINE_ORDER)}
     merged["_ord"] = merged["pipeline"].map(lambda p: order.get(p, 99))
     merged = merged.sort_values("_ord").reset_index(drop=True)
@@ -106,18 +125,19 @@ def to_markdown(df: pd.DataFrame) -> str:
 def to_latex(df: pd.DataFrame) -> str:
     headers = [h for _c, h in COLUMNS]
     col_spec = "l" + "r" * (len(headers) - 1)
-    out = [r"\begin{table}[t]", r"\centering", r"\small",
+    out = [r"\begin{table*}[t]", r"\centering", r"\small",
            r"\caption{Retrieval-strategy comparison on FinanceBench (all 150 questions). "
-           r"Retr@3 is the fraction of questions whose top-3 retrieval surfaced the correct "
-           r"filing. Generator, query-rewriter, and RAGAS judge are GPT-3.5-turbo at "
-           r"temperature 0; embeddings are MiniLM (\texttt{all-MiniLM-L6-v2}).}",
+           r"Retr@3 = share of questions whose top-3 retrieval surfaced the correct filing; "
+           r"Faith(ans) = faithfulness over answered questions only; EM(num) = numeric-tolerant "
+           r"exact match. Generator + query-rewriter = GPT-3.5-turbo (temp 0); RAGAS judge = "
+           r"GPT-4o-mini; embeddings = MiniLM (\texttt{all-MiniLM-L6-v2}).}",
            r"\label{tab:pipeline-comparison}",
            r"\begin{tabular}{" + col_spec + "}", r"\toprule",
            " & ".join(headers) + r" \\", r"\midrule"]
     for _, row in df.iterrows():
         cells = [_cell(col, row.get(col)) for col, _h in COLUMNS]
         out.append(" & ".join(cells) + r" \\")
-    out += [r"\bottomrule", r"\end{tabular}", r"\end{table}"]
+    out += [r"\bottomrule", r"\end{tabular}", r"\end{table*}"]
     return "\n".join(out)
 
 
