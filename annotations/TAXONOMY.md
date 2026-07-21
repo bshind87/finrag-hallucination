@@ -78,21 +78,14 @@ For each assigned row in `failure_cases_50.csv`:
 | `financebench_id`, `pipeline`, `company`, `doc_name`, `question_type` | provenance |
 | `question`, `retrieved_context`, `generated_answer`, `gold_answer` | what to judge |
 | `retrieval_hit`, `f1`, `em_numeric`, `faithfulness` | auto signals (do not edit) |
-| **`hallucination_type`** | **you fill**: primary category slug |
+| **`hallucination_type`** | **fill in**: primary category slug |
 | `secondary_type`, `notes` | optional secondary label + rationale |
-| `annotator` | who owns the row (pre-assigned) |
-| `double_annotate` | `YES` = also labeled by a second person (agreement set) |
 
 ---
 
-## Inter-annotator agreement (Cohen's kappa)
-- The **10 rows flagged `double_annotate = YES`** are labeled independently by **two**
-  annotators. Copy those 10 to a second sheet so the two sets of labels stay separate.
-- After labeling, compute **Cohen's kappa** on the 10 shared cases; report it in the
-  paper (T21). Rule of thumb: >0.6 substantial, >0.8 near-perfect.
-- **Adjudicate disagreements** (discuss → agree a final label); note the resolution.
-
-## Assignments
-Rows are pre-assigned round-robin (`annotator` column): Bhalchandra 13, Piyush 13,
-Anish 12, Rituraj 12. Each person labels their own rows **plus** their share of the 10
-shared cases. Target: all 50 labeled + kappa reported for T21.
+## Reliability note (single annotator)
+All 50 cases are labeled by one annotator, so we do **not** report Cohen's kappa
+(inter-annotator agreement needs ≥2 independent annotators). We note single-annotator
+labeling as a limitation in the paper. *(Optional: a second independent pass on ~10 cases
+— by another person or an LLM, disclosed as such — would let us report an agreement
+number; skip unless we decide to add it.)*

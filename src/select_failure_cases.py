@@ -10,8 +10,7 @@ strongest deployable config and still produces 56 answered-wrong cases, so its r
 hallucinations are the most informative. (The proposal named the BM25 baseline, but the
 baseline answers too few questions to yield 50 answered failures.)
 
-The sample is stratified across question_type, annotators are assigned round-robin, and
-10 cases are flagged for double annotation (inter-annotator agreement / Cohen's kappa).
+The sample is stratified across question_type. Empty columns are added for labeling.
 
 Output: annotations/failure_cases_50.csv  (one row per case, ready to label).
 
@@ -32,7 +31,6 @@ RAW = REPO_ROOT / "results" / "raw_outputs"
 QA_JSONL = REPO_ROOT / "data" / "raw" / "financebench_open_source.jsonl"
 OUT = REPO_ROOT / "annotations" / "failure_cases_50.csv"
 
-ANNOTATORS = ["Bhalchandra", "Piyush", "Anish", "Rituraj"]
 SEED = 42
 
 
@@ -113,13 +111,10 @@ def main() -> int:
 
     sample = stratified_sample(cand, args.n).reset_index(drop=True)
 
-    # annotation columns (empty, for labelers)
+    # empty columns to fill in while labeling
     sample["hallucination_type"] = ""      # numerical | entity | reasoning | unsupported | other
     sample["secondary_type"] = ""
     sample["notes"] = ""
-    sample["annotator"] = [ANNOTATORS[i % len(ANNOTATORS)] for i in range(len(sample))]
-    # 10 shared double-annotated cases for Cohen's kappa
-    sample["double_annotate"] = ["YES" if i < 10 else "" for i in range(len(sample))]
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     sample.to_csv(args.out, index=False)
@@ -129,7 +124,6 @@ def main() -> int:
     print("companies covered:", sample["company"].nunique())
     print("retrieval missed the filing (answered anyway):",
           int((~sample["retrieval_hit"]).sum()), "of", len(sample))
-    print("per-annotator load:", sample["annotator"].value_counts().to_dict())
     return 0
 
 
