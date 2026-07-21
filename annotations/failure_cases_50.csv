@@ -19,7 +19,7 @@ $
 10.2 
 Floating Rate Senior Notes (compounded SOFR  plus weighted-average spread of 83 basis points)
 1.0 
-Fixed-to-Floating Rate Senior Notes (4.42% coupon during the fixed rate period and compounded SOFR  plus 1.76% during the fl …[truncated]","American Express Company Deferred Compensation Plan for Directors and Advisors, as amended and restated effective January 1, 2023.",There are none,True,False,0.0,0,,,,
+Fixed-to-Floating Rate Senior Notes (4.42% coupon during the fixed rate period and compounded SOFR  plus 1.76% during the fl …[truncated]","American Express Company Deferred Compensation Plan for Directors and Advisors, as amended and restated effective January 1, 2023.",There are none,True,False,0.0,0,,unsupported,,[DRAFT-LLM] gold is 'none'; fabricated a specific security
 financebench_id_02416,enhanced_rewrite,Pfizer,PFIZER_2021_10K,novel-generated,What are three main companies acquired by Pfizer mentioned in this 10K report?,"Pfizer Holdings International Corporation
 Delaware
 Pfizer Holdings International Luxembourg (PHIL) SARL
@@ -88,7 +88,7 @@ Pfizer MAP Holding, Inc.
 Delaware
 Pfizer Medicamentos Genericos e Participacoes Ltda.
 Brazil
-Pf …[truncated]","Mylan, Mylan-Japan collaboration, Meridian","Trillium, Array, and Therachon",True,False,0.0,0,,,,
+Pf …[truncated]","Mylan, Mylan-Japan collaboration, Meridian","Trillium, Array, and Therachon",True,False,0.0,0,,entity,,[DRAFT-LLM] wrong acquired companies (Mylan vs Trillium/Array/Therachon)
 financebench_id_01865,enhanced_rewrite,3M,3M_2022_10K,novel-generated,"If we exclude the impact of M&A, which segment has dragged down 3M's overall growth in 2022?","(Millions)
 2022
 2021
@@ -131,7 +131,7 @@ There were no acquisitions that closed during the year ended December 31, 2021.
 2020 acquisitions:
 There were no acquisitions that closed during the year ended December 31, 2020.
 Divestitures:
-3M may divest certain businesses from time to time based upon review of the Company’s portfolio considering, …[truncated]",Europe segment has dragged down 3M's overall growth in 2022.,The consumer segment shrunk by 0.9% organically.,True,False,0.125,0,0.0,,,
+3M may divest certain businesses from time to time based upon review of the Company’s portfolio considering, …[truncated]",Europe segment has dragged down 3M's overall growth in 2022.,The consumer segment shrunk by 0.9% organically.,True,False,0.125,0,0.0,entity,,[DRAFT-LLM] named a geography (Europe) not the consumer segment
 financebench_id_00407,enhanced_rewrite,MGM Resorts,MGMRESORTS_2023Q2_10Q,novel-generated,Which type of debt received the largest investment among the short term investments for MGM in H1 FY2023?,"aturities of 90 days
 or less
   
@@ -273,7 +273,7 @@ Net increase (decrease) for the period
 223,978   
 —   
 53,414 
-Ba …[truncated]",Long-term debt received the largest investment among the short term investments for MGM in H1 FY2023.,the biggest short term investment is in corporate bonds (almost 82% of the total investment),False,False,0.296,0,0.0,,,
+Ba …[truncated]",Long-term debt received the largest investment among the short term investments for MGM in H1 FY2023.,the biggest short term investment is in corporate bonds (almost 82% of the total investment),False,False,0.296,0,0.0,entity,,[DRAFT-LLM] 'long-term debt' is not a short-term investment type (corp bonds); wrong filing
 financebench_id_08135,enhanced_rewrite,Amazon,AMAZON_2017_10K,metrics-generated,What is Amazon's year-over-year change in revenue from FY2016 to FY2017 (in units of percents and round to one decimal place)? Calculate what was asked by utilizing the line items clearly shown in the statement of income.,"property and equipment
 depreciation expense, are allocated to all segments based on usage. Total depreciation expense, by segment, is as follows (in millions):
  
@@ -359,7 +359,7 @@ Diluted earnings per share
 1.78
 0.52
 1.54
-Shares used in computation of earnings per share …[truncated]",24.8%,30.8%,True,False,0.0,0,,,,
+Shares used in computation of earnings per share …[truncated]",24.8%,30.8%,True,False,0.0,0,,numerical,,[DRAFT-LLM] wrong YoY % (24.8 vs 30.8)
 financebench_id_01484,enhanced_rewrite,Johnson & Johnson,JOHNSON_JOHNSON_2022Q4_EARNINGS,novel-generated,How did JnJ's US sales growth compare to international sales growth in FY2022?,"to innovate and execute with excellence. This
 ensures the Company can remain focused on addressing the unmet needs of society every day and invest for an enduring impact, ultimately delivering
 value to its patients, consumers and healthcare professionals, employees, communities and shareholders.
@@ -390,7 +390,7 @@ The net impact of acquisitions and divestitures on the worldwide sales growth wa
 2021.
 Sales by U.S. companies were $48.6 billion in 2022 and $47.2 billion in 2021. This represents increases of 3.0% in 2022 and 9.3% in 2021. Sales by
 international companies were $46.4 billion in 2022 and $46.6 billion in 2021. This represents a decrease of 0.6% in 2022 and an increase of 18.2% in 2021.
-The five-year compou …[truncated]","JnJ's US sales growth in FY2022 was 3.3%, while international sales growth was -0.2%.",US sales increased 3.0% vs international sales decline of 0.6%.,False,False,0.333,0,,,,
+The five-year compou …[truncated]","JnJ's US sales growth in FY2022 was 3.3%, while international sales growth was -0.2%.",US sales increased 3.0% vs international sales decline of 0.6%.,False,False,0.333,0,,numerical,,[DRAFT-LLM] figures slightly off (3.3/-0.2 vs 3.0/-0.6)
 financebench_id_03718,enhanced_rewrite,Lockheed Martin,LOCKHEEDMARTIN_2022_10K,metrics-generated,What is Lockheed Martin's 2 year total revenue CAGR from FY2020 to FY2022 (in units of percents and round to one decimal place)? Provide a response to the question by primarily using the statement of income.,"1, 2015 
 (incorporated by reference to Exhibit 10.4 to Lockheed Martin Corporation’s Quarterly Report on Form 10-Q for 
 the quarter ended March 29, 2015).
@@ -411,7 +411,7 @@ Amendment No.1 to Lockheed Martin Corporation Deferred Management Incentive Comp
 amended and restated effective January 1, 2020 (incorporated by reference to Exhibit 10.12 to Lockheed Martin 
 Corporation’s Annual Report on Form 10-K for the year ended December 31, 2020).
 10.12
-Amendment No. 2 to Lockheed Martin Corporation Deferred Manageme …[truncated]",Lockheed Martin's 2 year total revenue CAGR from FY2020 to FY2022 is 1.1%.,0.4%,True,False,0.0,0,0.0,,,
+Amendment No. 2 to Lockheed Martin Corporation Deferred Manageme …[truncated]",Lockheed Martin's 2 year total revenue CAGR from FY2020 to FY2022 is 1.1%.,0.4%,True,False,0.0,0,0.0,numerical,,[DRAFT-LLM] wrong CAGR (1.1 vs 0.4)
 financebench_id_02981,enhanced_rewrite,Corning,CORNING_2021_10K,metrics-generated,"Taking into account the information outlined in the income statement, what is the FY2019 - FY2021 3 year average unadjusted operating income % margin for Corning? Answer in units of percents and round to one decimal place.","including the impact of hedges realized in the current year, positively impacted Corning’s net
 income by approximately $104 million in the year ended December 31, 2021, when compared to the same period in 2020.
  
@@ -546,7 +546,7 @@ Research, development and engineering expenses
 ---
 
 sets its leadership priorities and articulates opportunities across its businesses. 
-Our probability of success increases as we invest in our world-class capabilities.  Corning is concentrating approximate …[truncated]",26.0%,10.3%,True,False,0.0,0,,,,
+Our probability of success increases as we invest in our world-class capabilities.  Corning is concentrating approximate …[truncated]",26.0%,10.3%,True,False,0.0,0,,numerical,,[DRAFT-LLM] wrong 3-yr average (26.0 vs 10.3)
 financebench_id_00702,enhanced_rewrite,Pfizer,PFIZER_2021_10K,novel-generated,Were there any potential events that are not in Pfizer's standard business operations that substantially increased net income in 2019?,"73 
 (0.08)
 1.65 
@@ -702,7 +702,7 @@ $
 $
 (1,575)
 $
-6 …[truncated]","Yes, asset impairments totaling $900 million in the third quarter of 2020 and $791 million in the fourth quarter of 2020 recorded in Other (income)/deductions—net substantially increased net income in 2019.","Yes, the gain on completion of Consumer Healthcare JV Transaction",True,False,0.105,0,,,,
+6 …[truncated]","Yes, asset impairments totaling $900 million in the third quarter of 2020 and $791 million in the fourth quarter of 2020 recorded in Other (income)/deductions—net substantially increased net income in 2019.","Yes, the gain on completion of Consumer Healthcare JV Transaction",True,False,0.105,0,,reasoning,,"[DRAFT-LLM] wrong driver: cited impairments (a decrease), not the JV gain"
 financebench_id_04417,enhanced_rewrite,Best Buy,BESTBUY_2019_10K,metrics-generated,What is the year end FY2019 total amount of inventories for Best Buy? Answer in USD millions. Base your judgments on the information provided primarily in the balance sheet.,"$
 18,127.0
 $
@@ -879,7 +879,7 @@ Stores
 Opened
 Stores 
 Closed
-Tota …[truncated]","$5,622 million",$5409.00,True,False,0.0,0,,,,
+Tota …[truncated]","$5,622 million",$5409.00,True,False,0.0,0,,numerical,,"[DRAFT-LLM] wrong inventory value (5,622 vs 5,409)"
 financebench_id_01198,enhanced_rewrite,AMD,AMD_2022_10K,domain-relevant,What drove revenue change as of the FY22 for AMD?,"effect on its financial condition, cash flows or results of
 operations; the expected completion of AMD's exit from its dense server business; the level of international sales as compared to total sales; that AMD does not expect to
 reduce its unrecognized tax benefits in the next 12 months; that other unrecognized tax benefits will not materially change in the next 12 months; that AMD’s cash and cash
@@ -888,7 +888,7 @@ sufficient to fund AMD’s operations including capital expenditures over the ne
 its dependence on a small number of customers for a substantial part of its revenue; its hedging strategy; its expenditures related to environmental compliance and conflict
 minerals disclosure requirements; and AMD does not expect to pay dividends in the future. Material factors that could cause actual results to differ materially from current
 expectations include, without limitation, the following: Intel Corporation’s dominance of the microprocessor market and its aggressive business practices may limit AMD’s
-ability to compete effectively; AMD relies on GF to manufacture all of its microprocessor and APU products and a certain portion of …[truncated]","The increase in revenue for AMD was primarily driven by higher volume on production contracts for the F-16 program and the F-22 program, partially offset by lower volume on sustainment contracts and unfavorable profit adjustments on a production contract and modernization contracts.","In 2022, AMD reported Higher sales of their EPYC server processors, higher semi-custom product sales, and the inclusion of Xilinx embedded product sales",False,False,0.133,0,,,,
+ability to compete effectively; AMD relies on GF to manufacture all of its microprocessor and APU products and a certain portion of …[truncated]","The increase in revenue for AMD was primarily driven by higher volume on production contracts for the F-16 program and the F-22 program, partially offset by lower volume on sustainment contracts and unfavorable profit adjustments on a production contract and modernization contracts.","In 2022, AMD reported Higher sales of their EPYC server processors, higher semi-custom product sales, and the inclusion of Xilinx embedded product sales",False,False,0.133,0,,entity,,[DRAFT-LLM] answered with Lockheed F-16/F-22 content — wrong company (retrieval miss)
 financebench_id_01279,enhanced_rewrite,AMD,AMD_2022_10K,domain-relevant,"Among operations, investing, and financing activities, which brought in the most (or lost the least) cash flow for AMD in FY22?","investing activities and cash flows from financing activities, respectively. We believe that the current period
 presentation provides a more meaningful representation of the nature of the cash flows and allows for greater transparency as the cash flows related to the
 derivatives impact operating cash flows upon settlement exclusive of the offsetting cash flows from collateral.
@@ -928,7 +928,7 @@ $
 As reported in our 2021 Form 10-K filed with the SEC on February 3, 2022.
  Financial statement lines impacted in operating activities were “Other current assets and non-current assets” and “Other current liabilities and non-current liabilities,” which decreased by
 $336 million and $207 million, respectively, to arrive at the reclassified amounts.
-Financial statement line impacted in investing activities was “Collateral posted related to  …[truncated]",Operating activities brought in the most cash flow for AMD in FY22.,"In 2022, AMD brought in the most cashflow from Operations",False,False,0.5,0,0.0,,,
+Financial statement line impacted in investing activities was “Collateral posted related to  …[truncated]",Operating activities brought in the most cash flow for AMD in FY22.,"In 2022, AMD brought in the most cashflow from Operations",False,False,0.5,0,0.0,other,,[DRAFT-LLM] actually correct (Operations); numeric-EM artifact
 financebench_id_01964,enhanced_rewrite,American Express,AMERICANEXPRESS_2022_10K,novel-generated,What was the largest liability in American Express's Balance Sheet in 2022?,"posure is material in relation to American Express’ total credit exposure. Our customers operate in diverse industries, economic sectors and geographic
 regions.
 The following table details our maximum credit exposure of the on-balance sheet assets by category as of December 31:
@@ -972,7 +972,7 @@ Primarily reflects loans and receivables from global corporate Card Members, whi
 (e)
 Represent debt obligations of the U.S. Government and its agencies, states and municipalities and government-sponsored entities. Risk management for these balances is governed by our Asset
 and Liability Management Committee.
-As of December 31, 2022 and 2021, o …[truncated]","Total Long-Term Debt was the largest liability in American Express's Balance Sheet in 2022, amounting to $42,573 million.",Customer deposits,True,False,0.0,0,,,,
+As of December 31, 2022 and 2021, o …[truncated]","Total Long-Term Debt was the largest liability in American Express's Balance Sheet in 2022, amounting to $42,573 million.",Customer deposits,True,False,0.0,0,,entity,,[DRAFT-LLM] wrong largest liability (long-term debt vs customer deposits)
 financebench_id_00566,enhanced_rewrite,Verizon,VERIZON_2022_10K,domain-relevant,Has Verizon increased its debt on balance sheet between 2022 and the 2021 fiscal period?,"from changes in market conditions. During 2021 and 2020, net cash provided by financing 
 activities was $8.3 billion and $1.3 billion, respectively. 
 2021 
@@ -988,7 +988,7 @@ At December 31, 2021, our total debt increased to $150.9 billion as compared to 
 rate was 3.6% and 4.1% during the years ended December 31, 2021 and 2020, respectively. The substantial majority of our total debt portfolio  
 consists of fixed rate indebtedness, therefore, changes in interest rates do not have a material effect on our interest payments. See also ""Market  
 Risk"" and Note 7 to the consolidated financial statements for additional information. 
-At  December  31,  2021,  appr …[truncated]","Yes, Verizon increased its total debt on the balance sheet from $129.1 billion at December 31, 2020, to $150.9 billion at December 31, 2021.",No. Verizon's debt decreased by $229 million.,True,False,0.067,0,1.0,,,
+At  December  31,  2021,  appr …[truncated]","Yes, Verizon increased its total debt on the balance sheet from $129.1 billion at December 31, 2020, to $150.9 billion at December 31, 2021.",No. Verizon's debt decreased by $229 million.,True,False,0.067,0,1.0,reasoning,,[DRAFT-LLM] used FY2020->2021 not 2021->2022 -> opposite conclusion
 financebench_id_00215,enhanced_rewrite,Verizon,VERIZON_2022_10K,domain-relevant,Is Verizon a capital intensive business based on FY 2022 data?,") 
 (2,703) 
 Net cash provided by (used in) financing activities
@@ -1097,7 +1097,7 @@ Net income attributable to Verizon
 21,256 
 22,065 
 17,801 
-Dividends declared ($2.585, $2.535, $2.485 per sha …[truncated]",Yes. Verizon is a capital intensive business based on FY 2022 data.,"Yes. Verizon's capital intensity ratio was approximately 2.774729. This means that it took approximately $2.77 of assets to generate $1 of revenue and thus, Verizon can be considered capital intensive.",True,False,0.195,0,,,,
+Dividends declared ($2.585, $2.535, $2.485 per sha …[truncated]",Yes. Verizon is a capital intensive business based on FY 2022 data.,"Yes. Verizon's capital intensity ratio was approximately 2.774729. This means that it took approximately $2.77 of assets to generate $1 of revenue and thus, Verizon can be considered capital intensive.",True,False,0.195,0,,other,,[DRAFT-LLM] correct 'Yes'; missing the ratio (qualitative artifact)
 financebench_id_00684,enhanced_rewrite,Amcor,AMCOR_2023_10K,domain-relevant,"Does AMCOR have an improving gross margin profile as of FY2023? If gross margin is not a useful metric for a company like this, then state that and explain why.","to net operating revenues in some operating segments growing at a faster rate compared to
 other operating segments. In addition, foreign currency exchange rate fluctuations impact the percentage contribution of each operating segment. For additional information
 about the impact of foreign currency exchange rate fluctuations, refer to the heading “Liquidity, Capital Resources and Financial Position — Foreign Exchange” below.
@@ -1108,7 +1108,7 @@ this measure in making financial, operating and planning decisions and in evalua
 46
 Our gross profit margin decreased to 58.1 percent in 2022 from 60.3 percent in 2021. This decrease was primarily due to the unfavorable impact of foreign currency exchange
 rate fluctuations, increased commodity and transportation costs, and the acquisition of BodyArmor, a finished goods business, in November 2021. The impact of these items
-was partially offset by favorable pricing initiatives as well as favorable channel and package mix. We expect commodity and transportation cos …[truncated]","As of FY2023, Amcor's gross profit margin decreased to 11.7% from 12.8% in the previous year, indicating a decline in the gross margin profile.",No. For AMCOR there has been a slight decline in gross margins by 0.8%.,False,False,0.176,0,,,,
+was partially offset by favorable pricing initiatives as well as favorable channel and package mix. We expect commodity and transportation cos …[truncated]","As of FY2023, Amcor's gross profit margin decreased to 11.7% from 12.8% in the previous year, indicating a decline in the gross margin profile.",No. For AMCOR there has been a slight decline in gross margins by 0.8%.,False,False,0.176,0,,numerical,,"[DRAFT-LLM] right direction, wrong magnitude (~1.1pp vs 0.8pp)"
 financebench_id_00757,enhanced_rewrite,AMD,AMD_2022_10K,novel-generated,Did AMD report customer concentration in FY22?,"effect on its financial condition, cash flows or results of
 operations; the expected completion of AMD's exit from its dense server business; the level of international sales as compared to total sales; that AMD does not expect to
 reduce its unrecognized tax benefits in the next 12 months; that other unrecognized tax benefits will not materially change in the next 12 months; that AMD’s cash and cash
@@ -1117,7 +1117,7 @@ sufficient to fund AMD’s operations including capital expenditures over the ne
 its dependence on a small number of customers for a substantial part of its revenue; its hedging strategy; its expenditures related to environmental compliance and conflict
 minerals disclosure requirements; and AMD does not expect to pay dividends in the future. Material factors that could cause actual results to differ materially from current
 expectations include, without limitation, the following: Intel Corporation’s dominance of the microprocessor market and its aggressive business practices may limit AMD’s
-ability to compete effectively; AMD relies on GF to manufacture all of its microprocessor and APU products and a certain portion of …[truncated]",Yes. AMD reported that it depends on a small number of customers for a substantial part of its revenue.,"Yes, one customer accounted for 16% of consolidated net revenue",True,False,0.296,0,,,,
+ability to compete effectively; AMD relies on GF to manufacture all of its microprocessor and APU products and a certain portion of …[truncated]",Yes. AMD reported that it depends on a small number of customers for a substantial part of its revenue.,"Yes, one customer accounted for 16% of consolidated net revenue",True,False,0.296,0,,other,,[DRAFT-LLM] correct 'Yes'; missing the 16% detail
 financebench_id_00302,enhanced_rewrite,Pfizer,PFIZER_2021_10K,novel-generated,Did Pfizer grow its PPNE between FY20 and FY21?,"%
 Year that the rate reaches the ultimate trend rate
 2045 
@@ -1239,7 +1239,7 @@ Benefits paid
 (372)
 (147)
 (201)
-Benefit obligat …[truncated]","Yes, Pfizer grew its PPNE between FY20 and FY21. PPNE increased from $149,194 in FY20 to $233,520 in FY21.","Yes, change in PPNE was positive year over year",True,False,0.214,0,1.0,,,
+Benefit obligat …[truncated]","Yes, Pfizer grew its PPNE between FY20 and FY21. PPNE increased from $149,194 in FY20 to $233,520 in FY21.","Yes, change in PPNE was positive year over year",True,False,0.214,0,1.0,other,,[DRAFT-LLM] correct 'Yes' matches gold (yes/no question); appended figures look like wrong line item (total assets vs PP&E) but the answer is correct -> not a hallucination
 financebench_id_03838,enhanced_rewrite,Block,BLOCK_2020_10K,metrics-generated,What is the FY2019 - FY2020 total revenue growth rate for Block (formerly known as Square)? Answer in units of percents and round to one decimal place. Approach the question asked by assuming the standpoint of an investment banking analyst who only has access to the statement of income.,"2020
 2019
 (Dollars in millions)
@@ -1356,7 +1356,7 @@ and options
 (163)
 90 
 156 
-Other (income) e …[truncated]",-8.1%,101.5%,True,False,0.0,0,,,,
+Other (income) e …[truncated]",-8.1%,101.5%,True,False,0.0,0,,numerical,,[DRAFT-LLM] wrong growth rate (-8.1 vs 101.5)
 financebench_id_04209,enhanced_rewrite,Costco,COSTCO_2021_10K,metrics-generated,"Using only the information within the balance sheet, how much total assets did Costco have at the end of FY2021? Answer in USD millions.","Maritza
 4/30/2022
 $
@@ -1548,7 +1548,7 @@ In Millions
   
 May 26, 
 2019   
- …[truncated]","$3,787.2 million",$59268.00,False,False,0.0,0,,,,
+ …[truncated]","$3,787.2 million",$59268.00,False,False,0.0,0,,entity,,"[DRAFT-LLM] $3,787M from wrong filing (Costco assets = $59,268M); retrieval miss"
 financebench_id_00917,enhanced_rewrite,AMD,AMD_2022_10K,domain-relevant,"What drove operating margin change as of the FY22 for AMD? If operating margin is not a useful metric for a company like this, then please state that and explain why.","The impact of the write-down accounted for approximately two gross margin percentage points and the technology node
 transition charge accounted for approximately one gross margin percentage point. Gross margin in 2015 was also adversely impacted by a lower proportion of revenue from
 Computing and Graphics segment due to lower sales which has a higher average gross margin than our Enterprise, Embedded and Semi-Custom segment and due to lower
@@ -1559,7 +1559,7 @@ margin as described above.
 Despite the challenging business environment, we made important changes to our business. During 2015, we continued to focus on introducing a more diverse product
 portfolio. As part of our long-term strategy to deliver great products, we introduced a number of new products in 2015 including, our 6
 th Generation AMD A-Series mobile
-processors (formerly codenamed “Carrizo”) in a SoC design and introduced a desktop  …[truncated]","The operating margin for AMD decreased by $228 million, or 29% in FY22 compared to FY21. This decrease was primarily driven by various factors including unrealized derivative losses and forced outages at CCGT units, recognition of deferred purchased power costs, higher fixed costs, increased outages, and closure of a plant. Operating margin may not be a useful metric for AMD as it does not provide a clear picture of the underlying business performance due to the impact of non-controlling interests, derivative transactions, and strategic decisions related to business interests.",The decrease in AMD's operating income was primarily driven by amortization of intangible assets associated with the Xilinx acquisition,False,False,0.16,0,0.625,,,
+processors (formerly codenamed “Carrizo”) in a SoC design and introduced a desktop  …[truncated]","The operating margin for AMD decreased by $228 million, or 29% in FY22 compared to FY21. This decrease was primarily driven by various factors including unrealized derivative losses and forced outages at CCGT units, recognition of deferred purchased power costs, higher fixed costs, increased outages, and closure of a plant. Operating margin may not be a useful metric for AMD as it does not provide a clear picture of the underlying business performance due to the impact of non-controlling interests, derivative transactions, and strategic decisions related to business interests.",The decrease in AMD's operating income was primarily driven by amortization of intangible assets associated with the Xilinx acquisition,False,False,0.16,0,0.625,unsupported,,[DRAFT-LLM] generic FX/commodity driver not in context; retrieval miss
 financebench_id_07661,enhanced_rewrite,Block,BLOCK_2020_10K,metrics-generated,"Using the cash flow statement, answer the following question to the best of your abilities: how much did Block (formerly known as Square) generate in cash flow from operating activities in FY2020? Answer in USD millions.","adjusting prior periods. As a result, the line items used in our calculation of measures of free cash flows have changed. See Item 8 of Part II, “Financial Statements
 and Supplementary Data — Note 1 — Description of Business and Accounting Policies.”
 28
@@ -1599,7 +1599,7 @@ $
 Free Cash Flow Less Principal Repayments of Finance Leases and Financing Obligations
 Free cash flow less principal repayments of finance leases and financing obligations is free cash flow reduced by “Principal repayments of finance leases”
 and “Principal repayments of financing obligations.” Principal repayments of finance leases and financing obligations approximates the actual payments of cash for
-o …[truncated]","$6,219 million",$382.00,False,False,0.0,0,,,,
+o …[truncated]","$6,219 million",$382.00,False,False,0.0,0,,entity,,"[DRAFT-LLM] $6,219M from wrong source (gold $382); retrieval miss"
 financebench_id_03031,enhanced_rewrite,Lockheed Martin,LOCKHEEDMARTIN_2021_10K,metrics-generated,What is Lockheed Martin's FY2021 net working capital? Define net working capital as total current assets less total current liabilities. Answer in USD millions. Respond to the question by assuming the perspective of an investment analyst who can only use the details shown within the balance sheet.,"$
 6,266 
 $
@@ -1709,7 +1709,7 @@ Accumulated other comprehensive loss
 Total stockholders’ equity
 6,015 
 3,127 
-Noncontrolling interests  …[truncated]","Lockheed Martin's FY2021 net working capital is $5,445 million. This is calculated as total current assets ($19,378 million) minus total current liabilities ($13,933 million).",$5818.00,True,False,0.0,0,,,,
+Noncontrolling interests  …[truncated]","Lockheed Martin's FY2021 net working capital is $5,445 million. This is calculated as total current assets ($19,378 million) minus total current liabilities ($13,933 million).",$5818.00,True,False,0.0,0,,numerical,,"[DRAFT-LLM] wrong current assets/liabilities -> NWC 5,445 vs 5,818"
 financebench_id_00299,enhanced_rewrite,JPMorgan,JPMORGAN_2021Q1_10Q,novel-generated,Which of JPM's business segments had the lowest net revenue in 2021 Q1?,"liability imposed and the level 
 of JPMorgan Chase’s income for that period.
 159
@@ -1737,7 +1737,7 @@ reportable business segments) on an FTE basis.
 Accordingly, revenue from investments that receive tax 
 credits and tax-exempt securities is presented in the 
 managed results on a basis comparable to taxable 
-investments and securities. Refer to Note 32 of JPMorg …[truncated]",Asset & Wealth Management - $904 million,Corporate. Its net revenue was -$473 million.,True,False,0.167,0,,,,
+investments and securities. Refer to Note 32 of JPMorg …[truncated]",Asset & Wealth Management - $904 million,Corporate. Its net revenue was -$473 million.,True,False,0.167,0,,entity,,[DRAFT-LLM] wrong segment (Asset & Wealth Mgmt vs Corporate)
 financebench_id_00724,enhanced_rewrite,Pfizer,Pfizer_2023Q2_10Q,novel-generated,"For Pfizer, which geographic region had the biggest drop in Q22023 year over year revenues (on a percentage basis)?",",208 
 — 
 1,208 
@@ -1779,7 +1779,7 @@ Consumer Healthcare business domestic operations and eight months of internation
 (2,082)
 (988)
 (1,094)
-Lower revenues for Enbrel internationally, primarily reflecting continued biosimilar competi …[truncated]",International region had the biggest drop in Q22023 year over year revenues with a decrease of 51%.,Developed Rest of the World,True,False,0.105,0,0.0,,,
+Lower revenues for Enbrel internationally, primarily reflecting continued biosimilar competi …[truncated]",International region had the biggest drop in Q22023 year over year revenues with a decrease of 51%.,Developed Rest of the World,True,False,0.105,0,0.0,entity,,[DRAFT-LLM] wrong region (International vs Developed Rest of World)
 financebench_id_01091,enhanced_rewrite,Boeing,BOEING_2022_10K,domain-relevant,Has Boeing reported any materially important ongoing legal battles from FY2022?,"Table of Contents
 based upon current information, that the outcome of any such legal proceeding, claim, or government dispute and investigation will not have a
 material effect on our financial position, results of operations or cash flows. Where it is reasonably possible that we will incur losses in excess of
@@ -1791,7 +1791,7 @@ accident of Ethiopian Airlines Flight 302. During 2021, we entered into (i) a De
 that resolved the Department of Justice’s previously disclosed investigation into us regarding the evaluation of the 737 MAX by the Federal
 Aviation Administration (FAA) as well as (ii) a proposed settlement with plaintiffs in a shareholder derivative lawsuit that resulted in the Company
 receiving $219 in the second quarter of 2022. In September 2022, we settled a previously disclosed investigation by the Securities and
-Exchange Commission related to the 737 MAX accidents and consented to a civil penalty, which resul …[truncated]","Yes. Multiple legal actions have been filed against Boeing as a result of the Lion Air Flight 610 and Ethiopian Airlines Flight 302 accidents. Additionally, there are ongoing legal proceedings related to the 737 MAX accidents and the termination of agreements with Embraer.",Yes. Multiple lawsuits have been filed against Boeing resulting from a 2018 Lion Air crash and a 2019 Ethiopian Airlines crash.,True,False,0.414,0,1.0,,,
+Exchange Commission related to the 737 MAX accidents and consented to a civil penalty, which resul …[truncated]","Yes. Multiple legal actions have been filed against Boeing as a result of the Lion Air Flight 610 and Ethiopian Airlines Flight 302 accidents. Additionally, there are ongoing legal proceedings related to the 737 MAX accidents and the termination of agreements with Embraer.",Yes. Multiple lawsuits have been filed against Boeing resulting from a 2018 Lion Air crash and a 2019 Ethiopian Airlines crash.,True,False,0.414,0,1.0,other,,[DRAFT-LLM] correct (Lion Air/Ethiopian lawsuits); qualitative artifact
 financebench_id_00464,enhanced_rewrite,Boeing,BOEING_2022_10K,novel-generated,Is Boeing's business subject to cyclicality?,"24 - Quarterly Financial Data
 113
 Reports of Independent Registered Public Accounting Firm
@@ -1896,7 +1896,7 @@ Consolidated Statements of Comprehensive Income
 Years ended December 31,
 2018
 2017
-2016 …[truncated]",Yes.,"Yes, Boeing's business is subject to cyclicality due to its exposure to the airline industry which is a cyclical industry.",True,False,0.105,0,0.0,,,
+2016 …[truncated]",Yes.,"Yes, Boeing's business is subject to cyclicality due to its exposure to the airline industry which is a cyclical industry.",True,False,0.105,0,0.0,other,,[DRAFT-LLM] correct 'Yes' (cyclical); terse
 financebench_id_10136,enhanced_rewrite,General Mills,GENERALMILLS_2022_10K,metrics-generated,We want to calculate a financial metric. Please help us compute it by basing your answers off of the cash flow statement and the income statement. Here's the question: what is the FY2022 retention ratio (using total cash dividends paid and net income attributable to shareholders) for General Mills? Round answer to two decimal places.,")
 (33.2)
 Ending balance
@@ -2014,7 +2014,7 @@ Net income attributable to General Mills: $2,181.2
 Retention ratio = (Net income - Dividends) / Net income
 Retention ratio = ($2,181.2 - $1.96) / $2,181.2
 Retention ratio = $2,179.24 / $2,181.2
-Retention ratio = 0.10",0.54,True,False,0.0,0,,,,
+Retention ratio = 0.10",0.54,True,False,0.0,0,,numerical,,[DRAFT-LLM] wrong dividends figure -> retention ratio 0.10 vs 0.54
 financebench_id_01858,enhanced_rewrite,3M,3M_2023Q2_10Q,novel-generated,Does 3M maintain a stable trend of dividend distribution?,"other corporate purposes. In 2022, the Company
 purchased $1,464 million of its own stock. For more information, refer to the table titled “Issuer Purchases of Equity Securities” in Part II, Item 5. The Company does not
 utilize derivative instruments linked to the Company’s stock.
@@ -2028,7 +2028,7 @@ noncontrolling interests, changes in overdraft balances, and principal payments 
 Free Cash Flow (non-GAAP measure):
 Free cash flow and free cash flow conversion are not defined under U.S. generally accepted accounting principles (GAAP). Therefore, they should not be considered a
 substitute for income or cash flow data prepared in accordance with U.S. GAAP and may not be comparable to similarly titled measures used by other companies. The
-Company defines free cash flow as net cash provided by operating activities less purchases of property, plant and equipment. It should not be inferred th …[truncated]",Yes.,"Yes, not only they distribute the dividends on a routine basis, 3M has also been increasing the per share dividend for consecutive 65 years",False,False,0.091,0,,,,
+Company defines free cash flow as net cash provided by operating activities less purchases of property, plant and equipment. It should not be inferred th …[truncated]",Yes.,"Yes, not only they distribute the dividends on a routine basis, 3M has also been increasing the per share dividend for consecutive 65 years",False,False,0.091,0,,other,,[DRAFT-LLM] correct 'Yes' (stable/increasing dividend)
 financebench_id_00720,enhanced_rewrite,American Express,AMERICANEXPRESS_2022_10K,domain-relevant,"What drove gross margin change as of the FY2022 for American Express? If gross margin is not a useful metric for a company like this, then please state that and explain why.","was across all categories, most significantly in non-foods.
 Total gross margin percentage decreased seven basis points compared to 2020. Excluding the impact of gasoline price inflation on net sales in
 2021, gross margin percentage was 11.22%, an increase of two basis points. This increase was due to a two basis point improvement in our
@@ -2040,7 +2040,7 @@ higher merchandise costs. Changes in foreign currencies relative to the U.S. dol
 Gross margin on a segment basis, when expressed as a percentage of the segment's own sales and excluding the impact of changes in
 gasoline prices on net sales (segment gross margin percentage), decreased in our U.S. segment, due to our warehouse ancillary and other
 businesses, our core merchandise categories, and the LIFO charge, partially offset by the reserve for certain inventory in 2020. Our Canadian
-and Other International segments increased, primarily due to our warehouse ancillary and other busin …[truncated]","The decrease in gross margin for American Express in FY2022 was primarily due to the unfavorable impact of foreign currency exchange rate fluctuations, increased commodity and transportation costs, and the acquisition of BodyArmor. If gross margin is not a useful metric for American Express, it is because it is a financial services company that generates revenue primarily through fees and interest income rather than the sale of physical goods, making gross margin less relevant for evaluating its profitability.",Performance is not measured through gross margin,False,False,0.127,0,0.0,,,
+and Other International segments increased, primarily due to our warehouse ancillary and other busin …[truncated]","The decrease in gross margin for American Express in FY2022 was primarily due to the unfavorable impact of foreign currency exchange rate fluctuations, increased commodity and transportation costs, and the acquisition of BodyArmor. If gross margin is not a useful metric for American Express, it is because it is a financial services company that generates revenue primarily through fees and interest income rather than the sale of physical goods, making gross margin less relevant for evaluating its profitability.",Performance is not measured through gross margin,False,False,0.127,0,0.0,unsupported,,[DRAFT-LLM] fabricated gross-margin drivers; gold: not measured via gross margin
 financebench_id_10285,enhanced_rewrite,Boeing,BOEING_2018_10K,metrics-generated,"We need to calculate a financial metric by using information only provided within the balance sheet. Please answer the following question: what is Boeing's year end FY2018 net property, plant, and equipment (in USD millions)?","24 - Quarterly Financial Data
 113
 Reports of Independent Registered Public Accounting Firm
@@ -2145,7 +2145,7 @@ Consolidated Statements of Comprehensive Income
 Years ended December 31,
 2018
 2017
-2016 …[truncated]","$29,473 million",$12645.00,True,False,0.0,0,,,,
+2016 …[truncated]","$29,473 million",$12645.00,True,False,0.0,0,,numerical,,"[DRAFT-LLM] wrong figure (29,473 vs 12,645)"
 financebench_id_00669,enhanced_rewrite,Johnson & Johnson,JOHNSON_JOHNSON_2022_10K,domain-relevant,"What drove gross margin change as of FY2022 for JnJ? If gross margin is not a useful metric for a company like this, then please state that and explain why.","to net operating revenues in some operating segments growing at a faster rate compared to
 other operating segments. In addition, foreign currency exchange rate fluctuations impact the percentage contribution of each operating segment. For additional information
 about the impact of foreign currency exchange rate fluctuations, refer to the heading “Liquidity, Capital Resources and Financial Position — Foreign Exchange” below.
@@ -2156,7 +2156,7 @@ this measure in making financial, operating and planning decisions and in evalua
 46
 Our gross profit margin decreased to 58.1 percent in 2022 from 60.3 percent in 2021. This decrease was primarily due to the unfavorable impact of foreign currency exchange
 rate fluctuations, increased commodity and transportation costs, and the acquisition of BodyArmor, a finished goods business, in November 2021. The impact of these items
-was partially offset by favorable pricing initiatives as well as favorable channel and package mix. We expect commodity and transportation cos …[truncated]","The decrease in gross margin for JnJ in FY2022 was primarily driven by the unfavorable impact of foreign currency exchange rate fluctuations, increased commodity and transportation costs, and the acquisition of BodyArmor.","For FY22, JnJ had changes in gross margin due to: One-time COVID-19 vaccine manufacturing exit related costs, Currency impacts in the Pharmaceutical segment, Commodity inflation in the MedTech and Consumer Health segments, partially offset by Supply chain benefits in the Consumer Health segment.",False,False,0.319,0,,,,
+was partially offset by favorable pricing initiatives as well as favorable channel and package mix. We expect commodity and transportation cos …[truncated]","The decrease in gross margin for JnJ in FY2022 was primarily driven by the unfavorable impact of foreign currency exchange rate fluctuations, increased commodity and transportation costs, and the acquisition of BodyArmor.","For FY22, JnJ had changes in gross margin due to: One-time COVID-19 vaccine manufacturing exit related costs, Currency impacts in the Pharmaceutical segment, Commodity inflation in the MedTech and Consumer Health segments, partially offset by Supply chain benefits in the Consumer Health segment.",False,False,0.319,0,,unsupported,,"[DRAFT-LLM] generic FX/commodity drivers, not gold's COVID/currency specifics"
 financebench_id_01912,enhanced_rewrite,MGM Resorts,MGMRESORTS_2022Q4_EARNINGS,novel-generated,Which region had the worst topline performance for MGM during FY2022?,"of certain basis 
 differences. Includes the Company's share of operating results of CityCenter through September 26, 2021 during the twelve months ended December 31, 
 2021.    
@@ -2202,7 +2202,7 @@ Plus: Net loss attributable to noncontrolling interests
 (45,981) 
 Net income (loss) 
  
-( …[truncated]",Regional Operations,MGM China experienced the worst topline performance amongst the other regions presented. Its revenue declined 44% in FY2022 whereas the other regions presented increased their revenues.,True,False,0.0,0,,,,
+( …[truncated]",Regional Operations,MGM China experienced the worst topline performance amongst the other regions presented. Its revenue declined 44% in FY2022 whereas the other regions presented increased their revenues.,True,False,0.0,0,,entity,,[DRAFT-LLM] vague/wrong region ('Regional Operations' vs MGM China)
 financebench_id_01254,enhanced_rewrite,MGM Resorts,MGMRESORTS_2022_10K,domain-relevant,Has MGM Resorts paid dividends to common shareholders in FY2022?,"Item 9B.
 Other Information
 104
@@ -2251,7 +2251,7 @@ MGM Resorts International is a Delaware corporation incorporated in 198
 operates integrated casino, hotel, and entertainment resorts across the United States and in Macau.
  
 We believe we own or invest in several of the finest casino resorts in the world and we continually reinvest in our resorts to maintain our competitive
-advantage. We make significant investments in ou …[truncated]",No.,Yes. MGM maintained 0.01$ per share annual dividend through out FY 2022.,False,False,0.0,0,,,,
+advantage. We make significant investments in ou …[truncated]",No.,Yes. MGM maintained 0.01$ per share annual dividend through out FY 2022.,False,False,0.0,0,,unsupported,,[DRAFT-LLM] said 'No' with no support; MGM did pay $0.01/share
 financebench_id_06272,enhanced_rewrite,Coca-Cola,COCACOLA_2022_10K,metrics-generated,What is Coca Cola's FY2022 dividend payout ratio (using total cash dividends paid and net income attributable to shareholders)? Round answer to two decimal places. Answer the question asked by assuming you only have access to information clearly displayed in the cash flow statement and the income statement.,",328 
 4,325 
 4,302 
@@ -2353,7 +2353,7 @@ Equity Attributable to Noncontrolling Interests
  
  
  
-   Balance at beginning  …[truncated]","Coca Cola's FY2022 dividend payout ratio is 42.68% ($428 million / $9,542 million = 0.4268).",0.8,True,False,0.0,0,,,,
+   Balance at beginning  …[truncated]","Coca Cola's FY2022 dividend payout ratio is 42.68% ($428 million / $9,542 million = 0.4268).",0.8,True,False,0.0,0,,numerical,,[DRAFT-LLM] wrong dividends figure -> payout 0.43 vs 0.8
 financebench_id_00499,enhanced_rewrite,3M,3M_2022_10K,domain-relevant,Is 3M a capital-intensive business based on FY2022 data?,"more non-discretionary items.
 Business segment operating income margins decreased year-on-year from lower sales volumes, inflation impacts, investments, manufacturing and supply chain headwinds, and
 restructuring costs partially offset by benefits from aggressive spending discipline, pricing and productivity actions.
@@ -2368,7 +2368,7 @@ expects to continue returning cash to shareholders through dividends and share r
 from U.S. operations, access to capital markets and repatriation of the earnings of its foreign affiliates that are not considered to be permanently reinvested.  …[truncated]","Yes, 3M is a capital-intensive business based on FY2022 data. The company had total capital spending of $1,749 million and net property, plant, and equipment of $9,178 million in 2022.","No, the company is managing its CAPEX and Fixed Assets pretty efficiently, which is evident from below key metrics:
 CAPEX/Revenue Ratio: 5.1%
 Fixed assets/Total Assets: 20%
-Return on Assets= 12.4%",True,False,0.14,0,,,,
+Return on Assets= 12.4%",True,False,0.14,0,,reasoning,,[DRAFT-LLM] concluded 'Yes' capital-intensive; gold 'No' (opposite interpretation)
 financebench_id_00859,enhanced_rewrite,Verizon,VERIZON_2021_10K,novel-generated,"Among all of the derivative instruments that Verizon used to manage the exposure to fluctuations of foreign currencies exchange rates or interest rates, which one had the highest notional value in FY 2021?","and the underlying exposures, fluctuations in the values of the
 instruments are generally offset by reciprocal changes in the values of the underlying exposures.
 We monitor our exposure to market risks using several objective measurement systems, including a sensitivity analysis to measure our exposure to fluctuations in foreign
@@ -2380,7 +2380,7 @@ used 70 functional currencies in addition to the U.S. dollar and generated $25.6
 weakness in some currencies may be offset by strength in other currencies over time. We use derivative financial instruments to further reduce our net exposure to foreign
 currency fluctuations.
 Our Company enters into forward exchange contracts and purchases foreign currency options and collars (principally euro, British pound sterling and Japanese yen) to hedge
-certain portions of forecasted cash flows denominated in foreign currencies. Additionally, we enter into forw …[truncated]",The derivative instrument with the highest notional value in FY 2021 was the interest rate swap contracts with a notional amount of $500 million.,"Cross currency swaps. Its notional value was $32,502 million.",False,False,0.276,0,,,,
+certain portions of forecasted cash flows denominated in foreign currencies. Additionally, we enter into forw …[truncated]",The derivative instrument with the highest notional value in FY 2021 was the interest rate swap contracts with a notional amount of $500 million.,"Cross currency swaps. Its notional value was $32,502 million.",False,False,0.276,0,,entity,,"[DRAFT-LLM] wrong instrument (interest-rate swap $500M vs cross-currency $32,502M)"
 financebench_id_00839,enhanced_rewrite,Foot Locker,FOOTLOCKER_2022_8K_dated_2022-08-19,novel-generated,Does Foot Locker's new CEO have previous CEO experience in a similar company to Footlocker?,"Senior Advisor
 to the Chief Executive Officer until early April 2023 to facilitate a smooth transition. The Company’s
 Board has determined that
@@ -2404,7 +2404,7 @@ DE&I and ESG initiatives.
 “It has been a privilege and an honor to lead
 Foot Locker and work alongside the best team in retail for nearly 30 years,” said Johnson. “Together, we have
 built a broad
-house of brands and banners fueled by a shared passion for the global sneaker communit …[truncated]","Yes, Mary N. Dillon, the new CEO of Foot Locker, was the former Executive Chair and CEO of Ulta Beauty, Inc.",Yes. She was previous CEO of Ulta Beauty which means she had to manage a large retail company that has brick and mortar + online business. So yes she was a CEO in a similar company to Foot Locker before this.,True,False,0.357,0,,,,
+house of brands and banners fueled by a shared passion for the global sneaker communit …[truncated]","Yes, Mary N. Dillon, the new CEO of Foot Locker, was the former Executive Chair and CEO of Ulta Beauty, Inc.",Yes. She was previous CEO of Ulta Beauty which means she had to manage a large retail company that has brick and mortar + online business. So yes she was a CEO in a similar company to Foot Locker before this.,True,False,0.357,0,,other,,"[DRAFT-LLM] correct (Mary Dillon, ex-Ulta CEO); qualitative artifact"
 financebench_id_02608,enhanced_rewrite,Best Buy,BESTBUY_2017_10K,metrics-generated,"In agreement with the information outlined in the income statement, what is the FY2015 - FY2017 3 year average net profit margin (as a %) for Best Buy? Answer in units of percents and round to one decimal place.","Year-End Data
  
  
@@ -2527,7 +2527,7 @@ Gain from discontinued operations, net of tax
 2
 —
 21
-Net earnings attr …[truncated]",3.6%,2.8%,True,False,0.0,0,,,,
+Net earnings attr …[truncated]",3.6%,2.8%,True,False,0.0,0,,numerical,,[DRAFT-LLM] wrong 3-yr average (3.6 vs 2.8)
 financebench_id_01482,enhanced_rewrite,PepsiCo,PEPSICO_2023_8K_dated-2023-05-05,novel-generated,"At the Pepsico AGM held on May 3, 2023, what was the outcome of the shareholder vote on the shareholder proposal for a congruency report by Pepsico on net-zero emissions policies?","172,969,325
 Alberto Weisser
 981,592,374
@@ -2586,7 +2586,7 @@ Broker Non-Votes
 For 19,718,780
 Against 977,228,788
 Abstain 23,200,321
-Broker Non-Votes 172,969,325",The shareholder proposal for a congruency report by Pepsico on net-zero emissions policies was defeated.,True,False,0.667,0,,,,
+Broker Non-Votes 172,969,325",The shareholder proposal for a congruency report by Pepsico on net-zero emissions policies was defeated.,True,False,0.667,0,,other,,[DRAFT-LLM] correct outcome (proposal defeated) + vote counts
 financebench_id_01028,enhanced_rewrite,American Express,AMERICANEXPRESS_2022_10K,domain-relevant,What are the geographies that American Express primarily operates in as of 2022?,"approximately 51 percent interest in the building. We also lease space in the building from Brookfield’s affiliate.
 Other owned or leased principal locations include American Express offices in Phoenix, Arizona, Sunrise, Florida, Gurgaon, India, Brighton, England, Manila,
 Philippines, Tokyo, Japan, Kuala Lumpur, Malaysia and Sydney, Australia; the American Express data centers in Phoenix, Arizona and Greensboro, North
@@ -2604,7 +2604,7 @@ PART II
 ITEM 5.    MARKET FOR REGISTRANT’S COMMON EQUITY, RELATED STOCKHOLDER
 MATTERS AND ISSUER PURCHASES OF EQUITY SECURITIES
 (a)
-Our common stock trades principally on The New York Stock  …[truncated]","Phoenix, Arizona, Sunrise, Florida, Gurgaon, India, Brighton, England, Manila, Philippines, Tokyo, Japan, Kuala Lumpur, Malaysia, Sydney, Australia, Sandy, Utah, London, England, Madrid, Spain, Toronto, Ontario, Canada, Mexico City, Mexico.","United States, EMEA, APAC, and LACC",True,False,0.0,0,1.0,,,
+Our common stock trades principally on The New York Stock  …[truncated]","Phoenix, Arizona, Sunrise, Florida, Gurgaon, India, Brighton, England, Manila, Philippines, Tokyo, Japan, Kuala Lumpur, Malaysia, Sydney, Australia, Sandy, Utah, London, England, Madrid, Spain, Toronto, Ontario, Canada, Mexico City, Mexico.","United States, EMEA, APAC, and LACC",True,False,0.0,0,1.0,entity,,"[DRAFT-LLM] listed office cities, not operating regions (US/EMEA/APAC/LACC)"
 financebench_id_04254,enhanced_rewrite,American Water Works,AMERICANWATERWORKS_2021_10K,metrics-generated,"Basing your judgments off of the cash flow statement and the income statement, what is American Water Works's FY2021 unadjusted operating income + depreciation and amortization from the cash flow statement (unadjusted EBITDA) in USD millions?","2019,
 respectively
 (1)
@@ -2697,7 +2697,7 @@ Pension and non-pension postretirement benefit contributions
 (40)
 (39)
 (31)
-Accounts payable a …[truncated]","$1,899 million",$1832.00,True,False,0.0,0,,,,
+Accounts payable a …[truncated]","$1,899 million",$1832.00,True,False,0.0,0,,numerical,,"[DRAFT-LLM] wrong figure (1,899 vs 1,832)"
 financebench_id_04854,enhanced_rewrite,General Mills,GENERALMILLS_2020_10K,metrics-generated,"According to the information provided in the statement of cash flows, what is the FY2020 free cash flow (FCF) for General Mills? FCF here is defined as: (cash from operations - capex). Answer in USD millions.",")
 (33.2)
 Ending balance
@@ -2806,7 +2806,7 @@ Divestitures loss
 -
 Restructuring, impairment, and other exit costs
  
-4 …[truncated]","$25,825 million",$3215.00,True,False,0.0,0,,,,
+4 …[truncated]","$25,825 million",$3215.00,True,False,0.0,0,,numerical,,"[DRAFT-LLM] wrong FCF (25,825 vs 3,215), order-of-magnitude off"
 financebench_id_04660,enhanced_rewrite,Block,BLOCK_2016_10K,metrics-generated,"Considering the data in the balance sheet, what is Block's (formerly known as Square) FY2016 working capital ratio? Define working capital ratio as total current assets divided by total current liabilities. Round your answer to two decimal places.","On March 1, 2017, we announced a 21.0% increase in the regular quarterly dividend to $0.34 per share.
 43
 Table of Contents
@@ -2839,7 +2839,7 @@ $
 Short-term investments
 501,385
 494,888
-Current content …[truncated]",1.64,1.73,False,False,0.0,0,,,,
+Current content …[truncated]",1.64,1.73,False,False,0.0,0,,numerical,,[DRAFT-LLM] wrong working-capital ratio (1.64 vs 1.73)
 financebench_id_04784,enhanced_rewrite,Walmart,WALMART_2019_10K,metrics-generated,"Based on the information provided primarily in the statement of income, what is the FY2018 - FY2019 change in unadjusted operating income % margin for Walmart? Answer in units of percents and round to one decimal place.","measures the results of its segments using, among other measures, each segment's net sales and operating income, which includes certain corporate overhead allocations. From time to
 time, the Company revises the measurement of each segment's operating income, including any corporate overhead allocations, as determined by the information regularly reviewed by its CODM. In
 fiscal 2019, the Company revised certain of its corporate overhead allocations, including depreciation expense, to the operating segments and, accordingly, revised prior period amounts for comparability
@@ -2917,7 +2917,7 @@ Operating income (loss)
 5,229
 915
 (2,702)
-20, …[truncated]",-0.4%,0.2%,True,False,0.0,0,,,,
+20, …[truncated]",-0.4%,0.2%,True,False,0.0,0,,numerical,,[DRAFT-LLM] wrong sign/value (-0.4 vs 0.2)
 financebench_id_01148,enhanced_rewrite,Amcor,AMCOR_2023_10K,domain-relevant,What industry does AMCOR primarily operate in?,"(loss) of affiliated companies
 825.2 
 6.6 
@@ -2970,7 +2970,7 @@ specialty cartons, closures, and services. The company is focused on making pack
 content. During fiscal year 2020, approximately 47,000 Amcor employees generated $12.5 billion in sales from operations that spanned approximately 231 locations in over 40 countries. 
 Significant Items Affecting the Periods Presented
 Impact of COVID-19
-        The 2019 Novel Coronavirus (""COVID-19"") has introduced a p …[truncated]",Packaging industry,Amcor is a global leader in packaging production for various use cases.,True,False,0.154,0,,,,
+        The 2019 Novel Coronavirus (""COVID-19"") has introduced a p …[truncated]",Packaging industry,Amcor is a global leader in packaging production for various use cases.,True,False,0.154,0,,other,,[DRAFT-LLM] correct (packaging industry); qualitative artifact
 financebench_id_02119,enhanced_rewrite,JPMorgan,JPMORGAN_2021Q1_10Q,novel-generated,"If JPM went bankrupted by the end by 2021 Q1 and liquidated all of its assets to pay its shareholders, how much could each shareholder get?","2 
  15.5 
 (a) Prior-period amount has been revised to conform with the current 
@@ -2998,7 +2998,7 @@ Foundation.
 • Total net revenue was up 14%. Noninterest revenue was 
 $19.4 billion, up 40%, predominantly driven by higher 
 CIB Markets revenue, higher Investment Banking fees, 
-and the absence of losses in Credit Adjustments  …[truncated]",$4.50 per share,They could receive $66.56 per share.,True,False,0.444,0,,,,
+and the absence of losses in Credit Adjustments  …[truncated]",$4.50 per share,They could receive $66.56 per share.,True,False,0.444,0,,numerical,,[DRAFT-LLM] wrong per-share liquidation value (4.50 vs 66.56)
 financebench_id_04672,enhanced_rewrite,3M,3M_2018_10K,metrics-generated,Assume that you are a public equities analyst. Answer the following question by primarily using information that is shown in the balance sheet: what is the year end FY2018 net PPNE for 3M? Answer in USD billions.,"operating cash flows by $284 million.
  
 Cash Flows from Investing Activities:
@@ -3079,7 +3079,7 @@ efficiency. The Company expects 2019 capital spending to be approximately $1.7 b
  
 3M invests in renewal and maintenance programs, which pertain to cost reduction, cycle time, maintaining and renewing current capacity, eliminating
 pollution, and compliance. Costs related to maintenance, ordinary repairs, and certain other items are expensed. 3M also invests in growth, which adds to
-capacity, driven by new products, both through expansion of current fac …[truncated]",$4.904 billion,$8.70,True,False,0.0,0,,,,
+capacity, driven by new products, both through expansion of current fac …[truncated]",$4.904 billion,$8.70,True,False,0.0,0,,numerical,,[DRAFT-LLM] gave $-billions total instead of per-share $8.70 (wrong unit/metric)
 financebench_id_05718,enhanced_rewrite,American Water Works,AMERICANWATERWORKS_2020_10K,metrics-generated,How much (in USD billions) did American Water Works pay out in cash dividends for FY2020? Compute or extract the answer by primarily using the details outlined in the statement of cash flows.,"2020, 2019
 and 2018, respectively
 28 
@@ -3183,7 +3183,7 @@ $
 (247)
 $
 5,385 
-Cumulative effect of change in  …[truncated]",$389 million,$0.40,True,False,0.0,0,,,,
+Cumulative effect of change in  …[truncated]",$389 million,$0.40,True,False,0.0,0,,other,,[DRAFT-LLM] correct — $389M ~= $0.40B; unit-format artifact
 financebench_id_02419,enhanced_rewrite,Pfizer,Pfizer_2023Q2_10Q,novel-generated,"As of Q2'2023, is Pfizer spinning off any large business segments?","to patients. Pfizer’s growth strategy is driven by five “Bold Moves” that help us deliver breakthroughs for patients and create value for shareholders and other
 stakeholders:
 1.
@@ -3202,4 +3202,4 @@ We are committed to strategically capitalizing on growth opportunities, primaril
 through various business development activities. We view our business development activity as an enabler of our strategies and seek to generate growth by pursuing opportunities
 and transactions that have the potential to strengthen our business and our capabilities. We assess our business, assets and scientific capabilities/portfolio as part of our regular,
 ongoing portfolio review process and also continue to consider business development activities that will help advance our business strategy.
-Our significant recent business development activities  …[truncated]","As of Q2'2023, Pfizer is not spinning off any large business segments.","Yes, it's spinning off Upjohn.",True,False,0.235,0,,,,
+Our significant recent business development activities  …[truncated]","As of Q2'2023, Pfizer is not spinning off any large business segments.","Yes, it's spinning off Upjohn.",True,False,0.235,0,,unsupported,,[DRAFT-LLM] said 'not spinning off'; Pfizer is spinning off Upjohn
