@@ -132,12 +132,14 @@ This inverts the naive expectation behind RQ3 ("do larger models hallucinate les
 
 : Representative case studies, two per hallucination type (from the 50 labeled cases).
 
+**Toward automatic detection.** As a proof of concept, we fine-tuned `roberta-base` on the QA subset of RAGTruth [@niu2024ragtruth] (a response is labeled hallucinated if it carries any annotated span) and applied it zero-shot to our 50 labeled cases. It transfers with F1 0.81 (precision 0.77, recall 0.85), catching 33 of 39 hallucinations---but it correctly clears only 1 of 11 grounded answers, and on the RAGTruth test split it behaves the same way (recall 0.92, precision 0.24). The detector is therefore a high-recall *over-flagger*: useful as a first-pass filter that rarely misses a hallucination, but too imprecise to trust unaided. A precise, calibrated detector remains future work.
+
 # Conclusion, Limitations, and Future Work
 
 We studied when and how RAG systems hallucinate on financial QA. Across four pipelines that differ only in retrieval, **retrieval quality is the dominant lever** on faithfulness and accuracy (RQ1), reinforced by a top-$k$ ablation. A manual taxonomy shows **numerical errors dominate** the residual hallucinations, with entity errors---mostly wrong-filing retrievals---a close second (RQ2). Holding retrieved context fixed, the open **Mistral-7B-Instruct is more faithful than GPT-3.5** by abstaining more (RQ3), indicating that grounding on this benchmark is governed more by abstention behavior than by model scale. We also find that ~22% of automatically flagged failures are correct answers mis-scored---a caution for automatic evaluation.
 
 **Limitations.** (1) *Single annotator.* The 50 cases were labeled by one annotator (LLM-drafted, human-reviewed), so we do not report inter-annotator agreement (Cohen's kappa); a second independent pass would strengthen the taxonomy. (2) *PDF table extraction* flattens tables into linear text, which can sever a figure from its row/column headers and is a plausible source of numerical errors. (3) *Scale:* we evaluate the 150-question open subset, not the full 10,231-question FinanceBench. (4) *Judge dependence:* RAGAS faithfulness relies on an LLM judge (GPT-4o-mini); absolute values should be read comparatively.
 
-**Future work.** Table-aware chunking that preserves headers; retrieval upgrades (Fusion-in-Decoder [@izacard2021fid], Self-RAG [@asai2024selfrag]) to close the remaining recall gap; an automatic hallucination classifier supervised by RAGTruth [@niu2024ragtruth] and validated against our human labels; and scaling the evaluation to the full benchmark.
+**Future work.** Table-aware chunking that preserves headers; retrieval upgrades (Fusion-in-Decoder [@izacard2021fid], Self-RAG [@asai2024selfrag]) to close the remaining recall gap; turning our proof-of-concept RAGTruth-trained detector into a *precise*, calibrated classifier (it currently over-flags); and scaling the evaluation to the full benchmark.
 
 # References
