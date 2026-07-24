@@ -25,7 +25,6 @@ RAGAS_CSV = RESULTS_DIR / "eval_ragas.csv"
 QA_CSV = RESULTS_DIR / "eval_qa_metrics.csv"
 
 MD_OUT = RESULTS_DIR / "pipeline_comparison.md"
-TEX_OUT = RESULTS_DIR / "comparison_table.tex"
 RAW_DIR = RESULTS_DIR / "raw_outputs"
 
 # Fixed display order + friendly names for the retrieval-strategy comparison.
@@ -91,6 +90,9 @@ def load_merged() -> pd.DataFrame:
     ragas = pd.read_csv(RAGAS_CSV)
     qa = pd.read_csv(QA_CSV)
     merged = ragas.merge(qa, on=["pipeline", "model"], how="outer", suffixes=("_ragas", "_qa"))
+    # This table is the RQ1 retrieval-strategy comparison only; the top-k ablation (T16)
+    # and the generator comparison (T17) have their own tables, so keep just those four.
+    merged = merged[merged["pipeline"].isin(PIPELINE_ORDER)].copy()
     merged["display_name"] = merged["pipeline"].map(lambda p: PIPELINE_NAME.get(p, p))
     merged["retrieval_hit"] = merged["pipeline"].map(_retrieval_hit)
     merged["faith_answered"] = merged["pipeline"].map(_faith_answered)
@@ -120,25 +122,6 @@ def to_markdown(df: pd.DataFrame) -> str:
         cells = [_cell(col, row.get(col)).replace("\\%", "%") for col, _h in COLUMNS]
         lines.append("| " + " | ".join(cells) + " |")
     return "\n".join(lines)
-
-
-def to_latex(df: pd.DataFrame) -> str:
-    headers = [h for _c, h in COLUMNS]
-    col_spec = "l" + "r" * (len(headers) - 1)
-    out = [r"\begin{table*}[t]", r"\centering", r"\small",
-           r"\caption{Retrieval-strategy comparison on FinanceBench (all 150 questions). "
-           r"Retr@3 = share of questions whose top-3 retrieval surfaced the correct filing; "
-           r"Faith(ans) = faithfulness over answered questions only; EM(num) = numeric-tolerant "
-           r"exact match. Generator + query-rewriter = GPT-3.5-turbo (temp 0); RAGAS judge = "
-           r"GPT-4o-mini; embeddings = MiniLM (\texttt{all-MiniLM-L6-v2}).}",
-           r"\label{tab:pipeline-comparison}",
-           r"\begin{tabular}{" + col_spec + "}", r"\toprule",
-           " & ".join(headers) + r" \\", r"\midrule"]
-    for _, row in df.iterrows():
-        cells = [_cell(col, row.get(col)) for col, _h in COLUMNS]
-        out.append(" & ".join(cells) + r" \\")
-    out += [r"\bottomrule", r"\end{tabular}", r"\end{table*}"]
-    return "\n".join(out)
 
 
 def interpretation(df: pd.DataFrame) -> str:
@@ -193,7 +176,6 @@ def interpretation(df: pd.DataFrame) -> str:
 def main() -> int:
     df = load_merged()
     md_table = to_markdown(df)
-    tex_table = to_latex(df)
 
     md = ["# Pipeline comparison: retrieval strategies (T14/T15/T18)\n",
           "Three RAG configurations on FinanceBench (all 150 questions), identical except for "
@@ -204,11 +186,9 @@ def main() -> int:
           md_table, "",
           "## Interpretation\n", interpretation(df), ""]
     MD_OUT.write_text("\n".join(md), encoding="utf-8")
-    TEX_OUT.write_text(tex_table + "\n", encoding="utf-8")
 
     print(md_table)
     print(f"\nsaved -> {MD_OUT.relative_to(REPO_ROOT)}")
-    print(f"saved -> {TEX_OUT.relative_to(REPO_ROOT)}")
     return 0
 
 
