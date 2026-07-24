@@ -86,7 +86,7 @@
 | T20 | Annotation schema & taxonomy | Bhalchandra | DONE | `annotations/TAXONOMY.md`: 4 categories (numerical/entity/reasoning/unsupported) with defs + examples + decision hints + sheet column guide. Single annotator (kappa noted as a limitation). | 2026-07-15 | 2026-07-15 |
 | T21 | Annotate 50 failure cases | Bhalchandra | DONE | 50 cases labeled in `annotations/failure_cases_50.csv` (LLM-drafted, human-reviewed). Distribution: numerical 18, entity 12, unsupported 6, reasoning 3 (+11 'other' = auto-flagged but actually correct). Single annotator -> no kappa (noted as limitation). | 2026-07-15 | 2026-07-15 |
 | T22 | Hallucination-type frequency + figure | Bhalchandra | DONE | `src/plot_hallucination_types.py` -> `results/fig_hallucination_types.png` (paper Figure 1) + `results/hallucination_type_freq.md`. Over 39 true hallucinations: numerical 46%, entity 31%, unsupported 15%, reasoning 8%. | 2026-07-15 | 2026-07-15 |
-| T23                                                    | Curate qualitative case studies       | _____              | TODO        |                                                                                                                                                                                                                                                                                                                                                                                                                                      |            |            |
+| T23 | Curate qualitative case studies | Bhalchandra | DONE | `src/build_case_studies.py` -> `results/case_studies.md` (paper **Table 2**): 2 curated examples per hallucination type (8 total) with question / model answer / gold / why. | 2026-07-24 | 2026-07-24 |
 | T24                                                    | (Optional) RoBERTa classifier         | _____              | TODO        |                                                                                                                                                                                                                                                                                                                                                                                                                                      |            |            |
 | T25                                                    | Assemble final tables & figures       | _____              | TODO        |                                                                                                                                                                                                                                                                                                                                                                                                                                      |            |            |
 | T26                                                    | Expand related work (final)           | _____              | TODO        |                                                                                                                                                                                                                                                                                                                                                                                                                                      |            |            |
@@ -465,14 +465,15 @@
 
 ### T23 — Curate qualitative case-study examples
 
-- **Status:** TODO  · **Owner:** _____  · **Est:** 0.5 day
-- **Description:** Pick 2–3 illustrative examples per hallucination type for the paper.
+- **Status:** DONE  · **Owner:** Bhalchandra  · **Est:** 0.5 day
+- **Description:** Pick illustrative examples per hallucination type for the paper (Table 2).
 - **Subtasks:**
-  - Select clear examples (question, generated answer, gold, label).
-  - Format as a case-study table (Table 2).
+  - [x] Select clear examples (question, generated answer, gold, why-wrong).
+  - [x] Format as a case-study table (`src/build_case_studies.py` -> `results/case_studies.md`).
 - **Dependencies:** T21.
+- **Outputs:** 2 curated examples per type (8 total); curation is explicit + reproducible.
 - **Acceptance criteria:**
-  - [ ] Case-study table with 2–3 examples per category.
+  - [x] Case-study table with 2 examples per category.
 
 ### T24 — (Optional) RoBERTa hallucination classifier
 
