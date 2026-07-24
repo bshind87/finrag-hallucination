@@ -91,7 +91,7 @@ Holding the dense pipeline otherwise fixed, we vary retrieval depth (Table 2). I
 
 ## RQ3: Generator held to identical context
 
-Table 3 compares GPT-3.5-turbo and Mistral-7B-Instruct answering over the *same* retrieved contexts. Given identical evidence, the smaller open model is **markedly more faithful** (0.59 vs.\ 0.21 overall; 0.63 vs.\ 0.35 on answered questions only, so the gap is not merely an abstention artifact) and nearly **twice as accurate on numbers** (numeric-EM 0.37 vs.\ 0.21). The trade-off is coverage: Mistral is **more conservative**, answering 69/150 versus GPT-3.5's 87 and preferring "I don't know" over a guess. Its lower answer relevancy (0.25 vs.\ 0.43) largely reflects that higher abstention rate, since a refusal scores as not relevant to the question.
+Table 3 compares GPT-3.5-turbo and Mistral-7B-Instruct answering over the *same* retrieved contexts. Given identical evidence, the smaller open model is **markedly more faithful** (0.59 vs.\ 0.21 overall; 0.63 vs.\ 0.35 on answered questions only, so the gap is not merely an abstention artifact) and nearly **twice as accurate on numbers** (numeric-tolerant EM 0.37 vs.\ 0.21). The trade-off is coverage: Mistral is **more conservative**, answering 69/150 versus GPT-3.5's 87 and preferring "I don't know" over a guess. Its lower answer relevancy (0.25 vs.\ 0.43) largely reflects that higher abstention rate, since a refusal scores as not relevant to the question.
 
 | Generator | Faithful. | Faith(ans) | Ans. Rel. | Ctx. Prec. | Answered | F1 | EM (num) |
 |---|---|---|---|---|---|---|---|
@@ -122,7 +122,7 @@ This inverts the naive expectation behind RQ3 ("do larger models hallucinate les
 | Type | Company | Question | Model answer | Gold | Why it is wrong |
 |---|---|---|---|---|---|
 | Numerical | General Mills | FY2020 free cash flow (from cash-flow statement) | \$25,825 million | \$3,215 | order-of-magnitude error |
-| Numerical | Coca-Cola | FY2022 dividend payout ratio | 42.68% | 0.8 | wrong dividends figure |
+| Numerical | Coca-Cola | FY2022 dividend payout ratio | 42.68% | 0.80 (80%) | wrong dividends figure |
 | Entity | AMD | What drove FY22 revenue change? | Lockheed F-16/F-22 program volume | AMD EPYC/semi-custom sales | answered from the wrong company's filing |
 | Entity | Amex | Geographies it operates in (2022) | Phoenix, Sunrise, Gurgaon, … | US, EMEA, APAC, LACC | listed office cities, not operating regions |
 | Unsupported | Amex | Debt securities registered to trade | a specific deferred-comp plan | there are none | fabricated a security |
