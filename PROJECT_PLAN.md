@@ -327,11 +327,11 @@
 
 ### T14 — Pipeline 2: Dense RAG (FAISS + MiniLM + GPT-3.5-turbo)
 
-- **Status:** TODO  · **Owner:** _____  · **Est:** 2 days
-- **Description:** Semantic retrieval variant.
+- **Status:** DONE  · **Owner:** Bhalchandra  · **Est:** 2 days
+- **Description:** Semantic retrieval variant (`src/pipeline_dense.py`). Includes a single-doc retrieval ceiling ablation (`--scope single_doc`).
 - **Subtasks:**
   - Embed chunks with `sentence-transformers/all-MiniLM-L6-v2`.
-  - Build FAISS flat index (`IndexFlatL2`); retrieve top-3 by similarity.
+  - [x] Build FAISS flat index (`IndexFlatIP`, cosine over normalized MiniLM embeddings); retrieve top-3.
   - Reuse the T06 prompt template + generator; save outputs in the standard schema.
   - Qualitatively compare retrieved chunks vs BM25.
 - **Dependencies:** T05, T07.
@@ -341,7 +341,7 @@
 
 ### T15 — Pipeline 3: Enhanced RAG (query rewriting + dense)
 
-- **Status:** TODO  · **Owner:** _____  · **Est:** 2 days
+- **Status:** DONE  · **Owner:** Bhalchandra  · **Est:** 2 days
 - **Description:** Add an LLM query-rewriting step before dense retrieval.
 - **Subtasks:**
   - Prompt GPT-3.5-turbo to rewrite/expand each question.
@@ -353,31 +353,43 @@
   - [ ] Enhanced pipeline runs over all 150 examples; schema-conformant output.
   - [ ] Rewrite examples logged; comparison note written.
 
-### T16 — Hyperparameter sweeps
+### T16 — Hyperparameter sweep (retrieval top-k)
 
-- **Status:** TODO  · **Owner:** _____  · **Est:** 1.5 days
-- **Description:** Tune the key knobs called out in the proposal.
+- **Status:** DONE  · **Owner:** Piyush [reviewed & reworked by Bhalchandra]  · **Est:** 1.5 days
+- **Description:** Ablate retrieval depth (top-k) on the dense pipeline. Scoped to top-k only:
+  the original chunk-size arm (256 vs 512) needed 256-token chunk/embedding artifacts that
+  are not in the repo, so it was not reproducible (see the tracker note for the full review).
 - **Subtasks:**
-  - Vary chunk size (256 vs 512), top-k (3 vs 5); keep temperature 0.0 for eval.
-  - Record each run's config + metrics.
-  - Pick the best-performing retrieval config to carry into the Mistral comparison.
-- **Dependencies:** T14, T15, T08, T09.
+  - [x] Run the dense pipeline at top-3 and top-5 (512-token chunks, GPT-3.5, temp 0).
+  - [x] Score both with the same **GPT-4o-mini** judge; record config + metrics.
+  - [x] Document the effect of top-k on retrieval recall, coverage, and faithfulness.
+- **Dependencies:** T14, T08, T09.
+- **Outputs:** `scripts/build_sweep_table.py` -> `results/t16_sweep_results.md` + `t16_sweep_chart.png`.
+- **Finding:** top-5 vs top-3 lifts Retr@k 64->73%, coverage 82->97/150, faithfulness
+  0.197->0.248, F1 0.116->0.126, num-EM 0.18->0.22 (context precision dips slightly, as expected).
 - **Acceptance criteria:**
-  - [ ] Sweep results table saved.
-  - [ ] Best config chosen and documented.
+  - [x] Sweep results table saved (reproducible, judge-consistent).
+  - [x] top-5 chosen as the stronger config; finding documented.
 
-### T17 — Swap in Mistral-7B-Instruct as alternate generator
+### T17 — Swap in Mistral-7B-Instruct as alternate generator (RQ3)
 
-- **Status:** TODO  · **Owner:** _____  · **Est:** 2 days
-- **Description:** Open-source generator comparison on the best retrieval config (Colab GPU).
+- **Status:** DONE  · **Owner:** Piyush [reviewed by Bhalchandra]  · **Est:** 2 days
+- **Description:** Open-source generator comparison for RQ3. Runs **Mistral-7B-Instruct locally
+  via Ollama** (no GPU, no HF token, $0) instead of Colab+bitsandbytes. To isolate the
+  generator, it answers over the **exact retrieved contexts from the GPT-3.5 Enhanced run**
+  (retrieval held fixed), using the identical prompt + output schema.
 - **Subtasks:**
-  - Load `mistralai/Mistral-7B-Instruct-v0.2` with 4-bit quantization (`bitsandbytes`) on Colab.
-  - Apply the best retrieval config (from T16); identical prompt template for fairness.
-  - Save outputs in the standard schema.
-- **Dependencies:** T16.
+  - [x] Install Ollama; pull `mistral:7b-instruct`.
+  - [x] Regenerate answers over the Enhanced contexts with Mistral (`src/pipeline_mistral.py`).
+  - [x] Score with the same harness + GPT-4o-mini judge; build the comparison table.
+- **Dependencies:** T15, T08, T09.
+- **Outputs:** `src/pipeline_mistral.py`, `src/build_generator_table.py` -> `results/generator_comparison.md`.
+- **Finding:** given identical context, Mistral is far more faithful (0.59 vs 0.21; answered-only
+  0.63 vs 0.35) and more numerically accurate (num-EM 0.37 vs 0.21), but more conservative
+  (answers 69 vs 87/150).
 - **Acceptance criteria:**
-  - [ ] Mistral run completes over the eval set; schema-conformant output.
-  - [ ] Generation config documented (quantization, params).
+  - [x] Mistral run completes over all 150; schema-conformant output.
+  - [x] Generator config documented; comparison reported.
 
 ---
 
@@ -385,7 +397,7 @@
 
 ### T18 — Full evaluation across all pipeline × model combos
 
-- **Status:** TODO  · **Owner:** _____  · **Est:** 1.5 days
+- **Status:** DONE  · **Owner:** Bhalchandra  · **Est:** 1.5 days
 - **Description:** Run the T08/T09 harness over every pipeline and model.
 - **Subtasks:**
   - Evaluate Pipelines 1–3 (GPT-3.5) + best-config Mistral.
@@ -397,11 +409,12 @@
 
 ### T19 — Identify failure cases for error analysis
 
-- **Status:** TODO  · **Owner:** _____  · **Est:** 0.5 day
-- **Description:** Select the hallucination candidates to annotate.
+- **Status:** DONE  · **Owner:** Bhalchandra  · **Est:** 0.5 day
+- **Description:** Select the hallucination candidates to annotate (`src/select_failure_cases.py`).
 - **Subtasks:**
-  - Filter outputs where faithfulness < 0.5 OR F1 = 0.
-  - From the baseline pipeline, draw a **stratified sample of 50** across question types/companies.
+  - [x] Define a candidate as **answered-but-incorrect** (not abstained AND numeric-EM = 0).
+  - [x] From the **Enhanced** pipeline (strongest deployable; the baseline answers too few),
+    draw a **stratified sample of 50** across question types.
 - **Dependencies:** T18.
 - **Acceptance criteria:**
   - [ ] 50-case sample exported under `/annotations`.
@@ -413,11 +426,11 @@
 
 ### T20 — Finalize annotation schema & taxonomy guidelines
 
-- **Status:** TODO  · **Owner:** _____  · **Est:** 0.5 day
-- **Description:** Lock the 4-category taxonomy and labeling rules before annotating.
+- **Status:** DONE  · **Owner:** Bhalchandra  · **Est:** 0.5 day
+- **Description:** Lock the 4-category taxonomy and labeling rules before annotating (`annotations/TAXONOMY.md`).
 - **Subtasks:**
-  - Document categories: **numerical**, **entity**, **reasoning**, **unsupported extrapolation** — each with a definition + example.
-  - Define the annotation sheet columns and the 10 shared cases for agreement.
+  - [x] Document categories: **numerical**, **entity**, **reasoning**, **unsupported extrapolation** — each with a definition + example.
+  - [x] Define the annotation sheet columns. (Solo-annotator project, so no shared-agreement subset; noted as a limitation.)
 - **Dependencies:** T19.
 - **Acceptance criteria:**
   - [ ] Taxonomy + guidelines doc committed.
@@ -425,20 +438,23 @@
 
 ### T21 — Manual annotation of 50 failure cases
 
-- **Status:** TODO  · **Owner:** _____  · **Est:** 1.5 days (split: ~12–13 cases/member)
-- **Description:** Each member labels their share; 10 cases double-annotated for agreement.
+- **Status:** DONE  · **Owner:** Bhalchandra  · **Est:** 1.5 days
+- **Description:** Single-annotator labeling (LLM-drafted, human-reviewed) of all 50 cases in
+  `annotations/failure_cases_50.csv`.
 - **Subtasks:**
-  - For each case: read question, retrieved chunks, generated answer, gold answer; assign one label.
-  - Compute inter-annotator agreement (Cohen's kappa) on the 10 shared cases.
+  - [x] For each case: read question, retrieved chunks, generated answer, gold answer; assign one label.
+  - [x] Human review of every drafted label; corrections applied.
 - **Dependencies:** T20.
+- **Note:** solo annotation, so **no Cohen's kappa** (needs >=2 independent annotators) — recorded
+  as a limitation in the paper. Distribution: numerical 18, entity 12, unsupported 6, reasoning 3,
+  other 11 (auto-flagged but actually correct — metric artifacts).
 - **Acceptance criteria:**
-  - [ ] All 50 cases labeled.
-  - [ ] Cohen's kappa reported.
-  - [ ] Disagreements resolved/adjudicated.
+  - [x] All 50 cases labeled.
+  - [x] Single-annotator limitation documented.
 
 ### T22 — Hallucination-type frequency analysis + figure
 
-- **Status:** TODO  · **Owner:** _____  · **Est:** 0.5 day
+- **Status:** DONE  · **Owner:** Bhalchandra  · **Est:** 0.5 day
 - **Description:** Quantify and visualize the taxonomy distribution.
 - **Subtasks:**
   - Compute frequency of each hallucination type.
