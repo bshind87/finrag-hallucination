@@ -87,7 +87,7 @@
 | T21 | Annotate 50 failure cases | Bhalchandra | DONE | 50 cases labeled in `annotations/failure_cases_50.csv` (LLM-drafted, human-reviewed). Distribution: numerical 18, entity 12, unsupported 6, reasoning 3 (+11 'other' = auto-flagged but actually correct). Single annotator -> no kappa (noted as limitation). | 2026-07-15 | 2026-07-15 |
 | T22 | Hallucination-type frequency + figure | Bhalchandra | DONE | `src/plot_hallucination_types.py` -> `results/fig_hallucination_types.png` (paper Figure 1) + `results/hallucination_type_freq.md`. Over 39 true hallucinations: numerical 46%, entity 31%, unsupported 15%, reasoning 8%. | 2026-07-15 | 2026-07-15 |
 | T23 | Curate qualitative case studies | Bhalchandra | DONE | `src/build_case_studies.py` -> `results/case_studies.md` (paper **Table 2**): 2 curated examples per hallucination type (8 total) with question / model answer / gold / why. | 2026-07-24 | 2026-07-24 |
-| T24                                                    | (Optional) RoBERTa classifier         | _____              | TODO        |                                                                                                                                                                                                                                                                                                                                                                                                                                      |            |            |
+| T24 | (Optional) RoBERTa hallucination classifier | Bhalchandra | DONE | `src/train_hallucination_classifier.py`: roberta-base fine-tuned on RAGTruth QA (Niu et al. 2024), zero-shot transfer to our 50 labeled cases. Transfer F1 0.81 (P 0.77, R 0.85) but low specificity (1/11 grounded caught) -- a high-recall over-flagger, consistent with RAGTruth-test (R 0.92, P 0.24). `results/t24_classifier_metrics.md` + `fig_t24_confusion.png`. | 2026-07-24 | 2026-07-24 |
 | T25 | Assemble final tables & figures | Bhalchandra | DONE | All tables (T1 retrieval, T2 top-k, T3 generator, T4 case studies) + figures (EDA overview, hallucination types) embedded in `paper/main.docx`. | 2026-07-24 | 2026-07-24 |
 | T26 | Expand related work (final) | Bhalchandra | DONE | Related Work reads as synthesis grouped by 3 themes (RAG methods / hallucination eval / financial NLP); tense updated from planned->done. | 2026-07-24 | 2026-07-24 |
 | T27 | Write final paper (8 pages) | Bhalchandra | DONE | Full final paper `paper/main.md` -> `paper/main.docx` (~8 pages): all sections + 4 tables + 2 figures; citations resolved. Proofread: every in-text number verified against tables, terminology standardized, cross-refs checked. | 2026-07-24 | 2026-07-24 |
@@ -477,7 +477,7 @@
 
 ### T24 — (Optional) RoBERTa hallucination classifier
 
-- **Status:** TODO  · **Owner:** _____  · **Est:** 2 days
+- **Status:** DONE  · **Owner:** Bhalchandra  · **Est:** 2 days
 - **Description:** Train an automatic hallucinated-vs-grounded classifier; evaluate against human labels.
 - **Subtasks:**
   - Use RAGTruth (`wandb/RAGTruth`) as training supervision.
