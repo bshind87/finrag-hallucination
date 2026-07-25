@@ -40,8 +40,7 @@
     line-height:1.5;-webkit-font-smoothing:antialiased;padding:clamp(20px,4vw,52px) 20px}
   .wrap{max-width:1040px;margin:0 auto}
 
-  /* header */
-  header{margin-bottom:34px}
+  header{margin-bottom:26px}
   .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);
     font-weight:600;margin:0 0 10px}
   h1{font-size:clamp(24px,4vw,34px);line-height:1.12;margin:0 0 8px;letter-spacing:-.01em;
@@ -54,8 +53,12 @@
     background:var(--surface)}
   .rq::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c)}
   .rq.r1{--c:var(--retr)} .rq.r2{--c:var(--err)} .rq.r3{--c:var(--gen)}
+  .hint{margin:14px 0 0;font-size:12.5px;color:var(--faint);display:flex;align-items:center;gap:7px}
+  .hint b{color:var(--muted);font-weight:600}
+  .hint .dot{width:15px;height:15px;border-radius:50%;display:inline-grid;place-items:center;
+    font-size:11px;font-weight:800;color:var(--data);
+    background:color-mix(in srgb,var(--data) 15%,transparent)}
 
-  /* stage band */
   .stage{position:relative;background:var(--surface);border:1px solid var(--line);
     border-left:4px solid var(--hue,var(--line));border-radius:var(--radius);
     box-shadow:var(--shadow);padding:18px 20px 20px}
@@ -71,7 +74,6 @@
     background:color-mix(in srgb,var(--hue) 14%,transparent);
     border:1px solid color-mix(in srgb,var(--hue) 30%,transparent)}
 
-  /* generic node + rows */
   .node{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;
     padding:12px 14px}
   .node h4{margin:0 0 3px;font-size:14px;font-weight:680}
@@ -93,7 +95,7 @@
     color:var(--hue)}
   .card h4{margin:3px 0 5px;font-size:14.5px;font-weight:700}
   .card p{margin:0;font-size:12px;color:var(--muted);line-height:1.45}
-  .card.oracle{border-top-style:dashed;opacity:.9}
+  .card.oracle{border-top-style:dashed;opacity:.92}
 
   .prompt{background:color-mix(in srgb,var(--gen) 8%,var(--surface-2));
     border:1px dashed color-mix(in srgb,var(--gen) 45%,var(--line));border-radius:10px;
@@ -107,13 +109,12 @@
     background:var(--surface-2);border:1px solid var(--line);color:var(--muted)}
   .chip b{color:var(--ink);font-weight:600}
 
-  .taxo{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+  .taxo{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px;padding:6px;border-radius:10px}
   .pill{font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;
     border:1px solid color-mix(in srgb,var(--err) 30%,var(--line));
     background:color-mix(in srgb,var(--err) 9%,transparent)}
   .pill span{color:var(--muted);font-weight:500}
 
-  /* connector */
   .conn{display:flex;flex-direction:column;align-items:center;gap:2px;height:30px;
     justify-content:center;color:var(--faint)}
   .conn .line{width:2px;height:12px;background:var(--line)}
@@ -124,15 +125,54 @@
     font-size:12px;color:var(--faint)}
   footer .stack{font-family:var(--mono);font-size:11.5px}
 
+  /* clickable affordance */
+  .clickable{cursor:pointer;position:relative;transition:border-color .15s,box-shadow .15s,transform .12s}
+  .clickable::after{content:"+";position:absolute;top:8px;right:9px;width:18px;height:18px;
+    border-radius:50%;display:grid;place-items:center;font-size:14px;font-weight:700;line-height:1;
+    color:var(--hue,var(--muted));background:color-mix(in srgb,var(--hue,var(--muted)) 13%,transparent);
+    opacity:.42;transition:opacity .15s,transform .15s}
+  .clickable:hover{border-color:color-mix(in srgb,var(--hue,var(--line)) 60%,var(--line))}
+  .clickable:hover::after{opacity:1;transform:scale(1.12)}
+  .clickable:focus-visible{outline:2px solid var(--hue,var(--data));outline-offset:2px}
+  .clickable:focus-visible::after{opacity:1}
+  .prompt.clickable::after,.taxo.clickable::after{top:7px;right:8px}
+
+  /* modal */
+  .modal{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:22px}
+  .modal[hidden]{display:none}
+  .modal-backdrop{position:absolute;inset:0;background:rgba(9,14,22,.55)}
+  @supports (backdrop-filter:blur(2px)){ .modal-backdrop{backdrop-filter:blur(3px)} }
+  .modal-card{position:relative;background:var(--surface);border:1px solid var(--line);
+    border-top:4px solid var(--hue,var(--data));border-radius:14px;
+    box-shadow:0 24px 70px rgba(0,0,0,.4);max-width:560px;width:100%;max-height:84vh;
+    overflow:auto;padding:24px 26px 26px}
+  .modal-tag{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+    color:var(--hue);margin-bottom:8px}
+  .modal-card h3{margin:0 0 12px;font-size:20px;font-weight:720;letter-spacing:-.01em;
+    line-height:1.2;text-wrap:balance;padding-right:26px}
+  .modal-body{font-size:14px;line-height:1.6;color:var(--ink)}
+  .modal-body p{margin:0 0 11px} .modal-body p:last-child{margin-bottom:0}
+  .modal-body b{font-weight:670}
+  .modal-body .mono{font-family:var(--mono);font-size:12.5px;
+    background:var(--surface-2);padding:1px 5px;border-radius:4px}
+  .modal-body ul{margin:8px 0 11px;padding-left:18px} .modal-body li{margin:4px 0}
+  .modal-x{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:8px;
+    border:1px solid var(--line);background:var(--surface-2);color:var(--muted);font-size:18px;
+    line-height:1;cursor:pointer;display:grid;place-items:center}
+  .modal-x:hover{color:var(--ink);border-color:var(--faint)}
+  .modal-x:focus-visible{outline:2px solid var(--hue);outline-offset:2px}
+  @media (prefers-reduced-motion:no-preference){
+    .modal-card{animation:pop .18s ease-out}
+    @keyframes pop{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
+    .clickable:active{transform:scale(.994)}
+  }
+
   @media (max-width:720px){
     .grid4{grid-template-columns:1fr 1fr}
     .split{grid-template-columns:1fr}
     .s-desc{margin-left:0;text-align:left;max-width:none}
   }
   @media (max-width:460px){ .grid4,.grid2{grid-template-columns:1fr} }
-  @media (prefers-reduced-motion:no-preference){
-    .stage{transition:box-shadow .2s} .stage:hover{box-shadow:0 2px 4px rgba(0,0,0,.08),0 14px 34px rgba(24,34,48,.10)}
-  }
 </style>
 
 <style media="print">
@@ -140,6 +180,8 @@
   html,body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   body{padding:10mm}
   section.stage,.conn,header,footer{break-inside:avoid}
+  .clickable{cursor:auto}
+  .clickable::after,.hint,.modal{display:none !important}
 </style>
 </head>
 <body>
@@ -155,6 +197,7 @@
       <span class="rq r2">RQ2 · which hallucination types dominate</span>
       <span class="rq r3">RQ3 · does the generator matter</span>
     </div>
+    <p class="hint"><span class="dot">+</span> <b>Interactive —</b> click any box to expand what that step does.</p>
   </header>
 
   <!-- 1 · DATA -->
@@ -164,13 +207,13 @@
       <span class="s-desc">Build the searchable corpus once, cache it for every pipeline.</span>
     </div>
     <div class="flow">
-      <div class="node"><h4>FinanceBench</h4><p>150 QA pairs · 84 10-K/10-Q/8-K filings · gold answer + evidence span</p></div>
+      <div class="node clickable" data-info="n-finbench"><h4>FinanceBench</h4><p>150 QA pairs · 84 10-K/10-Q/8-K filings · gold answer + evidence span</p></div>
       <span class="arrow">→</span>
-      <div class="node"><h4>PDF extraction</h4><p>PyMuPDF pulls raw text from every filing (tables flattened to text)</p></div>
+      <div class="node clickable" data-info="n-extract"><h4>PDF extraction</h4><p>PyMuPDF pulls raw text from every filing (tables flattened to text)</p></div>
       <span class="arrow">→</span>
-      <div class="node"><h4>Chunking</h4><p>Fixed windows over the corpus<span class="kv" style="--hue:var(--data)">512-tok · 64 overlap</span><span class="kv" style="--hue:var(--data)">21,876 chunks</span></p></div>
+      <div class="node clickable" data-info="n-chunk"><h4>Chunking</h4><p>Fixed windows over the corpus<span class="kv" style="--hue:var(--data)">512-tok · 64 overlap</span><span class="kv" style="--hue:var(--data)">21,876 chunks</span></p></div>
       <span class="arrow">→</span>
-      <div class="node"><h4>Embeddings</h4><p>Encoded &amp; cached for dense search<span class="kv" style="--hue:var(--data)">all-MiniLM-L6-v2</span></p></div>
+      <div class="node clickable" data-info="n-embed"><h4>Embeddings</h4><p>Encoded &amp; cached for dense search<span class="kv" style="--hue:var(--data)">all-MiniLM-L6-v2</span></p></div>
     </div>
   </section>
 
@@ -184,10 +227,10 @@
       <span class="s-desc">Same generator, prompt, chunks &amp; top-3 throughout — <b>only the retriever changes</b>, isolating its effect.</span>
     </div>
     <div class="grid4">
-      <div class="card"><div class="role">Baseline</div><h4>BM25</h4><p>Sparse lexical match (keyword overlap) over the full 84-filing corpus. No semantics.</p></div>
-      <div class="card"><div class="role">Pipeline 2</div><h4>Dense · FAISS</h4><p>Cosine search over MiniLM embeddings. Captures meaning, bridges vocabulary gaps.</p></div>
-      <div class="card"><div class="role">Pipeline 3</div><h4>Enhanced</h4><p>An LLM rewrites the question into a search query, then dense retrieval runs on it.</p></div>
-      <div class="card oracle"><div class="role">Upper bound</div><h4>Single-doc</h4><p>Oracle ablation: retrieval restricted to the question's own filing (known-document ceiling).</p></div>
+      <div class="card clickable" data-info="r-bm25"><div class="role">Baseline</div><h4>BM25</h4><p>Sparse lexical match (keyword overlap) over the full 84-filing corpus. No semantics.</p></div>
+      <div class="card clickable" data-info="r-dense"><div class="role">Pipeline 2</div><h4>Dense · FAISS</h4><p>Cosine search over MiniLM embeddings. Captures meaning, bridges vocabulary gaps.</p></div>
+      <div class="card clickable" data-info="r-enhanced"><div class="role">Pipeline 3</div><h4>Enhanced</h4><p>An LLM rewrites the question into a search query, then dense retrieval runs on it.</p></div>
+      <div class="card oracle clickable" data-info="r-singledoc"><div class="role">Upper bound</div><h4>Single-doc</h4><p>Oracle ablation: retrieval restricted to the question's own filing (known-document ceiling).</p></div>
     </div>
   </section>
 
@@ -200,10 +243,10 @@
       <span class="tag">RQ3</span>
       <span class="s-desc">Retrieved chunks + question → an LLM writes the answer. Swapping the generator on <b>identical context</b> isolates the model.</span>
     </div>
-    <div class="prompt"><b>Prompt:</b> context + question → “answer <b>only</b> from the context; say <span class="mono">“I don't know”</span> if it isn't there.” &nbsp;A wrong answer is therefore a grounding failure, not a memory guess.</div>
+    <div class="prompt clickable" data-info="g-prompt"><b>Prompt:</b> context + question → “answer <b>only</b> from the context; say <span class="mono">“I don't know”</span> if it isn't there.” &nbsp;A wrong answer is therefore a grounding failure, not a memory guess.</div>
     <div class="grid2">
-      <div class="card" style="--hue:var(--gen)"><div class="role">Default generator</div><h4>GPT-3.5-turbo</h4><p>Hosted OpenAI model, temperature 0. Used across all four retrieval pipelines.</p></div>
-      <div class="card" style="--hue:var(--gen)"><div class="role">Open-model comparison</div><h4>Mistral-7B-Instruct</h4><p>Run locally via Ollama, answering over the same Enhanced context (RQ3).</p></div>
+      <div class="card clickable" style="--hue:var(--gen)" data-info="g-gpt"><div class="role">Default generator</div><h4>GPT-3.5-turbo</h4><p>Hosted OpenAI model, temperature 0. Used across all four retrieval pipelines.</p></div>
+      <div class="card clickable" style="--hue:var(--gen)" data-info="g-mistral"><div class="role">Open-model comparison</div><h4>Mistral-7B-Instruct</h4><p>Run locally via Ollama, answering over the same Enhanced context (RQ3).</p></div>
     </div>
   </section>
 
@@ -215,15 +258,15 @@
       <span class="s-num">4</span><span class="s-name">Output &amp; Evaluation</span>
       <span class="s-desc">One fixed output schema lets a single harness score every pipeline the same way.</span>
     </div>
-    <div class="node" style="margin-bottom:12px"><h4>Schema-conformant predictions <span class="mono" style="color:var(--faint)">(JSONL)</span></h4><p>answer · retrieved chunk ids + text · gold answer · doc/question metadata</p></div>
+    <div class="node clickable" data-info="e-schema" style="margin-bottom:12px"><h4>Schema-conformant predictions <span class="mono" style="color:var(--faint)">(JSONL)</span></h4><p>answer · retrieved chunk ids + text · gold answer · doc/question metadata</p></div>
     <div class="split">
-      <div class="metricset">
+      <div class="metricset node clickable" data-info="e-ragas" style="background:transparent;border:0;padding:0">
         <h4>RAGAS &nbsp;<span class="mono" style="font-size:11px;color:var(--faint)">judge: GPT-4o-mini</span></h4>
         <div class="chips">
           <span class="chip">faithfulness</span><span class="chip">answer relevancy</span><span class="chip">context precision</span>
         </div>
       </div>
-      <div class="metricset">
+      <div class="metricset node clickable" data-info="e-qa" style="background:transparent;border:0;padding:0">
         <h4>QA metrics <span class="mono" style="font-size:11px;color:var(--faint)">reference-based</span></h4>
         <div class="chips">
           <span class="chip">token <b>F1</b></span><span class="chip">numeric-tolerant <b>EM</b></span><span class="chip"><b>Retr@k</b></span>
@@ -243,8 +286,8 @@
     </div>
     <div class="split" style="align-items:start">
       <div>
-        <div class="node" style="margin-bottom:10px"><h4>50 answered-but-incorrect cases</h4><p>Sampled from the Enhanced pipeline, labeled by hand into a 4-type taxonomy.</p></div>
-        <div class="taxo">
+        <div class="node clickable" data-info="x-cases" style="margin-bottom:10px"><h4>50 answered-but-incorrect cases</h4><p>Sampled from the Enhanced pipeline, labeled by hand into a 4-type taxonomy.</p></div>
+        <div class="taxo clickable" data-info="x-taxonomy">
           <span class="pill">Numerical <span>46%</span></span>
           <span class="pill">Entity <span>31%</span></span>
           <span class="pill">Unsupported <span>15%</span></span>
@@ -252,8 +295,8 @@
         </div>
       </div>
       <div>
-        <div class="node" style="margin-bottom:10px"><h4>Outputs</h4><p>Type-frequency figure · case-study table · finding that ~22% of auto-flagged “failures” are actually correct.</p></div>
-        <div class="node"><h4>RoBERTa detector <span class="mono" style="font-size:11px;color:var(--faint)">proof-of-concept</span></h4><p>Fine-tuned on RAGTruth, transferred to our labels — a high-recall over-flagger.</p></div>
+        <div class="node clickable" data-info="x-outputs" style="margin-bottom:10px"><h4>Outputs</h4><p>Type-frequency figure · case-study table · finding that ~22% of auto-flagged “failures” are actually correct.</p></div>
+        <div class="node clickable" data-info="x-roberta"><h4>RoBERTa detector <span class="mono" style="font-size:11px;color:var(--faint)">proof-of-concept</span></h4><p>Fine-tuned on RAGTruth, transferred to our labels — a high-recall over-flagger.</p></div>
       </div>
     </div>
   </section>
@@ -263,6 +306,125 @@
     <span class="stack">FinanceBench · BM25 / FAISS · MiniLM · GPT-3.5 &amp; Mistral-7B · RAGAS · RoBERTa</span>
   </footer>
 </div>
+
+<div class="modal" id="modal" hidden>
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title" tabindex="-1">
+    <button class="modal-x" data-close aria-label="Close">×</button>
+    <div class="modal-tag" id="modal-tag"></div>
+    <h3 id="modal-title"></h3>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var GROUP = {
+    n:{accent:"data", tag:"Data & Indexing"},
+    r:{accent:"retr", tag:"Retrieval · RQ1"},
+    g:{accent:"gen",  tag:"Generation · RQ3"},
+    e:{accent:"eval", tag:"Evaluation"},
+    x:{accent:"err",  tag:"Error Analysis · RQ2"}
+  };
+  var D = {
+    "n-finbench":{title:"FinanceBench — the benchmark", body:
+      "<p><b>FinanceBench</b> (open-source subset) is our evaluation set: <b>150</b> analyst-style questions over <b>84</b> real SEC filings (10-K / 10-Q / 8-K) from <b>32</b> companies, FY2015–2024.</p>"+
+      "<p>Every question ships with a <b>gold answer</b> and an <b>evidence span</b>, so we can check whether an answer is truly grounded. Answers are short and mostly numeric (84% numeric, median 9 words), and only ~2% appear <i>verbatim</i> in the evidence — the model must <b>synthesize</b> the value rather than copy it, which is exactly where hallucination creeps in.</p>"},
+    "n-extract":{title:"PDF text extraction", body:
+      "<p>We pull raw text from every filing with <b>PyMuPDF</b>. Filings are long (median ~128 pages) and heavily <b>table-based</b>.</p>"+
+      "<p>Extraction <b>flattens tables into linear text</b>, which can separate a figure from its row/column headers. That's a known limitation and a plausible source of the numerical errors we see later.</p>"},
+    "n-chunk":{title:"Chunking the corpus", body:
+      "<p>Each filing's text is split into <b>fixed 512-token windows</b> (tiktoken <span class='mono'>cl100k_base</span>) with <b>64-token overlap</b>, producing <b>21,876 chunks</b> across the corpus.</p>"+
+      "<p>Every chunk keeps its <b>source-filing id</b>, which lets us later measure whether retrieval reached the <i>correct</i> document (the Retr@k metric). This chunk pool is built <b>once</b> and shared by every pipeline.</p>"},
+    "n-embed":{title:"Embeddings (dense index)", body:
+      "<p>For dense retrieval, each chunk is embedded <b>once</b> into a vector with <span class='mono'>all-MiniLM-L6-v2</span> (a Sentence-BERT model) and the vectors are <b>cached</b> to disk.</p>"+
+      "<p>At query time we embed only the question and compare against the cached vectors — so the expensive encoding happens up front and is reused by the Dense, Enhanced, and Single-doc pipelines.</p>"},
+
+    "r-bm25":{title:"BM25 — sparse retrieval", body:
+      "<p><b>Baseline retriever.</b> BM25 ranks chunks by <b>keyword overlap</b> with the question (term frequency with saturation + document-length normalization). It has <b>no notion of meaning</b> — 'revenue' won't match 'net sales'.</p>"+
+      "<p>It searches the full 84-filing corpus and returns its <b>top-3</b> chunks. On FinanceBench it reaches the correct filing only <b>43%</b> of the time — the weakest retriever, and the reason it answers the fewest questions.</p>"},
+    "r-dense":{title:"Dense · FAISS — semantic retrieval", body:
+      "<p>The question and every chunk become vectors (MiniLM); we retrieve the <b>top-3</b> by <b>cosine similarity</b> using a FAISS index.</p>"+
+      "<p>Because it matches on <i>meaning</i>, it bridges vocabulary gaps BM25 misses, lifting correct-filing retrieval to <b>64%</b>. Key point: for the same question, <b>Dense's top-3 chunks are usually different from BM25's</b> — same chunk pool, different selection.</p>"},
+    "r-enhanced":{title:"Enhanced — query rewrite + dense", body:
+      "<p>Before retrieving, an LLM <b>rewrites the question</b> into a search query — spelling out abbreviations and adding the financial line-item terms that actually appear in filings.</p>"+
+      "<p>Dense retrieval then runs on the <i>rewritten</i> query, so the <b>top-3 changes again</b>. This is our strongest deployable retriever (<b>69%</b> correct-filing) and the pipeline whose failures we taxonomize in the error analysis.</p>"},
+    "r-singledoc":{title:"Single-doc — oracle upper bound", body:
+      "<p><b>Not a deployable method — a ceiling ablation.</b> Retrieval is <b>restricted to the question's own filing</b> (as if we already knew the right document), then dense-ranked to top-3.</p>"+
+      "<p>It separates two difficulties: <i>finding</i> the right filing vs. <i>reading</i> it. Retr@3 jumps to <b>100%</b> and accuracy rises — yet a third of questions still go unanswered, showing that finding the filing is <b>necessary but not sufficient</b>.</p>"},
+
+    "g-prompt":{title:"The generation prompt", body:
+      "<p>The retrieved <b>top-3 chunks are concatenated as the 'context'</b>, the <b>question</b> is appended, and the model is told to <b>answer only from the context</b> and to say <span class='mono'>“I don't know”</span> when the answer isn't there.</p>"+
+      "<p>Context comes <i>before</i> the question (shown to help on FinanceBench). Because the model is instructed not to guess, a wrong answer is a <b>grounding failure</b>, not a memory lapse — which is exactly what we set out to measure.</p>"},
+    "g-gpt":{title:"GPT-3.5-turbo — default generator", body:
+      "<p>Hosted OpenAI model at <b>temperature 0</b> (deterministic). It writes the answer from the prompt and runs across <b>all four</b> retrieval pipelines.</p>"+
+      "<p>Because the generator is held fixed, any difference between those four pipelines comes from <b>retrieval</b>, not the model — that's what makes RQ1 a clean comparison.</p>"},
+    "g-mistral":{title:"Mistral-7B-Instruct — open-model (RQ3)", body:
+      "<p>Mistral-7B runs <b>locally via Ollama</b> (no GPU, no API cost). Crucially, it answers over the <b>exact same retrieved context</b> as GPT-3.5's Enhanced run — we do <b>not</b> re-retrieve — so any difference isolates the <i>generator</i>.</p>"+
+      "<p>Result: on identical context Mistral is <b>far more faithful</b> (0.59 vs 0.21) and more numerically accurate, but <b>more conservative</b> — it answers 69 of 150 vs GPT-3.5's 87, preferring 'I don't know' over a guess.</p>"},
+
+    "e-schema":{title:"Shared output schema", body:
+      "<p>Every pipeline writes its predictions in <b>one fixed schema</b> (JSONL): the answer, the retrieved chunk ids + text, the gold answer, and doc/question metadata.</p>"+
+      "<p>This shared contract lets a <b>single evaluation harness</b> score any pipeline the same way — no special-casing — which is what keeps the comparison table fair.</p>"},
+    "e-ragas":{title:"RAGAS — reference-free metrics", body:
+      "<p><b>RAGAS</b> uses an LLM judge (<span class='mono'>GPT-4o-mini</span>) to score, without needing the gold answer:</p>"+
+      "<ul><li><b>Faithfulness</b> — is every claim in the answer supported by the retrieved context? (our primary hallucination signal)</li>"+
+      "<li><b>Answer relevancy</b> — does the answer address the question?</li>"+
+      "<li><b>Context precision</b> — did retrieval surface useful chunks?</li></ul>"+
+      "<p>We also report faithfulness on the <b>answered</b> subset, since an 'I don't know' has no claims to ground.</p>"},
+    "e-qa":{title:"QA metrics — reference-based", body:
+      "<p>Scored against the gold answer:</p>"+
+      "<ul><li><b>Token F1</b> and <b>Exact Match</b> (SQuAD-style)</li>"+
+      "<li><b>Numeric-tolerant EM</b> — because gold answers are numbers formatted many ways (<span class='mono'>$1,577</span> vs <span class='mono'>1577.00</span> vs <span class='mono'>1.577B</span>), this counts an answer correct if the value is within 1%, ignoring format</li>"+
+      "<li><b>Retr@k</b> — how often the top-k retrieval actually contained the correct filing</li></ul>"+
+      "<p>Numeric-tolerant EM revealed that strict EM ≈ 0 badly <i>understated</i> accuracy.</p>"},
+
+    "x-cases":{title:"Selecting the failure cases", body:
+      "<p>From the Enhanced pipeline we take the <b>50 answered-but-incorrect</b> cases — the model committed to an answer, yet numeric-tolerant EM = 0 — stratified across question types.</p>"+
+      "<p>One annotator labels each (LLM-drafted, then <b>human-reviewed</b>) with one primary hallucination type. Reviewing them surfaced a finding of its own: <b>~22% of auto-flagged 'failures' were actually correct</b> answers mis-scored by the metric — a caution about trusting automatic evaluation alone.</p>"},
+    "x-taxonomy":{title:"Hallucination taxonomy (RQ2)", body:
+      "<p>Among the <b>39 genuine</b> hallucinations:</p>"+
+      "<ul><li><b>Numerical — 46%</b>: right item, wrong value or calculation</li>"+
+      "<li><b>Entity — 31%</b>: wrong company / segment / statement — usually a wrong-filing retrieval</li>"+
+      "<li><b>Unsupported — 15%</b>: fabricated, not traceable to any retrieved chunk</li>"+
+      "<li><b>Reasoning — 8%</b>: right inputs, wrong inference</li></ul>"+
+      "<p>Numerical dominates because the benchmark is numeric-heavy; entity errors tie RQ2 back to the <b>retrieval bottleneck</b> of RQ1.</p>"},
+    "x-outputs":{title:"Error-analysis outputs", body:
+      "<p>The analysis produces three deliverables: a <b>type-frequency figure</b>, a <b>case-study table</b> (two vivid examples per type), and the <b>~22% mis-scored</b> finding.</p>"+
+      "<p>Together they answer <b>RQ2</b>: which hallucination types dominate in financial QA — and show that numerical grounding, not multi-step reasoning, is the hard part.</p>"},
+    "x-roberta":{title:"RoBERTa detector (proof-of-concept)", body:
+      "<p>A first step toward <b>automatic</b> detection: <span class='mono'>roberta-base</span> fine-tuned on <b>RAGTruth</b> (a response is 'hallucinated' if it carries any annotated span), then applied zero-shot to our 50 labeled cases.</p>"+
+      "<p>It transfers with <b>F1 0.81</b> (recall 0.85) but is a <b>high-recall over-flagger</b> — it correctly clears only 1 of 11 grounded answers. Useful as a first-pass filter, not a precise judge; a calibrated detector is future work.</p>"}
+  };
+
+  var modal=document.getElementById("modal"),
+      mTag=document.getElementById("modal-tag"),
+      mTitle=document.getElementById("modal-title"),
+      mBody=document.getElementById("modal-body"),
+      card=modal.querySelector(".modal-card"),
+      lastFocus=null;
+
+  function open(key){
+    var d=D[key]; if(!d) return;
+    var g=GROUP[key.charAt(0)]||GROUP.n;
+    card.style.setProperty("--hue","var(--"+g.accent+")");
+    mTag.textContent=g.tag; mTitle.textContent=d.title; mBody.innerHTML=d.body;
+    lastFocus=document.activeElement;
+    modal.hidden=false; card.focus();
+  }
+  function close(){ modal.hidden=true; if(lastFocus&&lastFocus.focus) lastFocus.focus(); }
+
+  document.querySelectorAll("[data-info]").forEach(function(el){
+    el.setAttribute("role","button"); el.setAttribute("tabindex","0");
+    el.addEventListener("click",function(){ open(el.getAttribute("data-info")); });
+    el.addEventListener("keydown",function(e){
+      if(e.key==="Enter"||e.key===" "){ e.preventDefault(); open(el.getAttribute("data-info")); }
+    });
+  });
+  modal.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click",close); });
+  document.addEventListener("keydown",function(e){ if(e.key==="Escape"&&!modal.hidden) close(); });
+})();
+</script>
 
 </body>
 </html>
