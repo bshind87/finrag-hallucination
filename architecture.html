@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FinRAG — System Architecture</title>
+<style>
+  :root{
+    --paper:#f6f7f9; --surface:#ffffff; --surface-2:#eef1f5;
+    --ink:#182230; --muted:#5c6775; --faint:#8a94a3; --line:#dde3ea;
+    --data:#3d6fb4; --retr:#2b8a76; --gen:#6a5acf; --eval:#bd7a2a; --err:#b0506a;
+    --shadow:0 1px 2px rgba(24,34,48,.06),0 8px 24px rgba(24,34,48,.06);
+    --radius:12px;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --paper:#0e1420; --surface:#161d29; --surface-2:#1c2534;
+      --ink:#e7ecf3; --muted:#9aa6b6; --faint:#6b7686; --line:#28313f;
+      --data:#6d9bdd; --retr:#4fb89f; --gen:#9a8cf0; --eval:#e0a04e; --err:#e07b95;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="light"]{
+    --paper:#f6f7f9; --surface:#ffffff; --surface-2:#eef1f5;
+    --ink:#182230; --muted:#5c6775; --faint:#8a94a3; --line:#dde3ea;
+    --data:#3d6fb4; --retr:#2b8a76; --gen:#6a5acf; --eval:#bd7a2a; --err:#b0506a;
+    --shadow:0 1px 2px rgba(24,34,48,.06),0 8px 24px rgba(24,34,48,.06);
+  }
+  :root[data-theme="dark"]{
+    --paper:#0e1420; --surface:#161d29; --surface-2:#1c2534;
+    --ink:#e7ecf3; --muted:#9aa6b6; --faint:#6b7686; --line:#28313f;
+    --data:#6d9bdd; --retr:#4fb89f; --gen:#9a8cf0; --eval:#e0a04e; --err:#e07b95;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+    line-height:1.5;-webkit-font-smoothing:antialiased;padding:clamp(20px,4vw,52px) 20px}
+  .wrap{max-width:1040px;margin:0 auto}
+
+  /* header */
+  header{margin-bottom:34px}
+  .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);
+    font-weight:600;margin:0 0 10px}
+  h1{font-size:clamp(24px,4vw,34px);line-height:1.12;margin:0 0 8px;letter-spacing:-.01em;
+    text-wrap:balance;font-weight:750}
+  .sub{color:var(--muted);font-size:15px;margin:0 0 18px;max-width:60ch}
+  .sub b{color:var(--ink);font-weight:650}
+  .rqs{display:flex;flex-wrap:wrap;gap:8px}
+  .rq{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;
+    padding:5px 11px 5px 9px;border-radius:999px;border:1px solid var(--line);
+    background:var(--surface)}
+  .rq::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c)}
+  .rq.r1{--c:var(--retr)} .rq.r2{--c:var(--err)} .rq.r3{--c:var(--gen)}
+
+  /* stage band */
+  .stage{position:relative;background:var(--surface);border:1px solid var(--line);
+    border-left:4px solid var(--hue,var(--line));border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:18px 20px 20px}
+  .s-data{--hue:var(--data)} .s-retr{--hue:var(--retr)} .s-gen{--hue:var(--gen)}
+  .s-eval{--hue:var(--eval)} .s-err{--hue:var(--err)}
+  .s-head{display:flex;align-items:center;gap:11px;margin-bottom:15px;flex-wrap:wrap}
+  .s-num{flex:none;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;
+    font-size:13px;font-weight:700;color:#fff;background:var(--hue);font-variant-numeric:tabular-nums}
+  .s-name{font-size:13px;letter-spacing:.09em;text-transform:uppercase;font-weight:700}
+  .s-desc{color:var(--muted);font-size:13px;margin-left:auto;max-width:44ch;text-align:right}
+  .tag{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+    padding:3px 8px;border-radius:6px;color:var(--hue);
+    background:color-mix(in srgb,var(--hue) 14%,transparent);
+    border:1px solid color-mix(in srgb,var(--hue) 30%,transparent)}
+
+  /* generic node + rows */
+  .node{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;
+    padding:12px 14px}
+  .node h4{margin:0 0 3px;font-size:14px;font-weight:680}
+  .node p{margin:0;font-size:12.5px;color:var(--muted)}
+  .mono{font-family:var(--mono);font-size:12px}
+  .kv{display:inline-block;font-family:var(--mono);font-size:11px;color:var(--hue,var(--muted));
+    background:color-mix(in srgb,var(--hue,var(--muted)) 12%,transparent);
+    padding:1px 6px;border-radius:5px;margin:5px 5px 0 0}
+
+  .flow{display:flex;align-items:stretch;gap:10px;overflow-x:auto;padding-bottom:4px}
+  .flow>.node{flex:1;min-width:150px}
+  .arrow{flex:none;align-self:center;color:var(--faint);font-size:17px;line-height:1}
+
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .card{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;
+    padding:13px 14px;border-top:3px solid var(--hue)}
+  .card .role{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;
+    color:var(--hue)}
+  .card h4{margin:3px 0 5px;font-size:14.5px;font-weight:700}
+  .card p{margin:0;font-size:12px;color:var(--muted);line-height:1.45}
+  .card.oracle{border-top-style:dashed;opacity:.9}
+
+  .prompt{background:color-mix(in srgb,var(--gen) 8%,var(--surface-2));
+    border:1px dashed color-mix(in srgb,var(--gen) 45%,var(--line));border-radius:10px;
+    padding:11px 14px;font-size:12.5px;color:var(--muted);margin-bottom:12px}
+  .prompt b{color:var(--ink);font-weight:650}
+
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .metricset h4{margin:0 0 6px;font-size:13px;font-weight:680}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-size:11.5px;font-family:var(--mono);padding:3px 8px;border-radius:6px;
+    background:var(--surface-2);border:1px solid var(--line);color:var(--muted)}
+  .chip b{color:var(--ink);font-weight:600}
+
+  .taxo{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+  .pill{font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;
+    border:1px solid color-mix(in srgb,var(--err) 30%,var(--line));
+    background:color-mix(in srgb,var(--err) 9%,transparent)}
+  .pill span{color:var(--muted);font-weight:500}
+
+  /* connector */
+  .conn{display:flex;flex-direction:column;align-items:center;gap:2px;height:30px;
+    justify-content:center;color:var(--faint)}
+  .conn .line{width:2px;height:12px;background:var(--line)}
+  .conn .chev{font-size:14px;line-height:1;margin-top:-4px}
+
+  footer{margin-top:30px;padding-top:16px;border-top:1px solid var(--line);
+    display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;
+    font-size:12px;color:var(--faint)}
+  footer .stack{font-family:var(--mono);font-size:11.5px}
+
+  @media (max-width:720px){
+    .grid4{grid-template-columns:1fr 1fr}
+    .split{grid-template-columns:1fr}
+    .s-desc{margin-left:0;text-align:left;max-width:none}
+  }
+  @media (max-width:460px){ .grid4,.grid2{grid-template-columns:1fr} }
+  @media (prefers-reduced-motion:no-preference){
+    .stage{transition:box-shadow .2s} .stage:hover{box-shadow:0 2px 4px rgba(0,0,0,.08),0 14px 34px rgba(24,34,48,.10)}
+  }
+</style>
+
+<style media="print">
+  @page{size:320mm 540mm;margin:10mm}
+  html,body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{padding:10mm}
+  section.stage,.conn,header,footer{break-inside:avoid}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">CS6120 NLP · Northeastern University</p>
+    <h1>Analyzing Hallucination Patterns in RAG-based Financial QA</h1>
+    <p class="sub">End-to-end system over the <b>FinanceBench</b> open subset —
+      <b>150</b> questions across <b>84</b> SEC filings (32 companies). Only one component
+      changes per experiment, so each result maps to one research question.</p>
+    <div class="rqs">
+      <span class="rq r1">RQ1 · which retrieval hallucinates less</span>
+      <span class="rq r2">RQ2 · which hallucination types dominate</span>
+      <span class="rq r3">RQ3 · does the generator matter</span>
+    </div>
+  </header>
+
+  <!-- 1 · DATA -->
+  <section class="stage s-data">
+    <div class="s-head">
+      <span class="s-num">1</span><span class="s-name">Data &amp; Indexing</span>
+      <span class="s-desc">Build the searchable corpus once, cache it for every pipeline.</span>
+    </div>
+    <div class="flow">
+      <div class="node"><h4>FinanceBench</h4><p>150 QA pairs · 84 10-K/10-Q/8-K filings · gold answer + evidence span</p></div>
+      <span class="arrow">→</span>
+      <div class="node"><h4>PDF extraction</h4><p>PyMuPDF pulls raw text from every filing (tables flattened to text)</p></div>
+      <span class="arrow">→</span>
+      <div class="node"><h4>Chunking</h4><p>Fixed windows over the corpus<span class="kv" style="--hue:var(--data)">512-tok · 64 overlap</span><span class="kv" style="--hue:var(--data)">21,876 chunks</span></p></div>
+      <span class="arrow">→</span>
+      <div class="node"><h4>Embeddings</h4><p>Encoded &amp; cached for dense search<span class="kv" style="--hue:var(--data)">all-MiniLM-L6-v2</span></p></div>
+    </div>
+  </section>
+
+  <div class="conn"><span class="line"></span><span class="chev">▼</span></div>
+
+  <!-- 2 · RETRIEVAL -->
+  <section class="stage s-retr">
+    <div class="s-head">
+      <span class="s-num">2</span><span class="s-name">Retrieval — the variable</span>
+      <span class="tag">RQ1</span>
+      <span class="s-desc">Same generator, prompt, chunks &amp; top-3 throughout — <b>only the retriever changes</b>, isolating its effect.</span>
+    </div>
+    <div class="grid4">
+      <div class="card"><div class="role">Baseline</div><h4>BM25</h4><p>Sparse lexical match (keyword overlap) over the full 84-filing corpus. No semantics.</p></div>
+      <div class="card"><div class="role">Pipeline 2</div><h4>Dense · FAISS</h4><p>Cosine search over MiniLM embeddings. Captures meaning, bridges vocabulary gaps.</p></div>
+      <div class="card"><div class="role">Pipeline 3</div><h4>Enhanced</h4><p>An LLM rewrites the question into a search query, then dense retrieval runs on it.</p></div>
+      <div class="card oracle"><div class="role">Upper bound</div><h4>Single-doc</h4><p>Oracle ablation: retrieval restricted to the question's own filing (known-document ceiling).</p></div>
+    </div>
+  </section>
+
+  <div class="conn"><span class="line"></span><span class="chev">▼</span></div>
+
+  <!-- 3 · GENERATION -->
+  <section class="stage s-gen">
+    <div class="s-head">
+      <span class="s-num">3</span><span class="s-name">Generation — the variable</span>
+      <span class="tag">RQ3</span>
+      <span class="s-desc">Retrieved chunks + question → an LLM writes the answer. Swapping the generator on <b>identical context</b> isolates the model.</span>
+    </div>
+    <div class="prompt"><b>Prompt:</b> context + question → “answer <b>only</b> from the context; say <span class="mono">“I don't know”</span> if it isn't there.” &nbsp;A wrong answer is therefore a grounding failure, not a memory guess.</div>
+    <div class="grid2">
+      <div class="card" style="--hue:var(--gen)"><div class="role">Default generator</div><h4>GPT-3.5-turbo</h4><p>Hosted OpenAI model, temperature 0. Used across all four retrieval pipelines.</p></div>
+      <div class="card" style="--hue:var(--gen)"><div class="role">Open-model comparison</div><h4>Mistral-7B-Instruct</h4><p>Run locally via Ollama, answering over the same Enhanced context (RQ3).</p></div>
+    </div>
+  </section>
+
+  <div class="conn"><span class="line"></span><span class="chev">▼</span></div>
+
+  <!-- 4 · OUTPUT + EVAL -->
+  <section class="stage s-eval">
+    <div class="s-head">
+      <span class="s-num">4</span><span class="s-name">Output &amp; Evaluation</span>
+      <span class="s-desc">One fixed output schema lets a single harness score every pipeline the same way.</span>
+    </div>
+    <div class="node" style="margin-bottom:12px"><h4>Schema-conformant predictions <span class="mono" style="color:var(--faint)">(JSONL)</span></h4><p>answer · retrieved chunk ids + text · gold answer · doc/question metadata</p></div>
+    <div class="split">
+      <div class="metricset">
+        <h4>RAGAS &nbsp;<span class="mono" style="font-size:11px;color:var(--faint)">judge: GPT-4o-mini</span></h4>
+        <div class="chips">
+          <span class="chip">faithfulness</span><span class="chip">answer relevancy</span><span class="chip">context precision</span>
+        </div>
+      </div>
+      <div class="metricset">
+        <h4>QA metrics <span class="mono" style="font-size:11px;color:var(--faint)">reference-based</span></h4>
+        <div class="chips">
+          <span class="chip">token <b>F1</b></span><span class="chip">numeric-tolerant <b>EM</b></span><span class="chip"><b>Retr@k</b></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="conn"><span class="line"></span><span class="chev">▼</span></div>
+
+  <!-- 5 · ERROR ANALYSIS -->
+  <section class="stage s-err">
+    <div class="s-head">
+      <span class="s-num">5</span><span class="s-name">Error Analysis</span>
+      <span class="tag">RQ2</span>
+      <span class="s-desc">The novel contribution: characterize the answered-but-wrong cases by <b>hallucination type</b>.</span>
+    </div>
+    <div class="split" style="align-items:start">
+      <div>
+        <div class="node" style="margin-bottom:10px"><h4>50 answered-but-incorrect cases</h4><p>Sampled from the Enhanced pipeline, labeled by hand into a 4-type taxonomy.</p></div>
+        <div class="taxo">
+          <span class="pill">Numerical <span>46%</span></span>
+          <span class="pill">Entity <span>31%</span></span>
+          <span class="pill">Unsupported <span>15%</span></span>
+          <span class="pill">Reasoning <span>8%</span></span>
+        </div>
+      </div>
+      <div>
+        <div class="node" style="margin-bottom:10px"><h4>Outputs</h4><p>Type-frequency figure · case-study table · finding that ~22% of auto-flagged “failures” are actually correct.</p></div>
+        <div class="node"><h4>RoBERTa detector <span class="mono" style="font-size:11px;color:var(--faint)">proof-of-concept</span></h4><p>Fine-tuned on RAGTruth, transferred to our labels — a high-recall over-flagger.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Retrieval spine → generation → evaluation → error analysis. Each stage's colour marks its research question.</span>
+    <span class="stack">FinanceBench · BM25 / FAISS · MiniLM · GPT-3.5 &amp; Mistral-7B · RAGAS · RoBERTa</span>
+  </footer>
+</div>
+
+</body>
+</html>
