@@ -1,5 +1,5 @@
 ---
-title: "Analyzing Hallucination Patterns in Retrieval-Augmented Financial Question Answering"
+title: "Analyzing Hallucination Patterns in RAG Based Financial Question Answering"
 author:
   - Bhalchandra Shinde
   - Piyush Daga
@@ -9,7 +9,6 @@ abstract: |
   Retrieval-augmented generation (RAG) grounds large language models (LLMs) in external documents, yet models still produce claims that contradict or exceed the retrieved evidence---a failure mode with acute consequences in finance, where a single wrong figure misleads. We study *when and how* RAG systems hallucinate on financial question answering using the open-source subset of **FinanceBench** (150 annotated questions over 84 SEC filings). We build four RAG configurations that differ only in retrieval---sparse (BM25), dense (FAISS + MiniLM), query-rewriting, and a known-document upper bound---and evaluate each with RAGAS faithfulness, context precision, and a numeric-tolerant exact match. Three findings emerge. **(RQ1)** Retrieval, not generation, is the dominant lever: as the correct filing reaches the top-3 for 43%→64%→69% of questions, coverage, faithfulness, and accuracy all rise in lockstep; a retrieval-depth ablation (top-5 vs.\ top-3) confirms deeper retrieval helps. **(RQ2)** A manual taxonomy of 50 answered-but-incorrect cases shows *numerical* errors dominate (46%), followed by *entity* (31%), *unsupported* (15%), and *reasoning* (8%) hallucinations; notably, ~22% of automatically flagged "failures" are in fact correct answers mis-scored by exact match, a caution for automatic hallucination metrics. **(RQ3)** Swapping GPT-3.5-turbo for the open Mistral-7B-Instruct on *identical* retrieved context makes the smaller model substantially *more* faithful (0.59 vs.\ 0.21) and more numerically accurate, at the cost of answering fewer questions---so abstention behavior, not model scale, drives grounding here.
 bibliography: references.bib
 ---
-
 # Introduction
 
 Retrieval-augmented generation [@lewis2020rag] has become the dominant recipe for grounding LLM outputs in verifiable external knowledge. Yet a growing body of work shows that even with relevant context in the prompt, models generate statements that are unsupported by---or contradict---the retrieved passages [@ji2023hallucination; @huang2023hallucinationsurvey]. In *financial* question answering this is especially costly: answers are exact numeric values drawn from dense regulatory filings, and a single fabricated or misattributed figure produces a confidently wrong answer.
@@ -40,7 +39,7 @@ We organize related work into three themes: RAG methods and retrieval, hallucina
 
 **Findings.** Figure 1 summarizes the analysis (full notebook and figures in the repository). Four properties make this a stress test for grounded generation: (1) *Long, tabular context*---source filings have a median of 128 pages and evidence spans are 69% table-heavy, so retrieval operates over large, noisy documents. (2) *Short, numeric answers*---the median gold answer is 9 words and 84% are numeric, so a single wrong figure flips a correct answer to wrong. (3) *Abstractive answers*---only 2% of gold answers appear *verbatim* in the evidence (mean extractability 0.27); the model must *synthesize* a value, not copy it, which is the core hallucination risk. (4) *Modest lexical overlap*---median question--evidence cosine similarity is 0.47, so retrievers must bridge a vocabulary gap, and 46% of questions require numerical computation or aggregation. These observations justify measuring faithfulness (RAGAS) alongside F1/EM and motivate our four-category hallucination taxonomy.
 
-![FinanceBench (open-source, *n*=150) overview: (a) balanced question types, (b) numeric reasoning dominates, (c) 10-K filings dominate the corpus, (d) gold answers are short.](fig_eda_overview.png)
+![FinanceBench (open-source, n=150) overview: (a) balanced question types, (b) numeric reasoning dominates, (c) 10-K filings dominate the corpus, (d) gold answers are short.](fig_eda_overview.png)
 
 # Method
 
@@ -67,12 +66,12 @@ We index the full corpus on purpose---a retriever that can surface the *wrong* f
 
 Table 1 compares the four retrieval configurations. Every metric improves as retrieval improves. The correct filing reaches the top-3 for **43% → 64% → 69%** of questions (BM25 → dense → rewrite); because the model answers only from context, coverage rises in lockstep (**47 → 82 → 87** of 150), and so do context precision (0.24 → 0.42 → 0.46), faithfulness (0.10 → 0.20 → 0.21), token F1 (0.083 → 0.116 → 0.121), and numeric-tolerant EM (0.12 → 0.18 → 0.21). Since only retrieval changed, this isolates **retrieval as the dominant lever (RQ1)**.
 
-| Pipeline | Retr@3 | Faithful. | Faith(ans) | Ans. Rel. | Ctx. Prec. | Answered | F1 | EM (num) |
-|---|---|---|---|---|---|---|---|---|
-| Baseline (BM25) | 43% | 0.104 | 0.408 | 0.234 | 0.240 | 47/150 | 0.083 | 0.120 |
-| Dense (FAISS) | 64% | 0.197 | 0.352 | 0.414 | 0.417 | 82/150 | 0.116 | 0.180 |
-| Enhanced (rewrite) | 69% | 0.209 | 0.353 | 0.432 | 0.462 | 87/150 | 0.121 | 0.207 |
-| Dense, single-doc | 100% | 0.300 | 0.572 | 0.424 | 0.435 | 96/150 | 0.139 | 0.267 |
+| Pipeline           | Retr@3 | Faithful. | Faith(ans) | Ans. Rel. | Ctx. Prec. | Answered | F1    | EM (num) |
+| ------------------ | ------ | --------- | ---------- | --------- | ---------- | -------- | ----- | -------- |
+| Baseline (BM25)    | 43%    | 0.104     | 0.408      | 0.234     | 0.240      | 47/150   | 0.083 | 0.120    |
+| Dense (FAISS)      | 64%    | 0.197     | 0.352      | 0.414     | 0.417      | 82/150   | 0.116 | 0.180    |
+| Enhanced (rewrite) | 69%    | 0.209     | 0.353      | 0.432     | 0.462      | 87/150   | 0.121 | 0.207    |
+| Dense, single-doc  | 100%   | 0.300     | 0.572      | 0.424     | 0.435      | 96/150   | 0.139 | 0.267    |
 
 : Retrieval-strategy comparison on FinanceBench (all 150 questions). Generator = GPT-3.5-turbo (temp 0); RAGAS judge = GPT-4o-mini. Faith(ans) = faithfulness over answered questions only; EM (num) = numeric-tolerant exact match.
 
@@ -82,10 +81,10 @@ Two nuances matter for interpreting hallucination. First, **strict EM ≈ 0 unde
 
 Holding the dense pipeline otherwise fixed, we vary retrieval depth (Table 2). Increasing top-$k$ from 3 to 5 raises the chance the correct filing is retrieved (Retr@$k$ 64% → 73%), lifts coverage (82 → 97 of 150), and improves faithfulness (0.197 → 0.248), F1, and numeric-tolerant EM. Context precision dips slightly (0.42 → 0.39), as expected when more chunks are admitted, but the net effect is positive---consistent with retrieval recall being the binding constraint.
 
-| Top-$k$ | Retr@$k$ | Faithful. | Faith(ans) | Ans. Rel. | Ctx. Prec. | Answered | F1 | EM (num) |
-|---|---|---|---|---|---|---|---|---|
-| 3 | 64% | 0.197 | 0.352 | 0.414 | 0.417 | 82/150 | 0.116 | 0.180 |
-| 5 | 73% | 0.248 | 0.397 | 0.468 | 0.388 | 97/150 | 0.126 | 0.220 |
+| Top-$k$ | Retr@$k$ | Faithful. | Faith(ans) | Ans. Rel. | Ctx. Prec. | Answered | F1    | EM (num) |
+| --------- | ---------- | --------- | ---------- | --------- | ---------- | -------- | ----- | -------- |
+| 3         | 64%        | 0.197     | 0.352      | 0.414     | 0.417      | 82/150   | 0.116 | 0.180    |
+| 5         | 73%        | 0.248     | 0.397      | 0.468     | 0.388      | 97/150   | 0.126 | 0.220    |
 
 : Retrieval-depth ablation on the dense pipeline (GPT-3.5, 512-token chunks, GPT-4o-mini judge).
 
@@ -93,10 +92,10 @@ Holding the dense pipeline otherwise fixed, we vary retrieval depth (Table 2). I
 
 Table 3 compares GPT-3.5-turbo and Mistral-7B-Instruct answering over the *same* retrieved contexts. Given identical evidence, the smaller open model is **markedly more faithful** (0.59 vs.\ 0.21 overall; 0.63 vs.\ 0.35 on answered questions only, so the gap is not merely an abstention artifact) and nearly **twice as accurate on numbers** (numeric-tolerant EM 0.37 vs.\ 0.21). The trade-off is coverage: Mistral is **more conservative**, answering 69/150 versus GPT-3.5's 87 and preferring "I don't know" over a guess. Its lower answer relevancy (0.25 vs.\ 0.43) largely reflects that higher abstention rate, since a refusal scores as not relevant to the question.
 
-| Generator | Faithful. | Faith(ans) | Ans. Rel. | Ctx. Prec. | Answered | F1 | EM (num) |
-|---|---|---|---|---|---|---|---|
-| GPT-3.5-turbo | 0.209 | 0.353 | 0.432 | 0.462 | 87/150 | 0.121 | 0.207 |
-| Mistral-7B-Instruct | 0.592 | 0.631 | 0.254 | 0.411 | 69/150 | 0.128 | 0.373 |
+| Generator           | Faithful. | Faith(ans) | Ans. Rel. | Ctx. Prec. | Answered | F1    | EM (num) |
+| ------------------- | --------- | ---------- | --------- | ---------- | -------- | ----- | -------- |
+| GPT-3.5-turbo       | 0.209     | 0.353      | 0.432     | 0.462      | 87/150   | 0.121 | 0.207    |
+| Mistral-7B-Instruct | 0.592     | 0.631      | 0.254     | 0.411      | 69/150   | 0.128 | 0.373    |
 
 : Generator comparison on identical Enhanced retrieval (RQ3). Only the answer generator differs.
 
@@ -119,16 +118,16 @@ This inverts the naive expectation behind RQ3 ("do larger models hallucinate les
 
 **Case studies.** Table 4 gives two representative examples per type. The numerical cases include order-of-magnitude slips (a \$25.8B free-cash-flow answer where the gold is \$3.2B) and wrong intermediate figures (a dividend-payout ratio of 0.43 vs.\ 0.8). Entity cases are stark: asked what drove AMD's FY22 revenue, the model answered with Lockheed Martin F-16/F-22 content pulled from the wrong filing. Unsupported cases fabricate specifics---naming a registered security when the gold answer is "there are none." Reasoning cases keep the right inputs but draw the wrong conclusion, e.g.\ comparing the wrong pair of fiscal years and thus reporting debt as rising when it fell.
 
-| Type | Company | Question | Model answer | Gold | Why it is wrong |
-|---|---|---|---|---|---|
-| Numerical | General Mills | FY2020 free cash flow (from cash-flow statement) | \$25,825 million | \$3,215 | order-of-magnitude error |
-| Numerical | Coca-Cola | FY2022 dividend payout ratio | 42.68% | 0.80 (80%) | wrong dividends figure |
-| Entity | AMD | What drove FY22 revenue change? | Lockheed F-16/F-22 program volume | AMD EPYC/semi-custom sales | answered from the wrong company's filing |
-| Entity | Amex | Geographies it operates in (2022) | Phoenix, Sunrise, Gurgaon, … | US, EMEA, APAC, LACC | listed office cities, not operating regions |
-| Unsupported | Amex | Debt securities registered to trade | a specific deferred-comp plan | there are none | fabricated a security |
-| Unsupported | Pfizer | Spinning off any large segments (Q2'23)? | not spinning off any | Yes---Upjohn | contradicts the filing |
-| Reasoning | Verizon | Did debt increase 2021→2022? | Yes (used 2020→2021) | No, it decreased | compared the wrong fiscal years |
-| Reasoning | 3M | Capital-intensive in FY2022? | Yes | No | opposite interpretation of the same figures |
+| Type        | Company       | Question                                         | Model answer                      | Gold                       | Why it is wrong                             |
+| ----------- | ------------- | ------------------------------------------------ | --------------------------------- | -------------------------- | ------------------------------------------- |
+| Numerical   | General Mills | FY2020 free cash flow (from cash-flow statement) | \$25,825 million                  | \$3,215                    | order-of-magnitude error                    |
+| Numerical   | Coca-Cola     | FY2022 dividend payout ratio                     | 42.68%                            | 0.80 (80%)                 | wrong dividends figure                      |
+| Entity      | AMD           | What drove FY22 revenue change?                  | Lockheed F-16/F-22 program volume | AMD EPYC/semi-custom sales | answered from the wrong company's filing    |
+| Entity      | Amex          | Geographies it operates in (2022)                | Phoenix, Sunrise, Gurgaon, …     | US, EMEA, APAC, LACC       | listed office cities, not operating regions |
+| Unsupported | Amex          | Debt securities registered to trade              | a specific deferred-comp plan     | there are none             | fabricated a security                       |
+| Unsupported | Pfizer        | Spinning off any large segments (Q2'23)?         | not spinning off any              | Yes---Upjohn               | contradicts the filing                      |
+| Reasoning   | Verizon       | Did debt increase 2021→2022?                    | Yes (used 2020→2021)             | No, it decreased           | compared the wrong fiscal years             |
+| Reasoning   | 3M            | Capital-intensive in FY2022?                     | Yes                               | No                         | opposite interpretation of the same figures |
 
 : Representative case studies, two per hallucination type (from the 50 labeled cases).
 

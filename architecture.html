@@ -189,9 +189,7 @@
   <header>
     <p class="eyebrow">CS6120 NLP · Northeastern University</p>
     <h1>Analyzing Hallucination Patterns in RAG-based Financial QA</h1>
-    <p class="sub">End-to-end system over the <b>FinanceBench</b> open subset —
-      <b>150</b> questions across <b>84</b> SEC filings (32 companies). Only one component
-      changes per experiment, so each result maps to one research question.</p>
+    <p class="sub">End-to-end system over the <b>FinanceBench</b> open subset — <b>150</b> questions across <b>84</b> U.S. Securities and Exchange Commission (SEC) filings (32 companies). Only one component changes per experiment, so each result maps to one research question.</p>
     <div class="rqs">
       <span class="rq r1">RQ1 · which retrieval hallucinates less</span>
       <span class="rq r2">RQ2 · which hallucination types dominate</span>
@@ -328,7 +326,7 @@
   };
   var D = {
     "n-finbench":{title:"FinanceBench — the benchmark", body:
-      "<p><b>FinanceBench</b> (open-source subset) is our evaluation set: <b>150</b> analyst-style questions over <b>84</b> real SEC filings (10-K / 10-Q / 8-K) from <b>32</b> companies, FY2015–2024.</p>"+
+      "<p><b>FinanceBench</b> (open-source subset) is our evaluation set: <b>150</b> analyst-style questions over <b>84</b> real U.S. Securities and Exchange Commission (SEC) filings (10-K / 10-Q / 8-K) from <b>32</b> companies, FY2015–2024.</p>"+
       "<p>Every question ships with a <b>gold answer</b> and an <b>evidence span</b>, so we can check whether an answer is truly grounded. Answers are short and mostly numeric (84% numeric, median 9 words), and only ~2% appear <i>verbatim</i> in the evidence — the model must <b>synthesize</b> the value rather than copy it, which is exactly where hallucination creeps in.</p>"},
     "n-extract":{title:"PDF text extraction", body:
       "<p>We pull raw text from every filing with <b>PyMuPDF</b>. Filings are long (median ~128 pages) and heavily <b>table-based</b>.</p>"+
@@ -343,8 +341,8 @@
     "r-bm25":{title:"BM25 — sparse retrieval", body:
       "<p><b>Baseline retriever.</b> BM25 ranks chunks by <b>keyword overlap</b> with the question (term frequency with saturation + document-length normalization). It has <b>no notion of meaning</b> — 'revenue' won't match 'net sales'.</p>"+
       "<p>It searches the full 84-filing corpus and returns its <b>top-3</b> chunks. On FinanceBench it reaches the correct filing only <b>43%</b> of the time — the weakest retriever, and the reason it answers the fewest questions.</p>"},
-    "r-dense":{title:"Dense · FAISS — semantic retrieval", body:
-      "<p>The question and every chunk become vectors (MiniLM); we retrieve the <b>top-3</b> by <b>cosine similarity</b> using a FAISS index.</p>"+
+    "r-dense":{title:"Dense · FAISS — semantic retrieval ", body:
+      "<p>FAISS (Facebook AI Similarity Search) is an open-source library developed by Meta AI for fast similarity search and clustering of high-dimensional vectors. The question and every chunk become vectors (MiniLM); we retrieve the <b>top-3</b> by <b>cosine similarity</b> using a FAISS index.</p>"+
       "<p>Because it matches on <i>meaning</i>, it bridges vocabulary gaps BM25 misses, lifting correct-filing retrieval to <b>64%</b>. Key point: for the same question, <b>Dense's top-3 chunks are usually different from BM25's</b> — same chunk pool, different selection.</p>"},
     "r-enhanced":{title:"Enhanced — query rewrite + dense", body:
       "<p>Before retrieving, an LLM <b>rewrites the question</b> into a search query — spelling out abbreviations and adding the financial line-item terms that actually appear in filings.</p>"+
