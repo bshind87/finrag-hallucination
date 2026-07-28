@@ -88,6 +88,8 @@ Holding the dense pipeline otherwise fixed, we vary retrieval depth (Table 2). I
 
 : Retrieval-depth ablation on the dense pipeline (GPT-3.5, 512-token chunks, GPT-4o-mini judge).
 
+**Chunk size.** We also varied chunk size on the Dense pipeline (256 vs.\ 512 tokens, top-3, all else fixed). Smaller 256-token chunks fragment a figure from its surrounding label and hurt where it matters: the correct filing is retrieved less often (Retr@3 59% vs.\ 64%), fewer questions are answered (70 vs.\ 82 of 150), and context precision, answer relevancy, F1 and numeric-tolerant EM all fall. Their only edge is a marginally higher faithfulness score (0.23 vs.\ 0.20), an artifact of committing less to a tighter context. We therefore use 512-token chunks throughout.
+
 ## RQ3: Generator held to identical context
 
 Table 3 compares GPT-3.5-turbo and Mistral-7B-Instruct answering over the *same* retrieved contexts. Given identical evidence, the smaller open model is **markedly more faithful** (0.59 vs.\ 0.21 overall; 0.63 vs.\ 0.35 on answered questions only, so the gap is not merely an abstention artifact) and nearly **twice as accurate on numbers** (numeric-tolerant EM 0.37 vs.\ 0.21). The trade-off is coverage: Mistral is **more conservative**, answering 69/150 versus GPT-3.5's 87 and preferring "I don't know" over a guess. Its lower answer relevancy (0.25 vs.\ 0.43) largely reflects that higher abstention rate, since a refusal scores as not relevant to the question.
@@ -131,13 +133,22 @@ This inverts the naive expectation behind RQ3 ("do larger models hallucinate les
 
 : Representative case studies, two per hallucination type (from the 50 labeled cases).
 
-**Toward automatic detection.** As a proof of concept, we fine-tuned `roberta-base` on the QA subset of RAGTruth [@niu2024ragtruth] (a response is labeled hallucinated if it carries any annotated span) and applied it zero-shot to our 50 labeled cases. It transfers with F1 0.81 (precision 0.77, recall 0.85), catching 33 of 39 hallucinations---but it correctly clears only 1 of 11 grounded answers, and on the RAGTruth test split it behaves the same way (recall 0.92, precision 0.24). The detector is therefore a high-recall *over-flagger*: useful as a first-pass filter that rarely misses a hallucination, but too imprecise to trust unaided. A precise, calibrated detector remains future work.
+**Toward automatic detection.** As a proof of concept, we fine-tuned `roberta-base` on the QA subset of RAGTruth [@niu2024ragtruth] (a response is labeled hallucinated if it carries any annotated span) and applied it zero-shot to our 50 labeled cases (Table 5). It transfers with F1 0.81 (precision 0.77, recall 0.85), catching 33 of 39 hallucinations---but it correctly clears only 1 of 11 grounded answers, and on the RAGTruth test split it behaves the same way (recall 0.92, precision 0.24). The detector is therefore a high-recall *over-flagger*: useful as a first-pass filter that rarely misses a hallucination, but too imprecise to trust unaided. A precise, calibrated detector remains future work.
+
+| Eval set | N | Accuracy | Precision | Recall | F1 |
+|---|---|---|---|---|---|
+| RAGTruth-QA test | 900 | 0.480 | 0.244 | 0.919 | 0.386 |
+| FinanceBench-50 (transfer) | 50 | 0.680 | 0.767 | 0.846 | 0.805 |
+
+: RoBERTa hallucination-detector performance: fine-tuned on RAGTruth QA and evaluated on its held-out test split and, zero-shot, on our 50 labeled FinanceBench cases (hallucinated = any of the four taxonomy types; grounded = the 11 "other" cases that were actually correct).
 
 # Conclusion, Limitations, and Future Work
 
 We studied when and how RAG systems hallucinate on financial QA. Across four pipelines that differ only in retrieval, **retrieval quality is the dominant lever** on faithfulness and accuracy (RQ1), reinforced by a top-$k$ ablation. A manual taxonomy shows **numerical errors dominate** the residual hallucinations, with entity errors---mostly wrong-filing retrievals---a close second (RQ2). Holding retrieved context fixed, the open **Mistral-7B-Instruct is more faithful than GPT-3.5** by abstaining more (RQ3), indicating that grounding on this benchmark is governed more by abstention behavior than by model scale. We also find that ~22% of automatically flagged failures are correct answers mis-scored---a caution for automatic evaluation.
 
 **Limitations.** (1) *Single annotator.* The 50 cases were labeled by one annotator (LLM-drafted, human-reviewed), so we do not report inter-annotator agreement (Cohen's kappa); a second independent pass would strengthen the taxonomy. (2) *PDF table extraction* flattens tables into linear text, which can sever a figure from its row/column headers and is a plausible source of numerical errors. (3) *Scale:* we evaluate the 150-question open subset, not the full 10,231-question FinanceBench. (4) *Judge dependence:* RAGAS faithfulness relies on an LLM judge (GPT-4o-mini); absolute values should be read comparatively.
+
+**Scope note.** We report retrieval and generator effects as separate controlled comparisons---varying only retrieval with the generator fixed (Tables 1--2) and only the generator on identical retrieved context (Table 3)---rather than a single pipeline×generator matrix, which isolates each factor instead of confounding them. One planned component was narrowed in scope: the RoBERTa detector (Table 5) was built as a binary hallucinated-vs-grounded classifier rather than a multi-class categorizer of the four hallucination types; multi-class categorization remains future work.
 
 **Future work.** Table-aware chunking that preserves headers; retrieval upgrades (Fusion-in-Decoder [@izacard2021fid], Self-RAG [@asai2024selfrag]) to close the remaining recall gap; turning our proof-of-concept RAGTruth-trained detector into a *precise*, calibrated classifier (it currently over-flags); and scaling the evaluation to the full benchmark.
 
