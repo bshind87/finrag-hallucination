@@ -5,3 +5,4 @@ dense_singledoc,openai:gpt-3.5-turbo,150,0.0067,0.1392,96,0.2175,0.0104,0.2667,0
 enhanced_mistral,ollama:mistral:7b-instruct,150,0.0,0.1275,69,0.1622,0.0,0.3733,0.3768
 dense_faiss,openai:gpt-3.5-turbo,150,0.0,0.1161,82,0.2099,0.0,0.18,0.3293
 dense_top5,openai:gpt-3.5-turbo,150,0.0,0.1261,97,0.195,0.0,0.22,0.3402
+dense_256tok,openai:gpt-3.5-turbo,150,0.0,0.0952,70,0.2041,0.0,0.16,0.3429

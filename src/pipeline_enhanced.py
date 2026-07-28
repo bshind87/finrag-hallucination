@@ -1,17 +1,27 @@
-"""Pipeline 3: Enhanced RAG = LLM query rewriting + dense retrieval (Task T15).
+"""Pipeline 3 — Enhanced RAG: LLM query rewriting + dense retrieval  (Task T15).
 
-Adds one step before the dense pipeline (T14): the LLM rewrites/expands the question
-into a retrieval query (spelling out abbreviations and adding the financial line-item
-terms that actually appear in filings), then we retrieve against the *rewritten* query
-from the same FAISS index and answer with the identical prompt/generator/schema. The
-only change vs. Pipeline 2 is the query used for retrieval -- the controlled step for
-testing whether query rewriting closes the retrieval gap (RQ1).
+OVERVIEW
+    The Dense pipeline (T14) with one extra step in front: an LLM rewrites each
+    question into a retrieval query — spelling out abbreviations and adding the
+    financial line-item terms that appear in filings — and dense retrieval then runs
+    on the *rewritten* query. Everything downstream (generator, prompt, schema) is
+    unchanged, so the only difference vs. Dense is the query used for retrieval.
 
-Each row additionally logs the original and rewritten query for the comparison note.
+ROLE IN THE PROJECT (RQ1 / RQ2 / RQ3)
+    The strongest deployable retriever in the comparison. Its residual failures are
+    the ones we taxonomize in the error analysis (RQ2), and its retrieved context is
+    reused by the Mistral generator comparison (RQ3, T17).
 
-Run it:
-    python src/pipeline_enhanced.py                  # all 150, top-3, GPT-3.5
-    python src/pipeline_enhanced.py --limit 3        # smoke test
+PIPELINE FLOW (per question)
+    question -> LLM rewrite -> embed -> FAISS top-k -> prompt -> LLM answer -> row
+    (each row also logs the rewritten query, for inspection)
+
+INPUTS   data/processed/chunks_<strategy>.parquet
+OUTPUTS  results/raw_outputs/enhanced_rewrite.jsonl
+
+RUN
+    python src/pipeline_enhanced.py            # all 150, top-3, GPT-3.5
+    python src/pipeline_enhanced.py --limit 3  # quick smoke test
 """
 from __future__ import annotations
 

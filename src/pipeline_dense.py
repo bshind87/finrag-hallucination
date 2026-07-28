@@ -1,19 +1,32 @@
-"""Pipeline 2: Dense RAG with FAISS + MiniLM embeddings (Task T14).
+"""Pipeline 2 — Dense RAG: FAISS + MiniLM semantic retrieval  (Task T14).
 
-Semantic retrieval variant of the baseline. Instead of BM25 term matching, we embed
-every chunk with ``sentence-transformers/all-MiniLM-L6-v2`` and retrieve the top-k by
-cosine similarity from a FAISS index built over the whole corpus (all 84 filings).
-The generator, prompt template, temperature, and output schema are identical to the
-BM25 baseline (T06), so the only thing that changes is *retrieval* -- that is the
-controlled comparison for RQ1.
+OVERVIEW
+    Same end-to-end system as the baseline, but retrieval is *semantic* instead of
+    lexical: every chunk is embedded with sentence-transformers all-MiniLM-L6-v2 and
+    the top-k are retrieved by cosine similarity from a FAISS index over all 84
+    filings. Generator, prompt, temperature, and output schema are identical to the
+    baseline (T06) — the only thing that changes is retrieval.
 
-Chunk embeddings are cached to disk (data/processed/) so the enhanced pipeline (T15)
-reuses them without re-encoding.
+ROLE IN THE PROJECT (RQ1)
+    The middle rung of the retrieval comparison (BM25 -> Dense -> Enhanced). It also
+    hosts the single-document *oracle* ablation via `--scope single_doc`, which limits
+    retrieval to the question's own filing to give a known-filing upper bound.
 
-Run it:
-    python src/pipeline_dense.py                  # all 150, top-3, GPT-3.5
-    python src/pipeline_dense.py --limit 3        # quick smoke test
-    python src/pipeline_dense.py --backend ollama # local generator
+PIPELINE FLOW (per question)
+    question -> embed -> FAISS cosine top-k -> prompt(context + question) -> LLM -> row
+
+EMBEDDINGS
+    Chunk vectors are L2-normalized (inner product == cosine) and cached per
+    (chunk-strategy, model) at data/processed/emb_*.npy, so the Enhanced pipeline (T15)
+    and the chunk-size ablations reuse them without re-encoding.
+
+INPUTS   data/processed/chunks_<strategy>.parquet
+OUTPUTS  results/raw_outputs/dense_faiss.jsonl   (or dense_singledoc.jsonl for the oracle)
+
+RUN
+    python src/pipeline_dense.py                                     # all 150, top-3, GPT-3.5
+    python src/pipeline_dense.py --scope single_doc                 # known-filing oracle ceiling
+    python src/pipeline_dense.py --chunk-strategy fixed_256 --top-k 5 # retrieval ablations
 """
 from __future__ import annotations
 
@@ -146,7 +159,7 @@ def run(backend_name, chunk_strategy, top_k, model, temperature, limit, out_path
 def main() -> int:
     p = argparse.ArgumentParser(description="Dense FAISS RAG pipeline (Task T14).")
     p.add_argument("--backend", choices=("ollama", "openai"), default=None)
-    p.add_argument("--chunk-strategy", choices=("fixed_512", "sentence"), default="fixed_512")
+    p.add_argument("--chunk-strategy", choices=("fixed_512", "fixed_256", "sentence"), default="fixed_512")
     p.add_argument("--top-k", type=int, default=3)
     p.add_argument("--model", default=None)
     p.add_argument("--temperature", type=float, default=0.0)

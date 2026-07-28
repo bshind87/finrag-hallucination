@@ -1,26 +1,38 @@
-"""Pipeline 1: baseline RAG with BM25 retrieval + a chat LLM (Task T06).
+"""Pipeline 1 — Baseline RAG: BM25 sparse retrieval + chat LLM  (Task T06).
 
-This is the minimal end-to-end system we need for the preliminary paper, and the
-critical path for M2. For each of the 150 FinanceBench questions it:
+OVERVIEW
+    The simplest end-to-end RAG system and the critical path for M2. For each of the
+    150 FinanceBench questions it (1) retrieves the top-k chunks from a BM25 index
+    built over the *entire* 84-filing corpus, then (2) asks the generator to answer
+    using only those chunks, at temperature 0.
 
-  1. retrieves the top-k chunks from a BM25 index built over the whole chunk corpus
-     (all 84 filings, not just the question's own document), and
-  2. asks the generator to answer using only those chunks, at temperature 0.
+ROLE IN THE PROJECT (RQ1)
+    The weakest retriever and the baseline that the Dense (T14) and Enhanced (T15)
+    pipelines are measured against. Only *retrieval* changes across those three, which
+    is what isolates retrieval quality as the driver of hallucination.
 
-We index the entire corpus on purpose. A retriever that can pull the wrong filing is
-exactly the setup where hallucination shows up, which is what the project is about.
+WHY FULL-CORPUS RETRIEVAL
+    We index all 84 filings on purpose: a retriever that can surface the *wrong* filing
+    is exactly where hallucination appears — the phenomenon this project studies.
 
-The generator runs on OpenAI GPT-3.5-turbo by default (needs a key in .env); pass
-``--backend ollama`` for a local, no-cost run instead. See src/llm.py.
+PIPELINE FLOW (per question)
+    question -> BM25 top-k chunks -> prompt(context + question) -> LLM answer -> row
 
-Output rows follow the shared schema in schema.py, so the eval code (T08/T09) reads
-this file without any special-casing. Predictions land in results/raw_outputs/
-(gitignored); only the curated metrics get committed later.
+INPUTS   data/processed/chunks_<strategy>.parquet     (built by preprocess.py, T05)
+         data/raw/financebench_open_source.jsonl      (questions + gold answers)
+OUTPUTS  results/raw_outputs/baseline_bm25.jsonl      (shared schema; scored by T08/T09)
 
-Run it:
-    python src/pipeline_baseline.py                       # all 150, top-3, GPT-3.5
-    python src/pipeline_baseline.py --limit 5             # quick smoke test
-    python src/pipeline_baseline.py --backend ollama      # local llama3.2 (no key/cost)
+SHARED HELPERS (defined here, imported by the other pipelines)
+    PROMPT_TEMPLATE  .  _chat()  .  load_questions()
+
+GENERATOR
+    OpenAI GPT-3.5-turbo by default (key in .env); `--backend ollama` runs a local
+    model at no cost. See src/llm.py.
+
+RUN
+    python src/pipeline_baseline.py                   # all 150, top-3, GPT-3.5
+    python src/pipeline_baseline.py --limit 5         # quick smoke test
+    python src/pipeline_baseline.py --backend ollama  # local, no key/cost
 """
 from __future__ import annotations
 

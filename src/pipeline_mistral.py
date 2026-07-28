@@ -1,19 +1,31 @@
-"""Pipeline 4 / RQ3: Mistral-7B generator on the Enhanced retrieval (Task T17).
+"""Pipeline 4 — Mistral-7B generator on the Enhanced retrieval  (Task T17, RQ3).
 
-RQ3 asks whether an open-source instruction-tuned model hallucinates less than
-GPT-3.5 *given the same retrieved context*. To make that a clean generator swap, we
-do NOT re-retrieve: we reuse the exact contexts our Enhanced (query-rewrite + dense)
-GPT-3.5 run already retrieved (`enhanced_rewrite.jsonl`) and only regenerate the
-answer with Mistral-7B-Instruct, using the identical prompt and schema. Retrieval is
-held fixed, so any difference in the metrics is attributable to the generator alone.
+OVERVIEW
+    A *generator* swap, not a retrieval change. RQ3 asks whether an open, instruction-
+    tuned model hallucinates less than GPT-3.5 given the *same* retrieved context. To
+    keep it clean we do NOT re-retrieve: we reuse the exact contexts the GPT-3.5
+    Enhanced run (T15, enhanced_rewrite.jsonl) already retrieved and only regenerate
+    the answer with Mistral-7B-Instruct, using the identical prompt and schema.
 
-Mistral runs locally through Ollama (no API key, no cost, no GPU needed):
-    ollama serve &            # start once
-    ollama pull mistral:7b-instruct
+WHY THIS DESIGN
+    Holding retrieval fixed isolates the generator — any metric difference is the
+    model, not retrieval. It is the opposite control to the RQ1 pipelines (which hold
+    the generator fixed and vary retrieval).
 
-Run it:
-    python src/pipeline_mistral.py                 # all 150, reuse enhanced contexts
-    python src/pipeline_mistral.py --limit 3       # smoke test
+RUNTIME
+    Mistral runs locally via Ollama (no GPU, no API key, no cost):
+        ollama serve &                    # start once
+        ollama pull mistral:7b-instruct
+
+PIPELINE FLOW (per question)
+    reuse Enhanced context -> prompt(context + question) -> Mistral answer -> row
+
+INPUTS   results/raw_outputs/enhanced_rewrite.jsonl   (contexts from T15)
+OUTPUTS  results/raw_outputs/enhanced_mistral.jsonl
+
+RUN
+    python src/pipeline_mistral.py             # all 150, reuse enhanced contexts
+    python src/pipeline_mistral.py --limit 3   # quick smoke test
 """
 from __future__ import annotations
 

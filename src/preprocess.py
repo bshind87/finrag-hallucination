@@ -193,7 +193,7 @@ def chunk_document(doc_name: str, meta: dict, strategy: str,
         return []
     pages = extract_pages(pdf_path)
 
-    if strategy == "fixed_512":
+    if strategy.startswith("fixed_"):
         pieces = _fixed_size_chunks(pages, max_tokens, overlap)
     elif strategy == "sentence":
         pieces = _sentence_chunks(pages, max_tokens)
@@ -259,8 +259,8 @@ def load_chunks(strategy: str, processed_dir: Path = PROCESSED_DIR) -> pd.DataFr
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Chunk FinanceBench PDFs (Task T05).")
-    parser.add_argument("--strategy", choices=(*STRATEGIES, "both"), default="both",
-                        help="which chunking strategy to build")
+    parser.add_argument("--strategy", choices=("fixed_512", "fixed_256", "sentence", "both"),
+                        default="both", help="which chunking strategy to build")
     parser.add_argument("--max-tokens", type=int, default=512,
                         help="token budget per chunk")
     parser.add_argument("--overlap", type=int, default=64,
