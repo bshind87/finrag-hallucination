@@ -46,5 +46,5 @@ paper/main_test.*
 paper/.DS_Store
 paper/templates/.DS_Store
 
-# --- Personal local notes (do not commit) ---
-PIPELINE_FLOW_NOTES.md
+# --- Local-only docs, never pushed (architecture, flow notes, slides, infographic) ---
+local_docs/
