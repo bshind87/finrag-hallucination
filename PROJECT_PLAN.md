@@ -93,8 +93,8 @@
 | T27 | Write final paper (8 pages) | Bhalchandra | DONE | Full final paper `paper/main.md` -> `paper/main.docx` (~8 pages): all sections + 4 tables + 2 figures; citations resolved. Proofread: every in-text number verified against tables, terminology standardized, cross-refs checked. | 2026-07-24 | 2026-07-24 |
 | T28 | Final review & submission | team | IN PROGRESS | Proofread complete (numbers/citations verified; wording tweaks patched into `main.docx` in place, formatting preserved). Remaining: confirm section numbering + page count in Word, then submit via course portal before 2026-07-31. | 2026-07-24 |  |
 | **M4 — Presentation + Poster (due 2026-08-04)** |                                       |                    |             |                                                                                                                                                                                                                                                                                                                                                                                                                                      |            |            |
-| T29                                                    | Design poster                         | _____              | TODO        |                                                                                                                                                                                                                                                                                                                                                                                                                                      |            |            |
-| T30                                                    | Build presentation slides             | _____              | TODO        |                                                                                                                                                                                                                                                                                                                                                                                                                                      |            |            |
+| T29 | Design poster | Bhalchandra | IN PROGRESS | Poster designed: `local_docs/poster.html` -> `poster.pdf` (single-page; all 3 RQs + summary-findings table + retrieval/ablation/taxonomy charts + RoBERTa confusion matrix). Chose the clean HTML poster over an AI-infographic (typo-free, controllable). Pending: add real QR to the video; move out of `local_docs` and push next week. | 2026-07-29 |  |
+| T30 | Build presentation slides | Bhalchandra | IN PROGRESS | 13-slide deck `local_docs/Financial_RAG_Autopsy.pptx` (+ `.pdf`); every number verified against the paper; maps to 4 presenters (~2 min each, hard 8-min cutoff). Pending: record video; move out of `local_docs` and push next week. | 2026-07-29 |  |
 | T31                                                    | Record video (≤8 min)                | _____              | TODO        |                                                                                                                                                                                                                                                                                                                                                                                                                                      |            |            |
 | T32                                                    | Submit poster + video                 | _____              | TODO        |                                                                                                                                                                                                                                                                                                                                                                                                                                      |            |            |
 | T33                                                    | (Bonus) ACL workshop submission       | _____              | TODO        |                                                                                                                                                                                                                                                                                                                                                                                                                                      |            |            |
@@ -547,7 +547,7 @@
 
 ### T29 — Design the poster
 
-- **Status:** TODO  · **Owner:** _____  · **Est:** 1.5 days
+- **Status:** IN PROGRESS  · **Owner:** Bhalchandra  · **Est:** 1.5 days
 - **Description:** Visual poster following the standard flow.
 - **Subtasks:**
   - Sections: motivation → research questions → pipeline diagram → results → taxonomy → conclusions.
@@ -560,7 +560,7 @@
 
 ### T30 — Build presentation slides
 
-- **Status:** TODO  · **Owner:** _____  · **Est:** 1 day
+- **Status:** IN PROGRESS  · **Owner:** Bhalchandra  · **Est:** 1 day
 - **Description:** Slide deck (reuse poster sections) for the video.
 - **Dependencies:** T28.
 - **Acceptance criteria:**
