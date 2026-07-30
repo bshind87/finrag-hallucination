@@ -7,9 +7,9 @@ The `.docx` is generated from a Markdown source with `pandoc` (ACL 2023 Word tem
 styles + resolved citations), then opened in Word for final formatting.
 
 ## Files
-### Final paper (M3, due 2026-07-31) — work in progress
-- `main.docx` — **the final paper** (Word). Generated from `main.md`. Open/edit/submit.
-- `main.md` — Markdown source for the final paper (edit this, then regenerate `main.docx`).
+### Final paper (M3, due 2026-07-31)
+- `CS6120NLP_Group7_RAG_Hallucination_final_paper.docx` — **the final paper** (Word, hand-formatted). This is the submission artifact.
+- `main.md` — Markdown source the docx was first generated from; final formatting was then done by hand in Word.
 
 ### Preliminary paper (M2, submitted 2026-07-03) — frozen record
 - `CS6120NLP_RAG_Hallucination_preliminary_paper.pdf` — the PDF that was submitted.
@@ -28,7 +28,7 @@ Regenerate `main.docx` from `main.md` with the ACL Word template applied:
 ```bash
 cd paper
 pandoc main.md --citeproc --bibliography=references.bib \
-  --reference-doc=templates/acl2023.docx -o main.docx
+  --reference-doc=templates/acl2023.docx -o CS6120NLP_Group7_RAG_Hallucination_final_paper.docx
 ```
 Then open `main.docx` in Word for final formatting and submit.
 
